@@ -13,5 +13,19 @@
     "lodash": "^3.5.0",
     "rimraf": "^2.3.2",
     "webpack": "^1.7.3"
-  }
+  },
+  "dependencies": {
+    "lodash": "^3.5.0",
+    "jasmine-node": "^1.14.5",
+    "rimraf": "^2.3.2",
+    "webpack": "^1.7.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danethurber/webpack-manifest-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/danethurber/webpack-manifest-plugin/issues"
+  },
+  "homepage": "https://github.com/danethurber/webpack-manifest-plugin"
 }
