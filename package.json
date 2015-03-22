@@ -4,19 +4,13 @@
   "description": "webpack plugin for generating asset manifests",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine-node --captureExceptions spec"
+    "test": "./node_modules/.bin/jasmine"
   },
   "author": "Dane Thurber <dane.thurber@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "jasmine-node": "^1.14.5",
+    "jasmine": "^2.2.1",
     "lodash": "^3.5.0",
-    "rimraf": "^2.3.2",
-    "webpack": "^1.7.3"
-  },
-  "dependencies": {
-    "lodash": "^3.5.0",
-    "jasmine-node": "^1.14.5",
     "rimraf": "^2.3.2",
     "webpack": "^1.7.3"
   },
