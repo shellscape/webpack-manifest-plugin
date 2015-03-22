@@ -27,7 +27,7 @@ function webpackCompile(opts, cb) {
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
-    cb(manifestFile);
+    cb(manifestFile, stats);
   });
 };
 
@@ -46,8 +46,8 @@ describe('ManifestPlugin', function() {
       entry: path.join(__dirname, './fixtures/file.js')
     }, function(manifest){
       expect(manifest).toBeDefined();
-      expect(manifest.main).toBeDefined();
-      expect(manifest.main).toEqual('main.js');
+      expect(manifest['main.js']).toBeDefined();
+      expect(manifest['main.js']).toEqual('main.js');
       done();
     });
 
@@ -60,11 +60,25 @@ describe('ManifestPlugin', function() {
         two: path.join(__dirname, './fixtures/file.js')
       }
     }, function(manifest){
-      expect(manifest.one).toEqual('one.js');
-      expect(manifest.two).toEqual('two.js');
+      expect(manifest['one.js']).toEqual('one.js');
+      expect(manifest['two.js']).toEqual('two.js');
       done();
     });
 
   });
 
+  it('works with hashes in the filename', function(done) {
+    webpackCompile({
+      entry: {
+        one: path.join(__dirname, './fixtures/file.js'),
+      },
+      output: {
+        filename: '[name].[hash].js'
+      }
+    }, function(manifest, stats){
+      expect(manifest['one.js']).toEqual('one.' + stats.hash + '.js');
+      done();
+    });
+
+  });
 });
