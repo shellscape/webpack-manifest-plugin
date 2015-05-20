@@ -29,7 +29,10 @@ This will generate a `manifest.json` file in your root output directory with a m
 }
 ```
 
-You may configure the manifest with options:
+
+## Configuration
+
+A manifest is configurable using constructor options:
 
 ```javascript
 new ManifestPlugin({
@@ -38,5 +41,7 @@ new ManifestPlugin({
 })
 ```
 
+**Options:**
+
 * `fileName`: The manifest filename in your output directory (`manifest.json` by default).
-* `basePath`: A path prefix for all file references. Useful for expressing output path within the manifest.
+* `basePath`: A path prefix for all file references. Useful for including your output path in the manifest.
