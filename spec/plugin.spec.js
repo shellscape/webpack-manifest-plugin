@@ -19,7 +19,7 @@ function webpackCompile(opts, cb) {
       filename: '[name].js'
     },
     plugins: [
-      new plugin()
+      new plugin(opts.manifestOptions)
     ]
   }, opts);
 
@@ -79,6 +79,21 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats){
         expect(manifest['one.js']).toEqual('one.' + stats.hash + '.js');
+        done();
+      });
+    });
+
+    it('prefixes definitions with a base path', function(done) {
+      webpackCompile({
+        manifestOptions: {basePath: '/app/'},
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, function(manifest, stats){
+        expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
         done();
       });
     });
