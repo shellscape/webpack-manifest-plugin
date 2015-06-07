@@ -45,3 +45,4 @@ new ManifestPlugin({
 
 * `fileName`: The manifest filename in your output directory (`manifest.json` by default).
 * `basePath`: A path prefix for all file references. Useful for including your output path in the manifest.
+* `stripSrc`: removes unwanted strings from source filenames
