@@ -83,6 +83,21 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('works with source maps', function(done) {
+      webpackCompile({
+        devtool: 'sourcemap',
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, function(manifest, stats){
+        expect(manifest['one.js.map']).toEqual('one.js.map');
+        done();
+      });
+    });
+
     it('prefixes definitions with a base path', function(done) {
       webpackCompile({
         manifestOptions: {basePath: '/app/'},
