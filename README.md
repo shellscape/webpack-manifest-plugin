@@ -1,4 +1,4 @@
-# Webpack Manifest Plugins
+# Webpack Manifest Plugin
 
 Webpack plugin for generating an asset manifest.
 
