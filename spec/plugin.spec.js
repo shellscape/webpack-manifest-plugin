@@ -1,8 +1,7 @@
 var path = require('path');
-var fs = require('fs');
+var MemoryFileSystem = require("memory-fs");
 
 var webpack = require('webpack');
-var rimraf = require('rimraf');
 var _ = require('lodash');
 
 var plugin = require('../index.js');
@@ -23,21 +22,21 @@ function webpackCompile(opts, cb) {
     ]
   }, opts);
 
-  webpack(config, function(err, stats){
+  var compiler = webpack(config);
+
+  var fs = compiler.outputFileSystem = new MemoryFileSystem();
+
+  compiler.run(function(err, stats){
     var manifestFile = JSON.parse( fs.readFileSync(manifestPath).toString() );
 
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
     cb(manifestFile, stats);
-  });
+  })
 };
 
 describe('ManifestPlugin', function() {
-
-  beforeEach(function(done) {
-    rimraf(OUTPUT_DIR, done);
-  });
 
   it('exists', function() {
     expect(plugin).toBeDefined();
