@@ -107,7 +107,7 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, function(manifest, stats){
-        expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
+        expect(manifest['one.js']).toEqual('/app/one.' + stats.hash + '.js');
         done();
       });
     });
