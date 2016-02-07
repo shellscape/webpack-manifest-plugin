@@ -10,9 +10,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
-function webpackCompile(opts, cb) {
-
-  var config = _.merge({
+function webpackConfig (opts) {
+  return _.merge({
     output: {
       path: OUTPUT_DIR,
       filename: '[name].js'
@@ -21,6 +20,16 @@ function webpackCompile(opts, cb) {
       new plugin(opts.manifestOptions)
     ]
   }, opts);
+}
+
+function webpackCompile(opts, cb) {
+  var config;
+  if (Array.isArray(opts)) {
+    config = opts.map(webpackConfig);
+  }
+  else {
+    config = webpackConfig(opts);
+  }
 
   var compiler = webpack(config);
 
@@ -108,6 +117,29 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats){
         expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
+        done();
+      });
+    });
+
+    it('combines manifests of multiple compilations', function(done) {
+      var cache = {};
+      webpackCompile([{
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js')
+        },
+        manifestOptions: {
+          cache: cache
+        }
+      }, {
+        entry: {
+          two: path.join(__dirname, './fixtures/file-two.js')
+        },
+        manifestOptions: {
+          cache: cache
+        }
+      }], function(manifest){
+        expect(manifest['one.js']).toEqual('one.js');
+        expect(manifest['two.js']).toEqual('two.js');
         done();
       });
     });
