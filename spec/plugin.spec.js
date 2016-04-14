@@ -143,6 +143,20 @@ describe('ManifestPlugin', function() {
         done();
       });
     });
+
+    it('respects subfolders', function(done) {
+      webpackCompile({
+        entry: path.join(__dirname, './fixtures/file.js'),
+        output: {
+          filename: 'javascripts/main.js'
+        }
+      }, function(manifest){
+        expect(manifest).toBeDefined();
+        expect(manifest['javascripts/main.js']).toBeDefined();
+        expect(manifest['javascripts/main.js']).toEqual('javascripts/main.js');
+        done();
+      });
+    })
   });
 
   describe('with ExtractTextPlugin', function(){
