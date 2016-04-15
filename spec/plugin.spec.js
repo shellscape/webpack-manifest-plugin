@@ -145,6 +145,84 @@ describe('ManifestPlugin', function() {
     });
   });
 
+  describe('resolves relative paths', function(){
+      it('with an absolute base path', function(done) {
+        webpackCompile({
+          manifestOptions: {basePath: '/app/sub/'},
+          entry: {
+            one: path.join(__dirname, './fixtures/file.js'),
+          },
+          output: {
+            filename: '../[name].[hash].js'
+          }
+        }, function(manifest, stats){
+          expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
+          done();
+        });
+      });
+
+      it('with a relative base path', function(done) {
+        webpackCompile({
+          manifestOptions: {basePath: 'app/sub/'},
+          entry: {
+            one: path.join(__dirname, './fixtures/file.js'),
+          },
+          output: {
+            filename: '../[name].[hash].js'
+          }
+        }, function(manifest, stats){
+          expect(manifest['app/one.js']).toEqual('app/one.' + stats.hash + '.js');
+          done();
+        });
+      });
+
+      it('with missing base path', function(done) {
+        webpackCompile({
+          manifestOptions: {basePath: 'app/sub/'},
+          entry: {
+            one: path.join(__dirname, './fixtures/file.js'),
+          },
+          output: {
+            filename: '../[name].[hash].js'
+          }
+        }, function(manifest, stats){
+          expect(manifest['app/one.js']).toEqual('app/one.' + stats.hash + '.js');
+          done();
+        });
+      });
+
+      it('when ExtractTextPlugin', function(done){
+        webpackCompile({
+          entry: {
+            wStyles: [
+              path.join(__dirname, './fixtures/file.js'),
+              path.join(__dirname, './fixtures/style.css')
+            ]
+          },
+          output: {
+            filename: '../[name].js'
+          },
+          module: {
+            loaders: [{
+              test: /\.css$/,
+              loader: ExtractTextPlugin.extract('style', 'css')
+            }]
+          },
+          plugins: [
+            new plugin({basePath: '/app/sub/'}),
+            new ExtractTextPlugin('../[name].css', {
+              allChunks: true
+            })
+          ]
+        }, function(manifest, stats){
+          expect(manifest['/app/wStyles.js']).toEqual('/app/wStyles.js');
+          expect(manifest['/app/wStyles.css']).toEqual('/app/wStyles.css');
+          done();
+        });
+
+      });
+  })
+
   describe('with ExtractTextPlugin', function(){
     it('works when extracting css into a seperate file', function(done){
       webpackCompile({
