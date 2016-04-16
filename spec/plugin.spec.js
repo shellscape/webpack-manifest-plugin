@@ -191,7 +191,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('includes unamed chunks by id', function(done) {
+    it('includes unnamed chunks by id', function(done) {
       webpackCompile({
         entry: path.join(__dirname, './fixtures/file-with-code-split.js')
       }, function(manifest){
@@ -202,7 +202,7 @@ describe('ManifestPlugin', function() {
 
         expect(manifest['1.js']).toBeDefined();
         expect(manifest['1.js']).toEqual('1.1.js');
-        
+
         done();
       });
     });
