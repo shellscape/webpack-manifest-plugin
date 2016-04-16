@@ -177,4 +177,34 @@ describe('ManifestPlugin', function() {
 
     });
   });
+
+  describe('with unnamed chunks', function() {
+    it('works when using require.ensure', function(done) {
+      webpackCompile({
+        entry: path.join(__dirname, './fixtures/file-with-code-split.js')
+      }, function(manifest){
+        expect(manifest).toBeDefined();
+        expect(manifest['main.js']).toBeDefined();
+        expect(manifest['main.js']).toEqual('main.js');
+
+        done();
+      });
+    });
+
+    it('includes unamed chunks by id', function(done) {
+      webpackCompile({
+        entry: path.join(__dirname, './fixtures/file-with-code-split.js')
+      }, function(manifest){
+        expect(manifest).toBeDefined();
+
+        expect(manifest['main.js']).toBeDefined();
+        expect(manifest['main.js']).toEqual('main.js');
+
+        expect(manifest['1.js']).toBeDefined();
+        expect(manifest['1.js']).toEqual('1.1.js');
+        
+        done();
+      });
+    });
+  });
 });
