@@ -121,6 +121,37 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('prefixes paths with a public path', function(done) {
+      webpackCompile({
+        manifestOptions: {publicPath: '/app/'},
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, function(manifest, stats){
+        expect(manifest['one.js']).toEqual('/app/one.' + stats.hash + '.js');
+        done();
+      });
+    });
+
+    it('prefixes definitions with a base path when public path is also provided', function(done) {
+      webpackCompile({
+        manifestOptions: {basePath: '/app/', publicPath: '/app/' },
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, function(manifest, stats){
+        expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
+        expect(manifest['one.js']).toBe(undefined);
+        done();
+      });
+    });
+
     it('combines manifests of multiple compilations', function(done) {
       var cache = {};
       webpackCompile([{
