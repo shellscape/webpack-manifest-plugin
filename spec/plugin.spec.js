@@ -136,7 +136,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('does not expose base path\'s parent folder', function(done) {
+    it('does not expose base path\'s parent', function(done) {
       webpackCompile({
         manifestOptions: {basePath: '/app/../../'},
         entry: {
@@ -181,9 +181,9 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('does not expose public path\'s parent folder', function(done) {
+    it('does not expose public path\'s parent', function(done) {
       webpackCompile({
-        manifestOptions: {basePath: '/app/../../'},
+        manifestOptions: {publicPath: '/app/../../'},
         entry: {
           one: path.join(__dirname, './fixtures/file.js'),
         },
@@ -191,7 +191,7 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, function(manifest, stats){
-        expect(manifest['/one.js']).toEqual('/one.' + stats.hash + '.js');
+        expect(manifest['one.js']).toEqual('/one.' + stats.hash + '.js');
         done();
       });
     });
