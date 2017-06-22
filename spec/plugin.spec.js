@@ -174,6 +174,22 @@ describe('ManifestPlugin', function() {
         done();
       });
     });
+
+    it('only output chukns speficied in the \'chunks\' option', function(done) {
+      webpackCompile({
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+          two: path.join(__dirname, './fixtures/file-two.js')
+        },
+        manifestOptions: {
+          chunks: ['one']
+        }
+      }, function(manifest){
+        expect(Object.keys(manifest).length).toEqual(1);
+        expect(manifest['one.js']).toEqual('one.js');
+        done();
+      });
+    });
   });
 
   describe('with ExtractTextPlugin', function(){
