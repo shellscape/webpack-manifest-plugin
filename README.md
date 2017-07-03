@@ -1,8 +1,7 @@
-# Webpack Manifest Plugin
+# Webpack Manifest Plugin [![Build Status](https://travis-ci.org/danethurber/webpack-manifest-plugin.svg?branch=master)](https://travis-ci.org/danethurber/webpack-manifest-plugin)
+
 
 Webpack plugin for generating an asset manifest.
-
-[![Circle CI](https://circleci.com/gh/danethurber/webpack-manifest-plugin.svg?style=shield)](https://circleci.com/gh/danethurber/webpack-manifest-plugin)
 
 
 ## Usage
