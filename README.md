@@ -3,6 +3,11 @@
 
 Webpack plugin for generating an asset manifest.
 
+## Install
+
+```bash
+npm install --save-dev webpack-manifest-plugin
+```
 
 ## Usage
 
