@@ -216,7 +216,7 @@ describe('ManifestPlugin', function() {
         output: { filename: '[name].[hash].js' }
       }, function(manifest, stats) {
         expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
-        expect(manifest['1.1.'+ stats.hash +'.js']).toEqual('1.1.'+ stats.hash +'.js');
+        expect(manifest['1.1.'+ stats.hash +'.js']).toEqual(undefined);
         done();
       });
     });
