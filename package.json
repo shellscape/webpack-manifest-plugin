@@ -9,7 +9,10 @@
   "author": "Dane Thurber <dane.thurber@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=4"
+    "node": ">=0.10"
+  },
+  "peerDependencies": {
+    "webpack": "1 || 2 || 3"
   },
   "devDependencies": {
     "css-loader": "^0.9.1",
