@@ -8,6 +8,9 @@
   },
   "author": "Dane Thurber <dane.thurber@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": ">=4"
+  },
   "devDependencies": {
     "css-loader": "^0.9.1",
     "extract-text-webpack-plugin": "^0.5.0",
