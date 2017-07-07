@@ -22,7 +22,6 @@ if (Number(extractTextPluginMajorVersion) > 1) {
   FakeExtractTextPlugin.prototype.constructor = FakeExtractTextPlugin;
 
   FakeExtractTextPlugin.extract = function (fallback, use) {
-    console.log();
     return ExtractTextPlugin.extract({
       fallback: fallback,
       use: use
@@ -50,7 +49,9 @@ function webpackConfig (webpackOpts, opts) {
 function webpackCompile(webpackOpts, opts, cb) {
   var config;
   if (Array.isArray(webpackOpts)) {
-    config = webpackOpts.map(x => webpackConfig(x, opts));
+    config = webpackOpts.map(function(x) {
+      return webpackConfig(x, opts);
+    });
   }
   else {
     config = webpackConfig(webpackOpts, opts);
