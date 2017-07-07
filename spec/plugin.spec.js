@@ -263,7 +263,7 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
-        expect(Object.keys(manifest).length).toEqual(1);
+        expect(Object.keys(manifest).length).toEqual(2);
         expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
         done();
       });
