@@ -20,3 +20,6 @@ script:
   - if [ ${TRAVIS_NODE_VERSION} != "0.10" ] && [ ${TRAVIS_NODE_VERSION} != "0.12" ] || [ ${WEBPACK_VERSION} == "1" ]; then
       npm test;
     fi
+
+after_script:
+  - './node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov'
