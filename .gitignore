@@ -1,3 +1,6 @@
 node_modules
 .DS_Store
 spec/webpack-out
+yarn.lock
+.nyc_output
+coverage
