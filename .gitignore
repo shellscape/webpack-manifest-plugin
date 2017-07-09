@@ -4,3 +4,4 @@ spec/webpack-out
 yarn.lock
 .nyc_output
 coverage
+spec/output/
