@@ -68,7 +68,7 @@ function webpackCompile(webpackOpts, opts, cb) {
     expect(stats.hasErrors()).toBe(false);
 
     cb(manifestFile, stats);
-  })
+  });
 };
 
 describe('ManifestPlugin', function() {
@@ -77,18 +77,19 @@ describe('ManifestPlugin', function() {
     expect(plugin).toBeDefined();
   });
 
-  describe('basic behavior', function(){
+  describe('basic behavior', function() {
     it('outputs a manifest of one file', function(done) {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.js'
-      }, {}, function(manifest){
+      }, {}, function(manifest) {
         expect(manifest).toBeDefined();
-        expect(manifest['main.js']).toBeDefined();
-        expect(manifest['main.js']).toEqual('main.js');
+        expect(manifest).toEqual({
+          'main.js': 'main.js'
+        });
+
         done();
       });
-
     });
 
     it('outputs a manifest of multiple files', function(done) {
@@ -98,9 +99,12 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
           two: './fixtures/file-two.js'
         }
-      }, {}, function(manifest){
-        expect(manifest['one.js']).toEqual('one.js');
-        expect(manifest['two.js']).toEqual('two.js');
+      }, {}, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'two.js': 'two.js'
+        });
+
         done();
       });
     });
@@ -114,8 +118,11 @@ describe('ManifestPlugin', function() {
         output: {
           filename: '[name].[hash].js'
         }
-      }, {}, function(manifest, stats){
-        expect(manifest['one.js']).toEqual('one.' + stats.hash + '.js');
+      }, {}, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.' + stats.hash + '.js'
+        });
+
         done();
       });
     });
@@ -130,8 +137,12 @@ describe('ManifestPlugin', function() {
         output: {
           filename: '[name].js'
         }
-      }, {}, function(manifest, stats){
-        expect(manifest['one.js.map']).toEqual('one.js.map');
+      }, {}, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'one.js.map': 'one.js.map'
+        });
+
         done();
       });
     });
@@ -149,8 +160,11 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           basePath: '/app/'
         }
-      }, function(manifest, stats){
-        expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js'
+        });
+
         done();
       });
     });
@@ -168,8 +182,11 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           publicPath: '/app/'
         }
-      }, function(manifest, stats){
-        expect(manifest['one.js']).toEqual('/app/one.' + stats.hash + '.js');
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': '/app/one.' + stats.hash + '.js'
+        });
+
         done();
       });
     });
@@ -188,9 +205,11 @@ describe('ManifestPlugin', function() {
           basePath: '/app/',
           publicPath: '/app/'
         }
-      }, function(manifest, stats){
-        expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
-        expect(manifest['one.js']).toBe(undefined);
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js'
+        });
+
         done();
       });
     });
@@ -211,16 +230,19 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           cache: cache
         }
-      }, function(manifest){
-        expect(manifest['one.js']).toEqual('one.js');
-        expect(manifest['two.js']).toEqual('two.js');
+      }, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'two.js': 'two.js'
+        });
+
         done();
       });
     });
   });
 
-  describe('with ExtractTextPlugin', function(){
-    it('works when extracting css into a seperate file', function(done){
+  describe('with ExtractTextPlugin', function() {
+    it('works when extracting css into a seperate file', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -244,12 +266,14 @@ describe('ManifestPlugin', function() {
             allChunks: true
           })
         ]
-      }, {}, function(manifest, stats){
-        expect(manifest['wStyles.js']).toEqual('wStyles.js');
-        expect(manifest['wStyles.css']).toEqual('wStyles.css');
+      }, {}, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'wStyles.js': 'wStyles.js',
+          'wStyles.css': 'wStyles.css'
+        });
+
         done();
       });
-
     });
   });
 
@@ -264,8 +288,11 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
-        expect(Object.keys(manifest).length).toEqual(2);
-        expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
+        expect(manifest).toEqual({
+          'nameless.js': 'nameless.'+ stats.hash +'.js',
+          ['1.1.'+ stats.hash +'.js']: '1.1.'+ stats.hash +'.js'
+        });
+
         done();
       });
     });
