@@ -44,6 +44,9 @@
     "reporter": [
       "lcov",
       "text"
+    ],
+    "exclude": [
+      "spec"
     ]
   }
 }
