@@ -316,4 +316,45 @@ describe('ManifestPlugin', function() {
       });
     });
   });
+
+  describe('assets added by third parties to "compilation.assets"', function() {
+    it('are included also when enabled.', function(done) {
+
+      var options = webpackConfig({
+        manifestOptions: {
+            includeCopiedAssets: true
+        }
+      });
+
+      // add plugin to get third party assets included
+      let Mock = require(path.join(__dirname, './plugin-mock'));
+      options.plugins.unshift(new Mock());
+
+      webpackCompile(options, function(manifest, stats) {
+        expect(manifest['third.party.js']).toEqual('third.party.js');
+        done();
+      });
+    });
+  });
+
+  describe('assets added by third parties to "compilation.assets"', function() {
+    it('are not included when disabled.', function(done) {
+
+      var options = webpackConfig({
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+        }
+      });
+
+      // add plugin to get third party assets included
+      let Mock = require(path.join(__dirname, './plugin-mock'));
+      options.plugins.unshift(new Mock());
+
+      webpackCompile(options, function(manifest, stats) {
+        expect(manifest['one.js']).toEqual('one.js');
+        expect(manifest['third.party.js']).toBe(undefined);
+        done();
+      });
+    });
+  });
 });
