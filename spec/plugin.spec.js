@@ -288,10 +288,8 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'nameless.js': 'nameless.'+ stats.hash +'.js',
-          ['1.1.'+ stats.hash +'.js']: '1.1.'+ stats.hash +'.js'
-        });
+        expect(Object.keys(manifest).length).toEqual(2);
+        expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
 
         done();
       });
