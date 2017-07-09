@@ -343,6 +343,9 @@ describe('ManifestPlugin', function() {
       var options = webpackConfig({
         entry: {
           one: path.join(__dirname, './fixtures/file.js'),
+        },
+        manifestOptions: {
+          includeCopiedAssets: false
         }
       });
 
