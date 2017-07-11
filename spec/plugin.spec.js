@@ -214,6 +214,31 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('adds initialValue object custom attributes when provided', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          initValue: {
+            test1: 'test2'
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'test1': 'test2'
+        });
+
+        done();
+      });
+    });
+
     it('combines manifests of multiple compilations', function(done) {
       var cache = {};
       webpackCompile([{
