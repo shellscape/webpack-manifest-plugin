@@ -229,9 +229,36 @@ describe('ManifestPlugin', function() {
             test1: 'test2'
           }
         }
-      }, function(manifest, stats) {
+      }, function(manifest) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
+          'test1': 'test2'
+        });
+
+        done();
+      });
+    });
+
+    it('initialValue attributes do not get prefixed with basePath', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, {
+        manifestOptions: {
+          basePath: '/app/',
+          publicPath: '/app/',
+          initValue: {
+            test1: 'test2'
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
           'test1': 'test2'
         });
 
