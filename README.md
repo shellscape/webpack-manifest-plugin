@@ -42,6 +42,9 @@ A manifest is configurable using constructor options:
 new ManifestPlugin({
   fileName: 'my-manifest.json',
   basePath: '/app/'
+  initValue: {
+    name: 'My Manifest'
+  }
 })
 ```
 
