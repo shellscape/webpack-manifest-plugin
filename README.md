@@ -53,3 +53,4 @@ new ManifestPlugin({
 * `stripSrc`: removes unwanted strings from source filenames (string or regexp)
 * `writeToFileEmit`: If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
 * `cache`: In [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler) webpack will overwrite the manifest on each compilation. Passing a shared `{}` as the `cache` option into each compilation's ManifestPlugin will combine the manifest between compilations.
+* `initValue`: use for [custom keys](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) in your manifest or just initial values for them (that might later get overwritten).
