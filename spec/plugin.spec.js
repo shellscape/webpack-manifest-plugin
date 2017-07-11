@@ -2,7 +2,7 @@ var path = require('path');
 
 var MemoryFileSystem = require('memory-fs');
 var webpack = require('webpack');
-var _ = require('lodash');
+var merge = require('webpack-merge');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractTextPluginMajorVersion = require('extract-text-webpack-plugin/package.json').version.split('.')[0];
 var plugin = require('../index.js');
@@ -10,7 +10,7 @@ var plugin = require('../index.js');
 // TODO: remove when dropping support for webpack@1
 if (Number(extractTextPluginMajorVersion) > 1) {
   function FakeExtractTextPlugin(fileName, opts) {
-    ExtractTextPlugin.call(this, _.assign(
+    ExtractTextPlugin.call(this, Object.assign(
       opts,
       {
         filename: fileName
@@ -35,7 +35,7 @@ var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
 function webpackConfig (webpackOpts, opts) {
-  return _.merge({
+  return merge({
     output: {
       path: OUTPUT_DIR,
       filename: '[name].js'
