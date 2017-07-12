@@ -1,11 +1,12 @@
 var path = require('path');
+var fs = require('fs');
 
 var MemoryFileSystem = require('memory-fs');
 var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractTextPluginMajorVersion = require('extract-text-webpack-plugin/package.json').version.split('.')[0];
-var plugin = require('../index.js');
+var ManifestPlugin = require('../index.js');
 
 // TODO: remove when dropping support for webpack@1
 if (Number(extractTextPluginMajorVersion) > 1) {
@@ -41,7 +42,7 @@ function webpackConfig (webpackOpts, opts) {
       filename: '[name].js'
     },
     plugins: [
-      new plugin(opts.manifestOptions)
+      new ManifestPlugin(opts.manifestOptions)
     ]
   }, webpackOpts);
 }
@@ -67,14 +68,14 @@ function webpackCompile(webpackOpts, opts, cb) {
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
-    cb(manifestFile, stats);
+    cb(manifestFile, stats, compiler);
   });
 };
 
 describe('ManifestPlugin', function() {
 
   it('exists', function() {
-    expect(plugin).toBeDefined();
+    expect(ManifestPlugin).toBeDefined();
   });
 
   describe('basic behavior', function() {
@@ -137,7 +138,7 @@ describe('ManifestPlugin', function() {
         output: {
           filename: '[name].js'
         }
-      }, {}, function(manifest, stats) {
+      }, {}, function(manifest) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
           'one.js.map': 'one.js.map'
@@ -249,7 +250,7 @@ describe('ManifestPlugin', function() {
             { test: /\.(txt)/, loader: 'file-loader?name=file.[ext]' },
           ]
         }
-      }, {}, function(manifest, stats) {
+      }, {}, function(manifest) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
           'main.js': 'main.js',
@@ -282,12 +283,12 @@ describe('ManifestPlugin', function() {
           }]
         },
         plugins: [
-          new plugin(),
+          new ManifestPlugin(),
           new FakeExtractTextPlugin('[name].css', {
             allChunks: true
           })
         ]
-      }, {}, function(manifest, stats) {
+      }, {}, function(manifest) {
         expect(manifest).toEqual({
           'wStyles.js': 'wStyles.js',
           'wStyles.css': 'wStyles.css'
@@ -313,6 +314,48 @@ describe('ManifestPlugin', function() {
         expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
 
         done();
+      });
+    });
+  });
+
+  describe('in watch mode', function() {
+    it('outputs a manifest of one file', function(done) {
+      var compiler = webpack({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        watch: true,
+        plugins: [
+          new ManifestPlugin(),
+          new webpack.HotModuleReplacementPlugin()
+        ]
+      });
+
+      var fs = new MemoryFileSystem();
+      compiler.outputFileSystem = fs;
+      compiler.inputFileSystem = fs;
+
+      console.log('before');
+      fs.mkdirpSync(OUTPUT_DIR);
+      fs.mkdirpSync(path.join(__dirname, 'fixtures'));
+      fs.writeFileSync(path.join(__dirname, 'fixtures/file.js'), 'console.log(\'file.js\')');
+      console.log('after');
+
+      var i = 0;
+      compiler.watch({}, (err, stats) => {
+        console.log('in watch', i);
+
+        var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
+
+        expect(manifest).toBeDefined();
+        expect(manifest).toEqual({
+          'main.js': 'main.js'
+        });
+
+        if (++i === 2) {
+          return done();
+        }
+
+        fs.writeFileSync(path.join(__dirname, 'fixtures/file.js'), 'console.log(\'updated file.js\')', function () {});
       });
     });
   });
