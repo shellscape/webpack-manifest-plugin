@@ -214,7 +214,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('adds cache object custom attributes when provided', function(done) {
+    it('adds seed object custom attributes when provided', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -225,7 +225,7 @@ describe('ManifestPlugin', function() {
         }
       }, {
         manifestOptions: {
-          cache: {
+          seed: {
             test1: 'test2'
           }
         }
@@ -239,7 +239,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('cache attributes do not get prefixed with basePath', function(done) {
+    it('seed attributes do not get prefixed with basePath', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -252,7 +252,7 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           basePath: '/app/',
           publicPath: '/app/',
-          cache: {
+          seed: {
             test1: 'test2'
           }
         }
@@ -267,6 +267,32 @@ describe('ManifestPlugin', function() {
     });
 
     it('combines manifests of multiple compilations', function(done) {
+      var seed = {};
+      webpackCompile([{
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js'
+        }
+      }, {
+        context: __dirname,
+        entry: {
+          two: './fixtures/file-two.js'
+        }
+      }], {
+        manifestOptions: {
+          seed: seed
+        }
+      }, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'two.js': 'two.js'
+        });
+
+        done();
+      });
+    });
+
+    it('still accepts cache parameter (deprecated)', function(done) {
       var cache = {};
       webpackCompile([{
         context: __dirname,
