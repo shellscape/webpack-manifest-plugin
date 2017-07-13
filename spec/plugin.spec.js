@@ -214,7 +214,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('adds initialValue object custom attributes when provided', function(done) {
+    it('adds cache object custom attributes when provided', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -225,7 +225,7 @@ describe('ManifestPlugin', function() {
         }
       }, {
         manifestOptions: {
-          initValue: {
+          cache: {
             test1: 'test2'
           }
         }
@@ -239,7 +239,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('initialValue attributes do not get prefixed with basePath', function(done) {
+    it('cache attributes do not get prefixed with basePath', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -252,7 +252,7 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           basePath: '/app/',
           publicPath: '/app/',
-          initValue: {
+          cache: {
             test1: 'test2'
           }
         }
