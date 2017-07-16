@@ -1,11 +1,11 @@
-function MockWebpackPlugin() {};
+function FakeCopyWebpackPlugin() {};
 
 /**
  * Mock plugins that modifies `compilation.assets`
  *
  * @param compiler
  */
-MockWebpackPlugin.prototype.apply = function(compiler) {
+FakeCopyWebpackPlugin.prototype.apply = function(compiler) {
     compiler.plugin('emit', function(compilation, callback) {
 
         var compiledMock = '// some compilation result\n';
@@ -22,4 +22,4 @@ MockWebpackPlugin.prototype.apply = function(compiler) {
     });
 };
 
-module.exports = MockWebpackPlugin;
+module.exports = FakeCopyWebpackPlugin;
