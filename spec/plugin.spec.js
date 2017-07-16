@@ -6,6 +6,8 @@ var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractTextPluginMajorVersion = require('extract-text-webpack-plugin/package.json').version.split('.')[0];
 var plugin = require('../index.js');
+// add plugin to get third party assets included
+var FakeCopyWebpackPlugin = require(path.join(__dirname, './copy-plugin-mock'));
 
 // TODO: remove when dropping support for webpack@1
 if (Number(extractTextPluginMajorVersion) > 1) {
@@ -41,6 +43,7 @@ function webpackConfig (webpackOpts, opts) {
       filename: '[name].js'
     },
     plugins: [
+      new FakeCopyWebpackPlugin(),
       new plugin(opts.manifestOptions)
     ]
   }, webpackOpts);
