@@ -88,7 +88,8 @@ describe('ManifestPlugin', function() {
       }, {}, function(manifest) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
-          'main.js': 'main.js'
+          'main.js': 'main.js',
+          'third.party.js': 'third.party.js'
         });
 
         done();
@@ -105,7 +106,8 @@ describe('ManifestPlugin', function() {
       }, {}, function(manifest) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
-          'two.js': 'two.js'
+          'two.js': 'two.js',
+          'third.party.js': 'third.party.js'
         });
 
         done();
@@ -122,8 +124,10 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
+        console.log(manifest);
         expect(manifest).toEqual({
-          'one.js': 'one.' + stats.hash + '.js'
+          'one.js': 'one.' + stats.hash + '.js',
+          'third.party.js': 'third.party.js'
         });
 
         done();
@@ -143,7 +147,8 @@ describe('ManifestPlugin', function() {
       }, {}, function(manifest, stats) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
-          'one.js.map': 'one.js.map'
+          'one.js.map': 'one.js.map',
+          'third.party.js': 'third.party.js'
         });
 
         done();
@@ -165,7 +170,8 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
-          '/app/one.js': '/app/one.' + stats.hash + '.js'
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
+          '/app/third.party.js': '/app/third.party.js'
         });
 
         done();
@@ -187,7 +193,8 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
-          'one.js': '/app/one.' + stats.hash + '.js'
+          'one.js': '/app/one.' + stats.hash + '.js',
+          'third.party.js': '/app/third.party.js'
         });
 
         done();
@@ -210,7 +217,8 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
-          '/app/one.js': '/app/one.' + stats.hash + '.js'
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
+          '/app/third.party.js': '/app/third.party.js'
         });
 
         done();
@@ -236,7 +244,8 @@ describe('ManifestPlugin', function() {
       }, function(manifest) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
-          'two.js': 'two.js'
+          'two.js': 'two.js',
+          'third.party.js': 'third.party.js'
         });
 
         done();
@@ -256,7 +265,8 @@ describe('ManifestPlugin', function() {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
           'main.js': 'main.js',
-          'file.txt': 'file.txt'
+          'file.txt': 'file.txt',
+          'third.party.js': 'third.party.js'
         });
 
         done();
@@ -312,7 +322,7 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
-        expect(Object.keys(manifest).length).toEqual(2);
+        expect(Object.keys(manifest).length).toEqual(3);
         expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
 
         done();
