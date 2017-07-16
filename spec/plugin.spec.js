@@ -124,7 +124,6 @@ describe('ManifestPlugin', function() {
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
-        console.log(manifest);
         expect(manifest).toEqual({
           'one.js': 'one.' + stats.hash + '.js',
           'third.party.js': 'third.party.js'
