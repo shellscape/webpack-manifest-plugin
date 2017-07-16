@@ -239,7 +239,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('seed attributes do not get prefixed with basePath', function(done) {
+    it('does not prefix seed attributes with basePath', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -267,7 +267,6 @@ describe('ManifestPlugin', function() {
     });
 
     it('combines manifests of multiple compilations', function(done) {
-      var seed = {};
       webpackCompile([{
         context: __dirname,
         entry: {
@@ -280,7 +279,7 @@ describe('ManifestPlugin', function() {
         }
       }], {
         manifestOptions: {
-          seed: seed
+          seed: {}
         }
       }, function(manifest) {
         expect(manifest).toEqual({
