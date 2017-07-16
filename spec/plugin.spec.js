@@ -328,15 +328,4 @@ describe('ManifestPlugin', function() {
       });
     });
   });
-
-  describe('assets added by third parties to "compilation.assets"', function() {
-    it('are included also when enabled.', function(done) {
-      webpackCompile({
-        context: __dirname,
-      }, {}, function(manifest, stats) {
-        expect(manifest['third.party.js']).toEqual('third.party.js');
-        done();
-      });
-    });
-  });
 });
