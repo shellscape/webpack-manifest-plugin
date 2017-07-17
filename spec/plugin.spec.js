@@ -239,6 +239,27 @@ describe('ManifestPlugin', function() {
         done();
       });
     });
+
+    it('outputs a manifest of no-js file', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.txt',
+        module: {
+          loaders: [
+            { test: /\.(txt)/, loader: 'file-loader?name=file.[ext]' },
+          ]
+        }
+      }, {}, function(manifest, stats) {
+        expect(manifest).toBeDefined();
+        expect(manifest).toEqual({
+          'main.js': 'main.js',
+          'file.txt': 'file.txt'
+        });
+
+        done();
+      });
+    });
+
   });
 
   describe('with ExtractTextPlugin', function() {
