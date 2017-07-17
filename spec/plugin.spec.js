@@ -7,7 +7,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractTextPluginMajorVersion = require('extract-text-webpack-plugin/package.json').version.split('.')[0];
 var plugin = require('../index.js');
 // add plugin to get third party assets included
-var FakeCopyWebpackPlugin = require(path.join(__dirname, './helpers/copy-plugin-mock'));
+var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 
 // TODO: remove when dropping support for webpack@1
 if (Number(extractTextPluginMajorVersion) > 1) {
