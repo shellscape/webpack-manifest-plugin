@@ -52,4 +52,5 @@ new ManifestPlugin({
 * `publicPath`: A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath). Ignored if `basePath` was also provided.
 * `stripSrc`: removes unwanted strings from source filenames (string or regexp)
 * `writeToFileEmit`: If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
+* `useBasePathAndPublicPath`: If set to true, and both `basePath` and `publicPath` are set, both will be used (normally `publicPath` is ignored when `basePath` is set).
 * `cache`: In [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler) webpack will overwrite the manifest on each compilation. Passing a shared `{}` as the `cache` option into each compilation's ManifestPlugin will combine the manifest between compilations.

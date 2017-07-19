@@ -278,6 +278,22 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('prefixes definitions with a base path & uses public path with useBasePathAndPublicPath option', function(done) {
+      webpackCompile({
+        manifestOptions: {basePath: '/app/', publicPath: 'https://somecdn.com/path/', useBasePathAndPublicPath: true },
+        entry: {
+          one: path.join(__dirname, './fixtures/file.js'),
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, function(manifest, stats){
+        expect(manifest['/app/one.js']).toEqual('https://somecdn.com/path/one.' + stats.hash + '.js');
+        expect(manifest['one.js']).toBe(undefined);
+        done();
+      });
+    });
+
     it('combines manifests of multiple compilations', function(done) {
       var cache = {};
       webpackCompile([{
