@@ -278,7 +278,84 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('adds seed object custom attributes when provided', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: {
+            test1: 'test2'
+          }
+        }
+      }, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'test1': 'test2'
+        });
+
+        done();
+      });
+    });
+
+    it('does not prefix seed attributes with basePath', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, {
+        manifestOptions: {
+          basePath: '/app/',
+          publicPath: '/app/',
+          seed: {
+            test1: 'test2'
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
+          'test1': 'test2'
+        });
+
+        done();
+      });
+    });
+
     it('combines manifests of multiple compilations', function(done) {
+      webpackCompile([{
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js'
+        }
+      }, {
+        context: __dirname,
+        entry: {
+          two: './fixtures/file-two.js'
+        }
+      }], {
+        manifestOptions: {
+          seed: {}
+        }
+      }, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'two.js': 'two.js'
+        });
+
+        done();
+      });
+    });
+
+    it('still accepts cache parameter (deprecated)', function(done) {
       var cache = {};
       webpackCompile([{
         context: __dirname,

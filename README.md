@@ -42,6 +42,9 @@ A manifest is configurable using constructor options:
 new ManifestPlugin({
   fileName: 'my-manifest.json',
   basePath: '/app/'
+  seed: {
+    name: 'My Manifest'
+  }
 })
 ```
 
@@ -52,4 +55,4 @@ new ManifestPlugin({
 * `publicPath`: A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath). Ignored if `basePath` was also provided.
 * `stripSrc`: removes unwanted strings from source filenames (string or regexp)
 * `writeToFileEmit`: If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
-* `cache`: In [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler) webpack will overwrite the manifest on each compilation. Passing a shared `{}` as the `cache` option into each compilation's ManifestPlugin will combine the manifest between compilations.
+* `seed`: A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
