@@ -169,38 +169,6 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('resolves base path', function(done) {
-      webpackCompile({
-        entry: {
-          one: path.join(__dirname, './fixtures/file.js'),
-        },
-        output: {
-          filename: '[name].[hash].js'
-        }
-      }, {
-        manifestOptions: {basePath: '/app/subfolder/../'}
-      }, function(manifest, stats){
-        expect(manifest['/app/one.js']).toEqual('/app/one.' + stats.hash + '.js');
-        done();
-      });
-    });
-
-    it('does not expose base path\'s parent', function(done) {
-      webpackCompile({
-        entry: {
-          one: path.join(__dirname, './fixtures/file.js'),
-        },
-        output: {
-          filename: '[name].[hash].js'
-        }
-      }, {
-        manifestOptions: {basePath: '/app/../../'}
-      }, function(manifest, stats){
-        expect(manifest['/one.js']).toEqual('/one.' + stats.hash + '.js');
-        done();
-      });
-    });
-
     it('prefixes paths with a public path', function(done) {
       webpackCompile({
         context: __dirname,
@@ -219,38 +187,6 @@ describe('ManifestPlugin', function() {
           'one.js': '/app/one.' + stats.hash + '.js'
         });
 
-        done();
-      });
-    });
-
-    it('resolves public path', function(done) {
-      webpackCompile({
-        entry: {
-          one: path.join(__dirname, './fixtures/file.js'),
-        },
-        output: {
-          filename: '[name].[hash].js'
-        }
-      }, {
-        manifestOptions: {publicPath: '/app/subfolder/../'}
-      }, function(manifest, stats){
-        expect(manifest['one.js']).toEqual('/app/one.' + stats.hash + '.js');
-        done();
-      });
-    });
-
-    it('does not expose public path\'s parent', function(done) {
-      webpackCompile({
-        entry: {
-          one: path.join(__dirname, './fixtures/file.js'),
-        },
-        output: {
-          filename: '[name].[hash].js'
-        }
-      }, {
-        manifestOptions: {publicPath: '/app/../../'}
-      }, function(manifest, stats){
-        expect(manifest['one.js']).toEqual('/one.' + stats.hash + '.js');
         done();
       });
     });
