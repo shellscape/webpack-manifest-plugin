@@ -255,7 +255,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('prefixes definitions with a base path when public path is also provided', function(done) {
+    it('prefixes definitions with public path before base path when both are provided', function(done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -267,11 +267,11 @@ describe('ManifestPlugin', function() {
       }, {
         manifestOptions: {
           basePath: '/app/',
-          publicPath: '/app/'
+          publicPath: '/public/'
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
-          '/app/one.js': '/app/one.' + stats.hash + '.js'
+          '/app/one.js': '/app/public/one.' + stats.hash + '.js'
         });
 
         done();
