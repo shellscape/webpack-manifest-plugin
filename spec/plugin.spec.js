@@ -393,4 +393,29 @@ describe('ManifestPlugin', function() {
       });
     });
   });
+
+  describe('filter', function() {
+    it('should filter out non-initial chunks', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          nameless: './fixtures/nameless.js'
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, {
+        manifestOptions: {
+          filter: function(entry) {
+            return entry.isInitial;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(Object.keys(manifest).length).toEqual(1);
+        expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
+
+        done();
+      });
+    });
+  });
 });
