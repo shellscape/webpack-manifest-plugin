@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fse = require('fs-extra');
 var path = require('path');
 
 var _ = require('lodash');
@@ -21,7 +21,10 @@ function webpackCompile(config, compilerOps, cb) {
 
   _.assign(compiler, compilerOps);
 
-  compiler.run(function(err, stats){
+  compiler.watch({
+    aggregateTimeout: 300,
+    poll: true
+  }, function(err, stats){
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
@@ -47,7 +50,7 @@ describe('ManifestPlugin using real fs', function() {
           new ManifestPlugin()
         ]
       }, {}, function() {
-        var manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'output/single-file/manifest.json')))
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest.json')))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -55,6 +58,47 @@ describe('ManifestPlugin using real fs', function() {
         });
 
         done();
+      });
+    });
+  });
+
+  describe('watch mode', function() {
+    var hashes;
+
+    beforeAll(function () {
+      fse.outputFileSync(path.join(__dirname, 'output/watch-mode/index.js'), 'console.log(\'v1\')');
+      hashes = [];
+    });
+
+    it('outputs a manifest of one file', function(done) {
+      webpackCompile({
+        context: __dirname,
+        output: {
+          filename: '[name].[hash].js',
+          path: path.join(__dirname, 'output/watch-mode')
+        },
+        entry: './output/watch-mode/index.js',
+        watch: true,
+        plugins: [
+          new ManifestPlugin(),
+          new webpack.HotModuleReplacementPlugin()
+        ]
+      }, {}, function(stats) {
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/watch-mode/manifest.json')))
+
+        expect(manifest).toBeDefined();
+        expect(manifest).toEqual({
+          'main.js': 'main.'+ stats.hash +'.js'
+        });
+
+        hashes.push(stats.hash);
+
+        if (hashes.length === 2) {
+          expect(hashes[0]).not.toEqual(hashes[1]);
+          return done();
+        }
+
+        fse.outputFileSync(path.join(__dirname, 'output/watch-mode/index.js'), 'console.log(\'v2\')');
       });
     });
   });
@@ -82,7 +126,7 @@ describe('ManifestPlugin with memory-fs', function() {
       }, {
         outputFileSystem: new MemoryFileSystem()
       }, function() {
-        var manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'output/emit/manifest.json')))
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/emit/manifest.json')))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
