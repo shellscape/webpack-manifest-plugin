@@ -93,3 +93,8 @@ Type: `Object`<br>
 Default: `{}`
 
 A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
+
+
+## License
+
+MIT © [Dane Thurber](https://github.com/danethurber)
