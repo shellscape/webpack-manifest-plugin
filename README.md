@@ -48,11 +48,48 @@ new ManifestPlugin({
 })
 ```
 
-**Options:**
+## Options:
 
-* `fileName`: The manifest filename in your output directory (`manifest.json` by default).
-* `basePath`: A path prefix for all file references. Useful for including your output path in the manifest.
-* `publicPath`: A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath). Ignored if `basePath` was also provided.
-* `stripSrc`: removes unwanted strings from source filenames (string or regexp)
-* `writeToFileEmit`: If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
-* `seed`: A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
+### `fileName`
+
+Type: `String`<br>
+Default: `manifest.json`
+
+The manifest filename in your output directory.
+
+
+### `basePath`
+
+Type: `String`
+
+A path prefix for all file references. Useful for including your output path in the manifest.
+
+
+### `publicPath`
+
+Type: `String`
+
+A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath). Ignored if `basePath` was also provided.
+
+
+### `stripSrc`
+
+Type: `String`, `RegExp`
+
+Removes unwanted strings from source filenames.
+
+
+### `writeToFileEmit`
+
+Type: `Boolean`<br>
+Default: `false`
+
+If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
+
+
+### `seed`
+
+Type: `Object`<br>
+Default: `{}`
+
+A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
