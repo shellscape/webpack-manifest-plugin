@@ -406,13 +406,38 @@ describe('ManifestPlugin', function() {
         }
       }, {
         manifestOptions: {
-          filter: function(entry) {
-            return entry.isInitial;
+          filter: function(file) {
+            return file.isInitial;
           }
         }
       }, function(manifest, stats) {
         expect(Object.keys(manifest).length).toEqual(1);
         expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
+
+        done();
+      });
+    });
+  });
+
+  describe('map', function() {
+    it('should allow modifying files defails', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          map: function(file, i) {
+            file.name = i.toString();
+            return file;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '0': 'main.js'
+        });
 
         done();
       });
