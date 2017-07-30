@@ -114,8 +114,6 @@ Type: `function`
 
 Create the manifest. It must return an `Object`.  The default one will take the name of the chunk as a key and the path of the file as the value.
 
-> NOTE: Using `reduce` will ignore `basePath` and `publicPath` options
-
 
 ## Hooks Options
 

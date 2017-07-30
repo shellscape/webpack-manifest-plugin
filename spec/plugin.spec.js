@@ -443,4 +443,35 @@ describe('ManifestPlugin', function() {
       });
     });
   });
+
+  describe('reduce', function() {
+    it('should generate custom manifest', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          reduce: function (manifest, file) {
+            manifest[file.name] = {
+              file:file.path,
+              hash: file.chunk.hash
+            };
+            return manifest;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'main.js': {
+            file: 'main.js',
+            hash: stats.compilation.chunks[0].hash
+          }
+        });
+
+        done();
+      });
+    });
+  });
 });
