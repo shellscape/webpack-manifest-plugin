@@ -4,7 +4,7 @@
   "description": "webpack plugin for generating asset manifests",
   "main": "index.js",
   "scripts": {
-    "test": "nyc jasmine"
+    "test": "xo && nyc jasmine"
   },
   "author": "Dane Thurber <dane.thurber@gmail.com>",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "nyc": "^10.3.2",
     "rimraf": "^2.6.1",
     "style-loader": "^0.8.3",
-    "webpack": "^1.7.3"
+    "webpack": "^1.7.3",
+    "xo": "^0.18.2"
   },
   "files": [
     "index.js",
@@ -49,6 +50,19 @@
     ],
     "exclude": [
       "spec"
+    ]
+  },
+  "xo": {
+    "space": 2,
+    "rules": {
+      "space-before-function-paren": ["error", "never"]
+    },
+    "globals": [
+      "describe",
+      "it",
+      "beforeAll",
+      "beforeEach",
+      "expect"
     ]
   }
 }
