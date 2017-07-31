@@ -99,20 +99,22 @@ A cache of key/value pairs to used to seed the manifest. This may include a set 
 
 Type: `function`
 
-Filter out files.
+Filter out files. [Check parameters in details](#hooks-options)
 
 
 ### `map`
 
 Type: `function`
 
-Modify files details before the manifest is created.
+Modify files details before the manifest is created. [Check parameters in details](#hooks-options)
+
 
 ### `reduce`
 
-Type: `function`
+Type: `function`<br>
+Default: `(manifest, {name, path}) => ({...manifest, [name]: path})`
 
-Create the manifest. It must return an `Object`.  The default one will take the name of the chunk as a key and the path of the file as the value.
+Create the manifest. It must return an `Object`. Use the `seed` options to populate `manifest`. [Check parameters in details](#hooks-options)
 
 
 ## Hooks Options

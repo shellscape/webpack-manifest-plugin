@@ -456,7 +456,7 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           reduce: function (manifest, file) {
             manifest[file.name] = {
-              file:file.path,
+              file: file.path,
               hash: file.chunk.hash
             };
             return manifest;
