@@ -445,7 +445,8 @@ describe('ManifestPlugin', function() {
 
     it('should add subfolders', function(done) {
       webpackCompile({
-        entry: path.join(__dirname, './fixtures/file.js'),
+        context: __dirname,
+        entry: './fixtures/file.js',
         output: {
           filename: 'javascripts/main.js'
         }
@@ -490,6 +491,34 @@ describe('ManifestPlugin', function() {
             file: 'main.js',
             hash: stats.compilation.chunks[0].hash
           }
+        });
+
+        done();
+      });
+    });
+
+    it('should default to `seed`', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: {
+            key: 'value'
+          },
+          reduce: function (manifest, file) {
+            expect(manifest).toEqual({
+              key: 'value'
+            });
+            return manifest;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          key: 'value'
         });
 
         done();
