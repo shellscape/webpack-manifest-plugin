@@ -524,5 +524,34 @@ describe('ManifestPlugin', function() {
         done();
       });
     });
+
+    it('should output an array', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: [],
+          reduce: function (manifest, file) {
+            return manifest.concat({
+              name: file.name,
+              file: file.path
+            });
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual([
+          {
+            name: 'main.js',
+            file: 'main.js'
+          }
+        ]);
+
+        done();
+      });
+    });
   });
 });

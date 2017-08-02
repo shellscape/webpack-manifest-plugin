@@ -114,7 +114,7 @@ Modify files details before the manifest is created. [Check parameters in detail
 Type: `function`<br>
 Default: `(manifest, {name, path}) => ({...manifest, [name]: path})`
 
-Create the manifest. It must return an `Object`. Use the `seed` options to populate `manifest`. [Check parameters in details](#hooks-options)
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. Use the `seed` options to populate `manifest`. [Check parameters in details](#hooks-options)
 
 
 ## Hooks Options
