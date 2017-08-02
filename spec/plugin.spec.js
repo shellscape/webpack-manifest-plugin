@@ -442,6 +442,28 @@ describe('ManifestPlugin', function() {
         done();
       });
     });
+
+    it('should add subfolders', function(done) {
+      webpackCompile({
+        entry: path.join(__dirname, './fixtures/file.js'),
+        output: {
+          filename: 'javascripts/main.js'
+        }
+      }, {
+        manifestOptions: {
+          map: function(file) {
+            file.name = path.join(path.dirname(file.path), file.name);
+            return file;
+          }
+        }
+      }, function(manifest){
+        expect(manifest).toEqual({
+          'javascripts/main.js': 'javascripts/main.js'
+        });
+
+        done();
+      });
+    });
   });
 
   describe('reduce', function() {
