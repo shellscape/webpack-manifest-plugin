@@ -492,4 +492,165 @@ describe('ManifestPlugin', function() {
       });
     });
   });
+
+  describe('filter', function() {
+    it('should filter out non-initial chunks', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          nameless: './fixtures/nameless.js'
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, {
+        manifestOptions: {
+          filter: function(file) {
+            return file.isInitial;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(Object.keys(manifest).length).toEqual(1);
+        expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
+
+        done();
+      });
+    });
+  });
+
+  describe('map', function() {
+    it('should allow modifying files defails', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          map: function(file, i) {
+            file.name = i.toString();
+            return file;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '0': 'main.js'
+        });
+
+        done();
+      });
+    });
+
+    it('should add subfolders', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: 'javascripts/main.js'
+        }
+      }, {
+        manifestOptions: {
+          map: function(file) {
+            file.name = path.join(path.dirname(file.path), file.name);
+            return file;
+          }
+        }
+      }, function(manifest){
+        expect(manifest).toEqual({
+          'javascripts/main.js': 'javascripts/main.js'
+        });
+
+        done();
+      });
+    });
+  });
+
+  describe('reduce', function() {
+    it('should generate custom manifest', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          reduce: function (manifest, file) {
+            manifest[file.name] = {
+              file: file.path,
+              hash: file.chunk.hash
+            };
+            return manifest;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'main.js': {
+            file: 'main.js',
+            hash: stats.compilation.chunks[0].hash
+          }
+        });
+
+        done();
+      });
+    });
+
+    it('should default to `seed`', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: {
+            key: 'value'
+          },
+          reduce: function (manifest, file) {
+            expect(manifest).toEqual({
+              key: 'value'
+            });
+            return manifest;
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          key: 'value'
+        });
+
+        done();
+      });
+    });
+
+    it('should output an array', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js',
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: [],
+          reduce: function (manifest, file) {
+            return manifest.concat({
+              name: file.name,
+              file: file.path
+            });
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual([
+          {
+            name: 'main.js',
+            file: 'main.js'
+          }
+        ]);
+
+        done();
+      });
+    });
+  });
 });

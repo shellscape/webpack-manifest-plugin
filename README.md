@@ -48,6 +48,7 @@ new ManifestPlugin({
 })
 ```
 
+
 ## Options:
 
 ### `fileName`
@@ -93,6 +94,70 @@ Type: `Object`<br>
 Default: `{}`
 
 A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
+
+### `filter`
+
+Type: `function`
+
+Filter out files. [more details](#hooks-options)
+
+
+### `map`
+
+Type: `function`
+
+Modify files details before the manifest is created. [more details](#hooks-options)
+
+
+### `reduce`
+
+Type: `function`<br>
+Default: `(manifest, {name, path}) => ({...manifest, [name]: path})`
+
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. Use the `seed` options to populate `manifest`. [more details](#hooks-options)
+
+
+## Hooks Options
+
+`filter`, `map`, `reduce` takes as an input an Object with the following properties:
+
+### `path`
+
+Type: `String`
+
+
+### `chunk`
+
+Type: [`Chunk`](https://github.com/webpack/webpack/blob/master/lib/Chunk.js)
+
+
+### `name`
+
+Type: `String`, `null`
+
+
+### `isChunk`
+
+Type: `Boolean`
+
+
+### `isInitial`
+
+Type: `Boolean`
+
+Is required to run you app. Cannot be `true` if `isChunk` is `false`.
+
+
+### `isAsset`
+
+Type: `Boolean`
+
+
+### `isModuleAsset`
+
+Type: `Boolean`
+
+Is required by a module. Cannot be `true` if `isAsset` is `false`.
 
 
 ## License
