@@ -94,8 +94,7 @@ describe('ManifestPlugin using real fs', function() {
         hashes.push(stats.hash);
 
         if (hashes.length === 2) {
-          // TODO: uncomment when dropping support for node@10
-          // expect(hashes[0]).not.toEqual(hashes[1]);
+          expect(hashes[0]).not.toEqual(hashes[1]);
           return done();
         }
 

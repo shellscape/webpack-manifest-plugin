@@ -3,11 +3,8 @@ node_js:
   - '8'
   - '6'
   - '4'
-  - '0.12'
-  - '0.10'
 
 env:
-  - WEBPACK_VERSION=1 EXTRACT_PLUGIN_VERSION=1
   - WEBPACK_VERSION=2 EXTRACT_PLUGIN_VERSION=2
   - WEBPACK_VERSION=3 EXTRACT_PLUGIN_VERSION=3.0.0-rc.1
 
@@ -16,10 +13,7 @@ install:
   - npm install webpack@$WEBPACK_VERSION extract-text-webpack-plugin@$EXTRACT_PLUGIN_VERSION || true
 
 script:
-  # TODO: remove when dropping support for node 0.10 and 0.12
-  - if [ ${TRAVIS_NODE_VERSION} != "0.10" ] && [ ${TRAVIS_NODE_VERSION} != "0.12" ] || [ ${WEBPACK_VERSION} == "1" ]; then
-      npm test;
-    fi
+  - npm test;
 
 after_script:
   - './node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov'

@@ -4,32 +4,7 @@ var MemoryFileSystem = require('memory-fs');
 var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var extractTextPluginMajorVersion = require('extract-text-webpack-plugin/package.json').version.split('.')[0];
 var plugin = require('../index.js');
-
-// TODO: remove when dropping support for webpack@1
-if (Number(extractTextPluginMajorVersion) > 1) {
-  function FakeExtractTextPlugin(fileName, opts) {
-    ExtractTextPlugin.call(this, _.assign(
-      opts,
-      {
-        filename: fileName
-      }
-    ));
-  }
-
-  FakeExtractTextPlugin.prototype = Object.create(ExtractTextPlugin.prototype);
-  FakeExtractTextPlugin.prototype.constructor = FakeExtractTextPlugin;
-
-  FakeExtractTextPlugin.extract = function (fallback, use) {
-    return ExtractTextPlugin.extract({
-      fallback: fallback,
-      use: use
-    });
-  };
-} else {
-  FakeExtractTextPlugin = ExtractTextPlugin;
-}
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
@@ -405,12 +380,16 @@ describe('ManifestPlugin', function() {
         module: {
           loaders: [{
             test: /\.css$/,
-            loader: FakeExtractTextPlugin.extract('style-loader', 'css-loader')
+            loader: ExtractTextPlugin.extract({
+              fallback: 'style-loader',
+              use: 'css-loader'
+            })
           }]
         },
         plugins: [
           new plugin(),
-          new FakeExtractTextPlugin('[name].css', {
+          new ExtractTextPlugin({
+            filename: '[name].css',
             allChunks: true
           })
         ]
