@@ -99,14 +99,14 @@ A cache of key/value pairs to used to seed the manifest. This may include a set 
 
 Type: `function`
 
-Filter out files. [Check parameters in details](#hooks-options)
+Filter out files. [more details](#hooks-options)
 
 
 ### `map`
 
 Type: `function`
 
-Modify files details before the manifest is created. [Check parameters in details](#hooks-options)
+Modify files details before the manifest is created. [more details](#hooks-options)
 
 
 ### `reduce`
@@ -114,7 +114,7 @@ Modify files details before the manifest is created. [Check parameters in detail
 Type: `function`<br>
 Default: `(manifest, {name, path}) => ({...manifest, [name]: path})`
 
-Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. Use the `seed` options to populate `manifest`. [Check parameters in details](#hooks-options)
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. Use the `seed` options to populate `manifest`. [more details](#hooks-options)
 
 
 ## Hooks Options
