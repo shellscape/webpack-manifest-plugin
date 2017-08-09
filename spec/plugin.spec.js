@@ -62,12 +62,18 @@ function webpackCompile(webpackOpts, opts, cb) {
   var fs = compiler.outputFileSystem = new MemoryFileSystem();
 
   compiler.run(function(err, stats){
-    var manifestFile = JSON.parse( fs.readFileSync(manifestPath).toString() );
+    var manifestFile
+    try {
+      manifestFile = JSON.parse( fs.readFileSync(manifestPath).toString() );
+    } catch (e) {
+      manifestFile = null
+    }
+
 
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
-    cb(manifestFile, stats);
+    cb(manifestFile, stats, fs);
   });
 };
 
@@ -214,7 +220,128 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('should keep full urls provided by basePath', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          basePath: 'https://www/example.com/',
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'https://www/example.com/one.js': 'https://www/example.com/one.js'
+        });
+
+        done();
+      });
+    });
+
+    it('should keep full urls provided by publicPath', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          publicPath: 'http://www/example.com/',
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'http://www/example.com/one.js'
+        });
+
+        done();
+      });
+    });
+
+    it('adds seed object custom attributes when provided', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: {
+            test1: 'test2'
+          }
+        }
+      }, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'test1': 'test2'
+        });
+
+        done();
+      });
+    });
+
+    it('does not prefix seed attributes with basePath', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        }
+      }, {
+        manifestOptions: {
+          basePath: '/app/',
+          publicPath: '/app/',
+          seed: {
+            test1: 'test2'
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
+          'test1': 'test2'
+        });
+
+        done();
+      });
+    });
+
     it('combines manifests of multiple compilations', function(done) {
+      webpackCompile([{
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js'
+        }
+      }, {
+        context: __dirname,
+        entry: {
+          two: './fixtures/file-two.js'
+        }
+      }], {
+        manifestOptions: {
+          seed: {}
+        }
+      }, function(manifest) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'two.js': 'two.js'
+        });
+
+        done();
+      });
+    });
+
+    it('still accepts cache parameter (deprecated)', function(done) {
       var cache = {};
       webpackCompile([{
         context: __dirname,
@@ -313,6 +440,55 @@ describe('ManifestPlugin', function() {
         expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
 
         done();
+      });
+    });
+  });
+
+  describe('set location of manifest', function() {
+    describe('using relative path', function() {
+      it('should ', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js'
+        }, {
+          manifestOptions: {
+            fileName: 'webpack.manifest.js',
+          }
+        }, function(manifest, stats, fs) {
+          var OUTPUT_DIR = path.join(__dirname, './webpack-out');
+          var manifestPath = path.join(OUTPUT_DIR, 'webpack.manifest.js');
+
+          var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
+
+          expect(manifest).toEqual({
+           'main.js': 'main.js'
+          });
+
+          done();
+        });
+      });
+    });
+
+    describe('using absolute path', function() {
+      it('should ', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js'
+        }, {
+          manifestOptions: {
+            fileName: path.join(__dirname, 'webpack.manifest.js')
+          }
+        }, function(manifest, stats, fs) {
+          var manifestPath = path.join(__dirname, 'webpack.manifest.js');
+
+          var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
+
+          expect(manifest).toEqual({
+           'main.js': 'main.js'
+          });
+
+          done();
+        });
       });
     });
   });

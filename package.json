@@ -1,6 +1,6 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "description": "webpack plugin for generating asset manifests",
   "main": "index.js",
   "scripts": {
