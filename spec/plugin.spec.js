@@ -407,6 +407,22 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('make manifest available to other webpack plugins', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.js'
+      }, {}, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'main.js': 'main.js'
+        });
+
+        expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
+          'main.js': 'main.js'
+        });
+
+        done();
+      });
+    });
   });
 
   describe('with ExtractTextPlugin', function() {
