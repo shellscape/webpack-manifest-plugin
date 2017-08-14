@@ -387,6 +387,26 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('ensures the manifest is mapping paths to names', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: './fixtures/file.txt',
+        module: {
+          loaders: [
+            { test: /\.(txt)/, loader: 'file-loader?name=outputfile.[ext]' },
+          ]
+        }
+      }, {}, function(manifest, stats) {
+        expect(manifest).toBeDefined();
+        expect(manifest).toEqual({
+          'main.js': 'main.js',
+          'file.txt': 'outputfile.txt'
+        });
+
+        done();
+      });
+    });
+
   });
 
   describe('with ExtractTextPlugin', function() {
