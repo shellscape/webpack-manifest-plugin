@@ -5,11 +5,13 @@ var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var plugin = require('../index.js');
+// add plugin to get third party assets included
+var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
-function webpackConfig (webpackOpts, opts) {
+function webpackConfig(webpackOpts, opts) {
   return _.merge({
     output: {
       path: OUTPUT_DIR,
@@ -24,7 +26,7 @@ function webpackConfig (webpackOpts, opts) {
 function webpackCompile(webpackOpts, opts, cb) {
   var config;
   if (Array.isArray(webpackOpts)) {
-    config = webpackOpts.map(function(x) {
+    config = webpackOpts.map(function (x) {
       return webpackConfig(x, opts);
     });
   }
@@ -44,7 +46,6 @@ function webpackCompile(webpackOpts, opts, cb) {
       manifestFile = null
     }
 
-
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
@@ -52,18 +53,18 @@ function webpackCompile(webpackOpts, opts, cb) {
   });
 };
 
-describe('ManifestPlugin', function() {
+describe('ManifestPlugin', function () {
 
-  it('exists', function() {
+  it('exists', function () {
     expect(plugin).toBeDefined();
   });
 
-  describe('basic behavior', function() {
-    it('outputs a manifest of one file', function(done) {
+  describe('basic behavior', function () {
+    it('outputs a manifest of one file', function (done) {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.js'
-      }, {}, function(manifest) {
+      }, {}, function (manifest) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
           'main.js': 'main.js'
@@ -73,14 +74,14 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('outputs a manifest of multiple files', function(done) {
+    it('outputs a manifest of multiple files', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
           one: './fixtures/file.js',
           two: './fixtures/file-two.js'
         }
-      }, {}, function(manifest) {
+      }, {}, function (manifest) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
           'two.js': 'two.js'
@@ -90,7 +91,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('works with hashes in the filename', function(done) {
+    it('works with hashes in the filename', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -108,7 +109,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('works with source maps', function(done) {
+    it('works with source maps', function (done) {
       webpackCompile({
         context: __dirname,
         devtool: 'sourcemap',
@@ -118,7 +119,7 @@ describe('ManifestPlugin', function() {
         output: {
           filename: '[name].js'
         }
-      }, {}, function(manifest, stats) {
+      }, {}, function (manifest, stats) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
           'one.js.map': 'one.js.map'
@@ -128,7 +129,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('prefixes definitions with a base path', function(done) {
+    it('prefixes definitions with a base path', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -141,7 +142,7 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           basePath: '/app/'
         }
-      }, function(manifest, stats) {
+      }, function (manifest, stats) {
         expect(manifest).toEqual({
           '/app/one.js': 'one.' + stats.hash + '.js'
         });
@@ -150,7 +151,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('prefixes paths with a public path', function(done) {
+    it('prefixes paths with a public path', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -163,7 +164,7 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           publicPath: '/app/'
         }
-      }, function(manifest, stats) {
+      }, function (manifest, stats) {
         expect(manifest).toEqual({
           'one.js': '/app/one.' + stats.hash + '.js'
         });
@@ -172,7 +173,7 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('prefixes definitions with a base path when public path is also provided', function(done) {
+    it('prefixes definitions with a base path when public path is also provided', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -186,7 +187,7 @@ describe('ManifestPlugin', function() {
           basePath: '/app/',
           publicPath: '/app/'
         }
-      }, function(manifest, stats) {
+      }, function (manifest, stats) {
         expect(manifest).toEqual({
           '/app/one.js': '/app/one.' + stats.hash + '.js'
         });
@@ -332,7 +333,7 @@ describe('ManifestPlugin', function() {
         manifestOptions: {
           cache: cache
         }
-      }, function(manifest) {
+      }, function (manifest) {
         expect(manifest).toEqual({
           'one.js': 'one.js',
           'two.js': 'two.js'
@@ -342,16 +343,16 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('outputs a manifest of no-js file', function(done) {
+    it('outputs a manifest of no-js file', function (done) {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.txt',
         module: {
           loaders: [
-            { test: /\.(txt)/, loader: 'file-loader?name=file.[ext]' },
+            {test: /\.(txt)/, loader: 'file-loader?name=file.[ext]'},
           ]
         }
-      }, {}, function(manifest, stats) {
+      }, {}, function (manifest, stats) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
           'main.js': 'main.js',
@@ -400,8 +401,8 @@ describe('ManifestPlugin', function() {
     });
   });
 
-  describe('with ExtractTextPlugin', function() {
-    it('works when extracting css into a seperate file', function(done) {
+  describe('with ExtractTextPlugin', function () {
+    it('works when extracting css into a seperate file', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -429,7 +430,7 @@ describe('ManifestPlugin', function() {
             allChunks: true
           })
         ]
-      }, {}, function(manifest, stats) {
+      }, {}, function (manifest, stats) {
         expect(manifest).toEqual({
           'wStyles.js': 'wStyles.js',
           'wStyles.css': 'wStyles.css'
@@ -440,8 +441,8 @@ describe('ManifestPlugin', function() {
     });
   });
 
-  describe('nameless chunks', function() {
-    it('add a literal mapping of files generated by nameless chunks.', function(done) {
+  describe('nameless chunks', function () {
+    it('add a literal mapping of files generated by nameless chunks.', function (done) {
       webpackCompile({
         context: __dirname,
         entry: {
@@ -452,7 +453,77 @@ describe('ManifestPlugin', function() {
         }
       }, {}, function(manifest, stats) {
         expect(Object.keys(manifest).length).toEqual(2);
-        expect(manifest['nameless.js']).toEqual('nameless.'+ stats.hash +'.js');
+        expect(manifest['nameless.js']).toEqual('nameless.' + stats.hash + '.js');
+        done();
+      });
+    });
+  });
+
+  describe('with CopyWebpackPlugin', function () {
+    it('works when including assets from third party plugins.', function (done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js'
+        },
+        plugins: [
+          new FakeCopyWebpackPlugin(),
+          new plugin()
+        ]
+      }, {}, function (manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'third.party.js': 'third.party.js'
+        });
+
+        done();
+      });
+    });
+
+    it('doesn\'t add duplicates when prefixes definitions with a base path', function (done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        },
+        plugins: [
+          new FakeCopyWebpackPlugin(),
+          new plugin({
+            basePath: '/app/',
+            publicPath: '/app/'
+          })
+        ]
+      }, {}, function (manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
+          '/app/third.party.js': '/app/third.party.js'
+        });
+
+        done();
+      });
+    });
+
+    it('doesn\'t add duplicates when used with hashes in the filename', function (done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        },
+        plugins: [
+          new FakeCopyWebpackPlugin(),
+          new plugin()
+        ]
+      }, {}, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.' + stats.hash + '.js',
+          'third.party.js': 'third.party.js'
+        });
 
         done();
       });
