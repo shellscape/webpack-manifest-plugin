@@ -63,14 +63,14 @@ The manifest filename in your output directory.
 
 Type: `String`
 
-A path prefix for all file references. Useful for including your output path in the manifest.
+A path prefix for all keys. Useful for including your output path in the manifest.
 
 
 ### `publicPath`
 
 Type: `String`
 
-A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath). Ignored if `basePath` was also provided.
+A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath).
 
 
 ### `stripSrc`

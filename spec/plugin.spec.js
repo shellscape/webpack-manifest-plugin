@@ -143,7 +143,7 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
-          '/app/one.js': '/app/one.' + stats.hash + '.js'
+          '/app/one.js': 'one.' + stats.hash + '.js'
         });
 
         done();
@@ -210,7 +210,7 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
-          'https://www/example.com/one.js': 'https://www/example.com/one.js'
+          'https://www/example.com/one.js': 'one.js'
         });
 
         done();
