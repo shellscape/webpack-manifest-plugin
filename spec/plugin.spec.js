@@ -4,6 +4,7 @@ var MemoryFileSystem = require('memory-fs');
 var webpack = require('webpack');
 var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
@@ -663,6 +664,77 @@ describe('ManifestPlugin', function() {
             file: 'main.js'
           }
         ]);
+
+        done();
+      });
+    });
+  });
+
+  describe('with CopyWebpackPlugin', function () {
+    it('works when including copied assets', function (done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js'
+        },
+        plugins: [
+          new FakeCopyWebpackPlugin(),
+          new plugin()
+        ]
+      }, {}, function (manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.js',
+          'third.party.js': 'third.party.js'
+        });
+
+        done();
+      });
+    });
+
+    it('doesn\'t add duplicates when prefixes definitions with a base path', function (done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        },
+        plugins: [
+          new FakeCopyWebpackPlugin(),
+          new plugin({
+            basePath: '/app/',
+            publicPath: '/app/'
+          })
+        ]
+      }, {}, function (manifest, stats) {
+        expect(manifest).toEqual({
+          '/app/one.js': '/app/one.' + stats.hash + '.js',
+          '/app/third.party.js': '/app/third.party.js'
+        });
+
+        done();
+      });
+    });
+
+    it('doesn\'t add duplicates when used with hashes in the filename', function (done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+        },
+        output: {
+          filename: '[name].[hash].js'
+        },
+        plugins: [
+          new FakeCopyWebpackPlugin(),
+          new plugin()
+        ]
+      }, {}, function(manifest, stats) {
+        expect(manifest).toEqual({
+          'one.js': 'one.' + stats.hash + '.js',
+          'third.party.js': 'third.party.js'
+        });
 
         done();
       });
