@@ -1,11 +1,6 @@
 function FakeCopyWebpackPlugin() {
 };
 
-/**
- * Mock plugins that modifies `compilation.assets`
- *
- * @param compiler
- */
 FakeCopyWebpackPlugin.prototype.apply = function (compiler) {
   compiler.plugin('emit', function (compilation, callback) {
 

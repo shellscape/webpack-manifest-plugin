@@ -477,7 +477,7 @@ describe('ManifestPlugin', function() {
           var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
 
           expect(manifest).toEqual({
-           'main.js': 'main.js'
+            'main.js': 'main.js'
           });
 
           done();
@@ -500,7 +500,7 @@ describe('ManifestPlugin', function() {
           var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
 
           expect(manifest).toEqual({
-           'main.js': 'main.js'
+            'main.js': 'main.js'
           });
 
           done();
