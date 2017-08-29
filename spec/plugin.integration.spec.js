@@ -60,6 +60,42 @@ describe('ManifestPlugin using real fs', function() {
         done();
       });
     });
+
+    it('exposes a plugin hook with the manifest content', function (done) {
+      function TestPlugin() {
+        this.manifest = null;
+      }
+      TestPlugin.prototype.apply = function (compiler) {
+        var self = this;
+        compiler.plugin('compilation', function (compilation) {
+          compilation.plugin('webpack-manifest-plugin-after-emit', function (manifest, callback) {
+            self.manifest = manifest;
+            callback();
+          });
+        });
+      };
+
+      var testPlugin = new TestPlugin();
+      webpackCompile({
+        context: __dirname,
+        output: {
+          filename: '[name].js',
+          path: path.join(__dirname, 'output/single-file')
+        },
+        entry: './fixtures/file.js',
+        plugins: [
+          new ManifestPlugin(),
+          testPlugin
+        ]
+      }, {}, function() {
+        expect(testPlugin.manifest).toBeDefined();
+        expect(testPlugin.manifest).toEqual({
+          'main.js': 'main.js'
+        });
+
+        done();
+      });
+    });
   });
 
   describe('watch mode', function() {
