@@ -41,7 +41,7 @@ A manifest is configurable using constructor options:
 ```javascript
 new ManifestPlugin({
   fileName: 'my-manifest.json',
-  basePath: '/app/'
+  basePath: '/app/',
   seed: {
     name: 'My Manifest'
   }
