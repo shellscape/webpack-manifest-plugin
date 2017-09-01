@@ -100,6 +100,11 @@ Type: `function`
 
 Modify files details before the manifest is created. [more details](#hooks-options)
 
+### `options.sort`
+
+Type: `function`
+
+Sort files before they are passed to `generate`. [more details](#hooks-options)
 
 ### `options.generate`
 
@@ -113,7 +118,7 @@ Create the manifest. It can return anything as long as it's serialisable by `JSO
 
 ## Hooks Options
 
-`filter`, `map` take as an input an Object with the following properties:
+`filter`, `map`, `sort` takes as an input an Object with the following properties:
 
 ### `path`
 
