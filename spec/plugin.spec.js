@@ -157,13 +157,10 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
-          filename: '[name].[hash].js'
-        }
-      }, {
-        manifestOptions: {
+          filename: '[name].[hash].js',
           publicPath: '/app/'
         }
-      }, function(manifest, stats) {
+      }, {}, function(manifest, stats) {
         expect(manifest).toEqual({
           'one.js': '/app/one.' + stats.hash + '.js'
         });
@@ -179,12 +176,12 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
-          filename: '[name].[hash].js'
+          filename: '[name].[hash].js',
+          publicPath: '/app/'
         }
       }, {
         manifestOptions: {
-          basePath: '/app/',
-          publicPath: '/app/'
+          basePath: '/app/'
         }
       }, function(manifest, stats) {
         expect(manifest).toEqual({
@@ -224,13 +221,10 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
-          filename: '[name].js'
-        }
-      }, {
-        manifestOptions: {
+          filename: '[name].js',
           publicPath: 'http://www/example.com/',
         }
-      }, function(manifest, stats) {
+      }, {}, function(manifest, stats) {
         expect(manifest).toEqual({
           'one.js': 'http://www/example.com/one.js'
         });
@@ -271,12 +265,12 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
-          filename: '[name].[hash].js'
+          filename: '[name].[hash].js',
+          publicPath: '/app/'
         }
       }, {
         manifestOptions: {
           basePath: '/app/',
-          publicPath: '/app/',
           seed: {
             test1: 'test2'
           }

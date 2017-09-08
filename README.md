@@ -34,24 +34,28 @@ This will generate a `manifest.json` file in your root output directory with a m
 ```
 
 
-## Configuration
+## API:
 
-A manifest is configurable using constructor options:
+```js
+// webpack.config.js
 
-```javascript
-new ManifestPlugin({
-  fileName: 'my-manifest.json',
-  basePath: '/app/',
-  seed: {
-    name: 'My Manifest'
-  }
-})
+module.exports = {
+  output: {
+    publicPath
+  },
+  plugins: [
+    new ManifestPlugin(options)
+  ]
+}
 ```
 
+### `publicPath`
 
-## Options:
+Type: `String`
 
-### `fileName`
+A path prefix that will be added to values of the manifest.
+
+### `options.fileName`
 
 Type: `String`<br>
 Default: `manifest.json`
@@ -59,28 +63,21 @@ Default: `manifest.json`
 The manifest filename in your output directory.
 
 
-### `basePath`
+### `options.basePath`
 
 Type: `String`
 
 A path prefix for all keys. Useful for including your output path in the manifest.
 
 
-### `publicPath`
-
-Type: `String`
-
-A path prefix used only on output files, similar to Webpack's  [output.publicPath](https://github.com/webpack/docs/wiki/configuration#outputpublicpath).
-
-
-### `stripSrc`
+### `options.stripSrc`
 
 Type: `String`, `RegExp`
 
 Removes unwanted strings from source filenames.
 
 
-### `writeToFileEmit`
+### `options.writeToFileEmit`
 
 Type: `Boolean`<br>
 Default: `false`
@@ -88,28 +85,28 @@ Default: `false`
 If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
 
 
-### `seed`
+### `options.seed`
 
 Type: `Object`<br>
 Default: `{}`
 
 A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
 
-### `filter`
+### `options.filter`
 
 Type: `function`
 
 Filter out files. [more details](#hooks-options)
 
 
-### `map`
+### `options.map`
 
 Type: `function`
 
 Modify files details before the manifest is created. [more details](#hooks-options)
 
 
-### `reduce`
+### `options.reduce`
 
 Type: `function`<br>
 Default: `(manifest, {name, path}) => ({...manifest, [name]: path})`
