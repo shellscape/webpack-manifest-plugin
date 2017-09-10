@@ -311,32 +311,6 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('still accepts cache parameter (deprecated)', function(done) {
-      var cache = {};
-      webpackCompile([{
-        context: __dirname,
-        entry: {
-          one: './fixtures/file.js'
-        }
-      }, {
-        context: __dirname,
-        entry: {
-          two: './fixtures/file-two.js'
-        }
-      }], {
-        manifestOptions: {
-          cache: cache
-        }
-      }, function(manifest) {
-        expect(manifest).toEqual({
-          'one.js': 'one.js',
-          'two.js': 'two.js'
-        });
-
-        done();
-      });
-    });
-
     it('outputs a manifest of no-js file', function(done) {
       webpackCompile({
         context: __dirname,
