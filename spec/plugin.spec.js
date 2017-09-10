@@ -710,13 +710,13 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
-          filename: '[name].[hash].js'
+          filename: '[name].[hash].js',
+          publicPath: '/app/'
         },
         plugins: [
           new FakeCopyWebpackPlugin(),
           new plugin({
-            basePath: '/app/',
-            publicPath: '/app/'
+            basePath: '/app/'
           })
         ]
       }, {}, function (manifest, stats) {
