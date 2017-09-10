@@ -8,6 +8,8 @@ var rimraf = require('rimraf');
 
 var ManifestPlugin = require('../index.js');
 
+const isCI = (yes, no) => process.env.CI === 'true' ? yes : no;
+
 function webpackConfig(webpackOpts, opts) {
   return _.merge({
     plugins: [
@@ -135,6 +137,58 @@ describe('ManifestPlugin using real fs', function() {
         }
 
         fse.outputFileSync(path.join(__dirname, 'output/watch-mode/index.js'), 'console.log(\'v2\')');
+      });
+    });
+  });
+
+  describe('multiple compilation', function() {
+    const nbCompiler = isCI(4000, 1000);
+    let originalTimeout;
+    beforeEach(function() {
+      originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = nbCompiler * 20;
+      rimraf.sync(path.join(__dirname, 'output/multiple-compilation'));
+    });
+    afterEach(function () {
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    });
+
+    it('should not produce mangle output', function(done) {
+      const seed = {};
+
+      webpackCompile(Array.from({length: nbCompiler}).map((x, i) => ({
+        context: __dirname,
+        output: {
+          filename: '[name].js',
+          path: path.join(__dirname, 'output/multiple-compilation')
+        },
+        entry: {
+          [`main-${i}`]: './fixtures/file.js'
+        },
+        plugins: [
+          new ManifestPlugin({
+            seed
+          }),
+          function () {
+            const compiler = this;
+
+            compiler.plugin('after-emit', function(compilation, cb) {
+              JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')));
+              cb();
+            });
+          }
+        ]
+      })), {}, function() {
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')))
+
+        expect(manifest).toBeDefined();
+        expect(manifest).toEqual(Array.from({length: nbCompiler}).reduce((manifest, x, i) => {
+          manifest[`main-${i}.js`] = `main-${i}.js`;
+
+          return manifest;
+        }, {}));
+
+        done();
       });
     });
   });
