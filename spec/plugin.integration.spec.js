@@ -8,7 +8,9 @@ var rimraf = require('rimraf');
 
 var ManifestPlugin = require('../index.js');
 
-const isCI = (yes, no) => process.env.CI === 'true' ? yes : no;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
+
+var isCI = (yes, no) => process.env.CI === 'true' ? yes : no;
 
 function webpackConfig(webpackOpts, opts) {
   return _.merge({
@@ -142,19 +144,14 @@ describe('ManifestPlugin using real fs', function() {
   });
 
   describe('multiple compilation', function() {
-    const nbCompiler = isCI(4000, 1000);
-    let originalTimeout;
+    var nbCompiler = isCI(4000, 1000);
+    var originalTimeout;
     beforeEach(function() {
-      originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = nbCompiler * 20;
       rimraf.sync(path.join(__dirname, 'output/multiple-compilation'));
-    });
-    afterEach(function () {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
     it('should not produce mangle output', function(done) {
-      const seed = {};
+      var seed = {};
 
       webpackCompile(Array.from({length: nbCompiler}).map((x, i) => ({
         context: __dirname,
@@ -170,7 +167,7 @@ describe('ManifestPlugin using real fs', function() {
             seed
           }),
           function () {
-            const compiler = this;
+            var compiler = this;
 
             compiler.plugin('after-emit', function(compilation, cb) {
               JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')));
