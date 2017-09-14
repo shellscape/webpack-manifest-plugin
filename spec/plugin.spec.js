@@ -91,6 +91,32 @@ describe('ManifestPlugin', function() {
       });
     });
 
+    it('multiple file output is dependency ordered', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          main: './fixtures/main.js',
+          vendor: './fixtures/util.js'
+        },
+        plugins: [
+          new plugin({
+            seed: [],
+            reduce: function (manifest, file) {
+              return manifest.concat(file.name);
+            }
+          }),
+          new webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+            filename: 'common.js'
+          })
+        ]
+      }, {}, function(manifest) {
+        expect(manifest).toEqual(['common.js', 'vendor.js', 'main.js']);
+
+        done();
+      });
+    });
+
     it('works with hashes in the filename', function(done) {
       webpackCompile({
         context: __dirname,
@@ -562,6 +588,35 @@ describe('ManifestPlugin', function() {
         expect(manifest).toEqual({
           'javascripts/main.js': 'javascripts/main.js'
         });
+
+        done();
+      });
+    });
+  });
+
+  describe('sort', function() {
+    it('should allow ordering of output', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          one: './fixtures/file.js',
+          two: './fixtures/file-two.js'
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: [],
+          sort: function(file, i) {
+            return 1;
+          },
+          reduce: function (manifest, file) {
+            return manifest.concat(file.name);
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual(['two.js', 'one.js']);
 
         done();
       });

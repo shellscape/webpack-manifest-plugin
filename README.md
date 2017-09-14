@@ -98,6 +98,12 @@ Type: `function`
 
 Modify files details before the manifest is created. [more details](#hooks-options)
 
+### `sort`
+
+Type: `function`<br>
+Default: in dependency order
+
+Sort files before they are passed to reduce. [more details](#hooks-options)
 
 ### `options.reduce`
 
@@ -109,7 +115,7 @@ Create the manifest. It can return anything as long as it's serialisable by `JSO
 
 ## Hooks Options
 
-`filter`, `map`, `reduce` takes as an input an Object with the following properties:
+`filter`, `map`, `sort`, `reduce` takes as an input an Object with the following properties:
 
 ### `path`
 
