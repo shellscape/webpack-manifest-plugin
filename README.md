@@ -70,13 +70,6 @@ Type: `String`
 A path prefix for all keys. Useful for including your output path in the manifest.
 
 
-### `options.stripSrc`
-
-Type: `String`, `RegExp`
-
-Removes unwanted strings from source filenames.
-
-
 ### `options.writeToFileEmit`
 
 Type: `Boolean`<br>
