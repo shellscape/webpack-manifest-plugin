@@ -103,6 +103,72 @@ describe('ManifestPlugin using real fs', function() {
       });
     });
   });
+
+  describe('set location of manifest', function() {
+    describe('using relative path', function() {
+      beforeEach(function() {
+        rimraf.sync(path.join(__dirname, 'output/relative-manifest'));
+      });
+
+      it('should use output to the correct location', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js',
+          output: {
+            path: path.join(__dirname, 'output/relative-manifest'),
+            filename: '[name].js'
+          },
+          plugins: [
+            new ManifestPlugin({
+              fileName: 'webpack.manifest.js',
+            })
+          ]
+        }, {}, function(manifest, stats, fs) {
+          var manifestPath = path.join(__dirname, 'output/relative-manifest', 'webpack.manifest.js');
+
+          var manifest = JSON.parse(fse.readFileSync(manifestPath).toString());
+
+          expect(manifest).toEqual({
+            'main.js': 'main.js'
+          });
+
+          done();
+        });
+      });
+    });
+
+    describe('using absolute path', function() {
+      beforeEach(function() {
+        rimraf.sync(path.join(__dirname, 'output/absolute-manifest'));
+      });
+
+      it('should use output to the correct location', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js',
+          output: {
+            path: path.join(__dirname, 'output/absolute-manifest'),
+            filename: '[name].js'
+          },
+          plugins: [
+            new ManifestPlugin({
+              fileName: path.join(__dirname, 'output/absolute-manifest', 'webpack.manifest.js')
+            })
+          ]
+        }, {}, function(manifest, stats, fs) {
+          var manifestPath = path.join(__dirname, 'output/absolute-manifest', 'webpack.manifest.js');
+
+          var manifest = JSON.parse(fse.readFileSync(manifestPath).toString());
+
+          expect(manifest).toEqual({
+            'main.js': 'main.js'
+          });
+
+          done();
+        });
+      });
+    });
+  });
 });
 
 describe('ManifestPlugin with memory-fs', function() {
