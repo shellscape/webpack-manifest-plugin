@@ -448,7 +448,7 @@ describe('ManifestPlugin', function() {
 
   describe('set location of manifest', function() {
     describe('using relative path', function() {
-      it('should ', function(done) {
+      it('should use output to the correct location', function(done) {
         webpackCompile({
           context: __dirname,
           entry: './fixtures/file.js'
@@ -472,7 +472,7 @@ describe('ManifestPlugin', function() {
     });
 
     describe('using absolute path', function() {
-      it('should ', function(done) {
+      it('should use output to the correct location', function(done) {
         webpackCompile({
           context: __dirname,
           entry: './fixtures/file.js'
