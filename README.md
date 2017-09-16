@@ -99,12 +99,12 @@ Type: `function`
 Modify files details before the manifest is created. [more details](#hooks-options)
 
 
-### `options.reduce`
+### `options.generate`
 
 Type: `function`<br>
-Default: `(manifest, {name, path}) => ({...manifest, [name]: path})`
+Default: `(seed, files) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
-Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. Use the `seed` options to populate `manifest`. [more details](#hooks-options)
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [more details](#hooks-options)
 
 
 ## Hooks Options
