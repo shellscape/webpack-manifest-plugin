@@ -3,6 +3,8 @@
 
 Webpack plugin for generating an asset manifest.
 
+> NOTE: The following is related to the next major version of `weboack-manifest-plugin`, please check https://github.com/danethurber/webpack-manifest-plugin/blob/1.x/README.md for `v1` documentation
+
 ## Install
 
 ```bash
