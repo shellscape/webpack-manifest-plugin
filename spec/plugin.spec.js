@@ -568,7 +568,7 @@ describe('ManifestPlugin', function() {
     });
   });
 
-  describe('reduce', function() {
+  describe('generate', function() {
     it('should generate custom manifest', function(done) {
       webpackCompile({
         context: __dirname,
@@ -578,12 +578,14 @@ describe('ManifestPlugin', function() {
         }
       }, {
         manifestOptions: {
-          reduce: function (manifest, file) {
-            manifest[file.name] = {
-              file: file.path,
-              hash: file.chunk.hash
-            };
-            return manifest;
+          generate: function(seed, files) {
+            return files.reduce(function(manifest, file) {
+              manifest[file.name] = {
+                file: file.path,
+                hash: file.chunk.hash
+              };
+              return manifest;
+            }, seed);
           }
         }
       }, function(manifest, stats) {
@@ -610,11 +612,11 @@ describe('ManifestPlugin', function() {
           seed: {
             key: 'value'
           },
-          reduce: function (manifest, file) {
-            expect(manifest).toEqual({
+          generate: function (seed) {
+            expect(seed).toEqual({
               key: 'value'
             });
-            return manifest;
+            return seed;
           }
         }
       }, function(manifest, stats) {
@@ -636,11 +638,13 @@ describe('ManifestPlugin', function() {
       }, {
         manifestOptions: {
           seed: [],
-          reduce: function (manifest, file) {
-            return manifest.concat({
-              name: file.name,
-              file: file.path
-            });
+          generate: function (seed, files) {
+            return seed.concat(files.map(function(file) {
+              return {
+                name: file.name,
+                file: file.path
+              };
+            }));
           }
         }
       }, function(manifest, stats) {
