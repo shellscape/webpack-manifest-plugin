@@ -106,12 +106,14 @@ Modify files details before the manifest is created. [more details](#hooks-optio
 Type: `function`<br>
 Default: `(seed, files) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
+All entries in `files` correspond to the object structure described in the `Hooks Options` section.
+
 Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [more details](#hooks-options)
 
 
 ## Hooks Options
 
-`filter`, `map`, `reduce` takes as an input an Object with the following properties:
+`filter`, `map` take as an input an Object with the following properties:
 
 ### `path`
 
