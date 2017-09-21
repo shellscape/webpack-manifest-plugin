@@ -35,6 +35,10 @@ This will generate a `manifest.json` file in your root output directory with a m
 }
 ```
 
+## Examples
+
+[Topological Sort (sort by dependency graph)](/examples/topological-sort)
+
 
 ## API:
 

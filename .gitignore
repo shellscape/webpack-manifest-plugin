@@ -5,3 +5,5 @@ yarn.lock
 .nyc_output
 coverage
 spec/output/
+examples/**/*.out.js
+examples/**/manifest.json

@@ -24,6 +24,7 @@
     "nyc": "^10.3.2",
     "rimraf": "^2.6.1",
     "style-loader": "^0.8.3",
+    "toposort": "^1.0.3",
     "webpack": "^3.5.2"
   },
   "files": [
