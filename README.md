@@ -51,7 +51,7 @@ module.exports = {
 }
 ```
 
-### `publicPath`
+### `options.publicPath`
 
 Type: `String`
 
