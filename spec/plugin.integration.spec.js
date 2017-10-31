@@ -65,6 +65,40 @@ describe('ManifestPlugin using real fs', function() {
       });
     });
 
+    it('still works when there are multiple instances of the plugin', function(done) {
+      webpackCompile({
+        context: __dirname,
+        output: {
+          filename: '[name].js',
+          path: path.join(__dirname, 'output/single-file')
+        },
+        entry: './fixtures/file.js',
+        plugins: [
+          new ManifestPlugin({fileName: 'manifest1.json'}),
+          new ManifestPlugin({fileName: 'manifest2.json'})
+        ]
+      }, {}, function(stats) {
+
+        expect(stats.compilation.assets['main.js'].emitted).toBe(true);
+        expect(stats.compilation.assets['manifest1.json'].emitted).toBe(true);
+        expect(stats.compilation.assets['manifest2.json'].emitted).toBe(true);
+
+        var manifest1 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest1.json')))
+        expect(manifest1).toBeDefined();
+        expect(manifest1).toEqual({
+          'main.js': 'main.js'
+        });
+
+        var manifest2 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest2.json')))
+        expect(manifest2).toBeDefined();
+        expect(manifest2).toEqual({
+          'main.js': 'main.js'
+        });
+
+        done();
+      });
+    });
+
     it('exposes a plugin hook with the manifest content', function (done) {
       function TestPlugin() {
         this.manifest = null;
