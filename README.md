@@ -93,12 +93,38 @@ Type: `function`
 
 Filter out files. [more details](#hooks-options)
 
+Use-case: Omit [dll-chunks] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/46)):
+```js
+  filter: ({chunk, file}) => {
+    return chunk.isInitial();
+  }
+```
+You can generate separated dll-chunk manifest with [DllPlugin]
 
-### `options.map`
+[dll-chunks]: https://webpack.js.org/guides/code-splitting/#dynamic-imports
+[DllPlugin]: https://webpack.js.org/plugins/dll-plugin/
+
+### `options.map`, `options.reduce`
 
 Type: `function`
 
 Modify files details before the manifest is created. [more details](#hooks-options)
+
+Use-case: Add hash information to manifest file for [SRI] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/35)):
+```js
+  map: ({chunk, file}) => {
+    return {
+      file,
+      hash: chunk.source.integrity
+    };
+  }
+
+  reduce: (manifest, {chunk, file}) => {
+    return manifest;
+  }
+```
+
+[SRI]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
 
 ### `options.sort`
 
@@ -116,7 +142,7 @@ All entries in `files` correspond to the object structure described in the `Hook
 Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [more details](#hooks-options)
 
 
-## Hooks Options
+## `emit` Hook Internal Options
 
 `filter`, `map`, `sort` takes as an input an Object with the following properties:
 
@@ -158,6 +184,7 @@ Type: `Boolean`
 
 Is required by a module. Cannot be `true` if `isAsset` is `false`.
 
+## `webpack-manifest-plugin-after-emit` Hook
 
 ## License
 
