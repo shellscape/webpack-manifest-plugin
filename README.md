@@ -183,6 +183,19 @@ Is required by a module. Cannot be `true` if `isAsset` is `false`.
 Hook allows other plugins to use the manifest.
 Look at [patch](https://github.com/danethurber/webpack-manifest-plugin/pull/76) and [spec](https://github.com/danethurber/webpack-manifest-plugin/blob/34257bc2da17c6f18ab64c4db938993d6143be47/spec/plugin.integration.spec.js#L68) for more details.
 
+There are some arguments:
+
+### manifest
+
+Type: `Object`
+
+Generated manifest.
+
+### next
+
+Type: `Function`
+
+Callback that is for continuing execution flow.
 
 ## License
 
