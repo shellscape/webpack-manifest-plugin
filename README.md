@@ -99,7 +99,7 @@ Filter out files. [more details](#hooks-options)
     return chunk.isInitial();
   }
 ```
-You can generate separated dll-chunk manifest with [DllPlugin]
+You can generate another manifest with dll-chunks using the [DllPlugin].
 
 [dll-chunks]: https://webpack.js.org/guides/code-splitting/#dynamic-imports
 [DllPlugin]: https://webpack.js.org/plugins/dll-plugin/
@@ -113,7 +113,7 @@ Modify files details before the manifest is created. [more details](#hooks-optio
 **Use-case**: Add hash information to manifest file for [SRI] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/35), [issue](https://github.com/danethurber/webpack-manifest-plugin/issues/55)):
 ```js
   map: ({chunk, file}) => ({ file, hash: chunk.source.integrity }),
-  generate: (seed, files) => files.reduce((manifest, {name, path}) => ...manifest), seed),
+  generate: (seed, files) => files.reduce((manifest, {name, path}) => manifest), seed),
 ```
 
 [SRI]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
