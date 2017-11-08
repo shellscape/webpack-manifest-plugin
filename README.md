@@ -99,7 +99,7 @@ Filter out files. [more details](#hooks-options)
     return chunk.isInitial();
   }
 ```
-You can generate another manifest with dll-chunks using the [DllPlugin].
+You can generate additional manifest-file with a dll-chunks only using the [DllPlugin].
 
 [dll-chunks]: https://webpack.js.org/guides/code-splitting/#dynamic-imports
 [DllPlugin]: https://webpack.js.org/plugins/dll-plugin/
