@@ -185,13 +185,13 @@ Look at [patch](https://github.com/danethurber/webpack-manifest-plugin/pull/76) 
 
 There are some arguments:
 
-### manifest
+### `manifest`
 
 Type: `Object`
 
 Generated manifest.
 
-### next
+### `next`
 
 Type: `Function`
 
