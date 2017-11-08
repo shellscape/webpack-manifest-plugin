@@ -93,7 +93,7 @@ Type: `function`
 
 Filter out files. [more details](#hooks-options)
 
-Use-case: Omit [dll-chunks] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/46)):
+**Use-case**:  Omit [dll-chunks] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/46)):
 ```js
   filter: ({chunk, file}) => {
     return chunk.isInitial();
@@ -104,24 +104,16 @@ You can generate separated dll-chunk manifest with [DllPlugin]
 [dll-chunks]: https://webpack.js.org/guides/code-splitting/#dynamic-imports
 [DllPlugin]: https://webpack.js.org/plugins/dll-plugin/
 
-### `options.map`, `options.reduce`
+### `options.map`
 
 Type: `function`
 
 Modify files details before the manifest is created. [more details](#hooks-options)
 
-Use-case: Add hash information to manifest file for [SRI] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/35)):
+**Use-case**: Add hash information to manifest file for [SRI] ([issue](https://github.com/danethurber/webpack-manifest-plugin/issues/35), [issue](https://github.com/danethurber/webpack-manifest-plugin/issues/55)):
 ```js
-  map: ({chunk, file}) => {
-    return {
-      file,
-      hash: chunk.source.integrity
-    };
-  }
-
-  reduce: (manifest, {chunk, file}) => {
-    return manifest;
-  }
+  map: ({chunk, file}) => ({ file, hash: chunk.source.integrity }),
+  generate: (seed, files) => files.reduce((manifest, {name, path}) => ...manifest), seed),
 ```
 
 [SRI]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
@@ -137,12 +129,14 @@ Sort files before they are passed to `generate`. [more details](#hooks-options)
 Type: `function`<br>
 Default: `(seed, files) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
-All entries in `files` correspond to the object structure described in the `Hooks Options` section.
+All entries in `files` correspond to the object structure described in the `emit Hook Options` section.
 
 Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [more details](#hooks-options)
 
+**Use-case**: topological sort ([example](https://github.com/danethurber/webpack-manifest-plugin/pull/93))
 
-## `emit` Hook Internal Options
+
+## `emit` Hook Options
 
 `filter`, `map`, `sort` takes as an input an Object with the following properties:
 
@@ -185,6 +179,10 @@ Type: `Boolean`
 Is required by a module. Cannot be `true` if `isAsset` is `false`.
 
 ## `webpack-manifest-plugin-after-emit` Hook
+
+Hook allows other plugins to use the manifest.
+Look at [patch](https://github.com/danethurber/webpack-manifest-plugin/pull/76) and [spec](https://github.com/danethurber/webpack-manifest-plugin/blob/34257bc2da17c6f18ab64c4db938993d6143be47/spec/plugin.integration.spec.js#L68) for more details.
+
 
 ## License
 
