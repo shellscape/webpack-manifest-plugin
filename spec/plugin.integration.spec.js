@@ -54,7 +54,7 @@ describe('ManifestPlugin using real fs', function() {
           new ManifestPlugin()
         ]
       }, {}, function() {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest.json')))
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest.webmanifest')))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -124,7 +124,7 @@ describe('ManifestPlugin using real fs', function() {
           new webpack.HotModuleReplacementPlugin()
         ]
       }, {}, function(stats) {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/watch-mode/manifest.json')))
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/watch-mode/manifest.webmanifest')))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -170,13 +170,13 @@ describe('ManifestPlugin using real fs', function() {
             var compiler = this;
 
             compiler.plugin('after-emit', function(compilation, cb) {
-              JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')));
+              JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.webmanifest')));
               cb();
             });
           }
         ]
       })), {}, function() {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')))
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.webmanifest')))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual(Array.from({length: nbCompiler}).reduce((manifest, x, i) => {
@@ -279,7 +279,7 @@ describe('ManifestPlugin with memory-fs', function() {
       }, {
         outputFileSystem: new MemoryFileSystem()
       }, function() {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/emit/manifest.json')))
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/emit/manifest.webmanifest')))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
