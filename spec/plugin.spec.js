@@ -8,7 +8,7 @@ var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
-var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
+var manifestPath = path.join(OUTPUT_DIR, 'manifest.webmanifest');
 
 function webpackConfig (webpackOpts, opts) {
   return _.merge({
@@ -360,7 +360,7 @@ describe('ManifestPlugin', function() {
           'main.js': 'main.js'
         });
 
-        expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
+        expect(JSON.parse(stats.compilation.assets['manifest.webmanifest'].source())).toEqual({
           'main.js': 'main.js'
         });
 

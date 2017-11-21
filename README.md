@@ -26,7 +26,7 @@ module.exports = {
 };
 ```
 
-This will generate a `manifest.json` file in your root output directory with a mapping of all source file names to their corresponding output file, for example:
+This will generate a `manifest.webmanifest` file in your root output directory with a mapping of all source file names to their corresponding output file, for example:
 
 ```json
 {
@@ -60,7 +60,7 @@ A path prefix that will be added to values of the manifest.
 ### `options.fileName`
 
 Type: `String`<br>
-Default: `manifest.json`
+Default: `manifest.webmanifest`
 
 The manifest filename in your output directory.
 
@@ -85,7 +85,7 @@ If set to `true` will emit to build folder and memory in combination with `webpa
 Type: `Object`<br>
 Default: `{}`
 
-A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
+A cache of key/value pairs to used to seed the manifest. This may include a set of [custom key/value](https://developer.mozilla.org/en-US/docs/Web/Manifest) pairs to include in your manifest, or may be used to combine manifests across compilations in [multi-compiler mode](https://github.com/webpack/webpack/tree/master/examples/multi-compiler). To combine manifests, pass a shared seed object to each compiler's ManifestPlugin instance.
 
 ### `options.filter`
 
