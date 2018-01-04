@@ -1,7 +1,8 @@
 var fse = require('fs-extra');
 var path = require('path');
 
-var _ = require('lodash');
+var assign = require('lodash.assign');
+var merge = require('lodash.merge');
 var webpack = require('webpack');
 var MemoryFileSystem = require('memory-fs');
 var rimraf = require('rimraf');
@@ -13,7 +14,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
 var isCI = (yes, no) => process.env.CI === 'true' ? yes : no;
 
 function webpackConfig(webpackOpts, opts) {
-  return _.merge({
+  return merge({
     plugins: [
       new ManifestPlugin(opts.manifestOptions)
     ]
@@ -23,7 +24,7 @@ function webpackConfig(webpackOpts, opts) {
 function webpackCompile(config, compilerOps, cb) {
   var compiler = webpack(config);
 
-  _.assign(compiler, compilerOps);
+  assign(compiler, compilerOps);
 
   compiler.watch({
     aggregateTimeout: 300,
