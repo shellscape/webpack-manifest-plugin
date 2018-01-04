@@ -20,6 +20,7 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.9.0",
     "jasmine": "^2.2.1",
+    "lodash.merge": "^4.6.0",
     "memory-fs": "^0.2.0",
     "nyc": "^10.3.2",
     "rimraf": "^2.6.1",
