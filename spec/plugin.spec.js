@@ -2,7 +2,7 @@ var path = require('path');
 
 var MemoryFileSystem = require('memory-fs');
 var webpack = require('webpack');
-var _ = require('lodash');
+var merge = require('lodash.merge');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
@@ -11,7 +11,7 @@ var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
 function webpackConfig (webpackOpts, opts) {
-  return _.merge({
+  return merge({
     output: {
       path: OUTPUT_DIR,
       filename: '[name].js'
