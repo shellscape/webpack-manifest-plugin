@@ -79,6 +79,14 @@ Default: `false`
 
 If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
 
+### `options.entryNameKeys`
+
+Type: `Boolean`<br>
+Default: `false`
+
+If set to `true` the exact names of your entries defined in your webpack config will be used as keys in the manifest.
+I.e. no file extension is added to the keys.
+
 
 ### `options.seed`
 
