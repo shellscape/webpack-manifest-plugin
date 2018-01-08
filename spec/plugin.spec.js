@@ -714,6 +714,32 @@ describe('ManifestPlugin', function() {
     });
   });
 
+  it('should not use the entry name (exclude extension) if is a sourcemap', function(done) {
+    webpackCompile({
+      context: __dirname,
+      entry: {
+        main: './fixtures/file.js'
+      },
+      output: {
+        filename: '[name].js'
+      },
+      devtool: 'source-map'
+    }, {
+      manifestOptions: {
+        entryNameKeys: true
+      }
+    }, function(manifest, stats) {
+      expect(manifest).toEqual(
+        {
+          main: 'main.js',
+          'main.js.map': 'main.js.map'
+        }
+      );
+
+      done();
+    });
+  });
+
   describe('with CopyWebpackPlugin', function () {
     it('works when including copied assets', function (done) {
       webpackCompile({
