@@ -690,6 +690,30 @@ describe('ManifestPlugin', function() {
     });
   });
 
+  it('should output the entry name defined in the config', function(done) {
+    webpackCompile({
+      context: __dirname,
+      entry: {
+        main: './fixtures/file.js'
+      },
+      output: {
+        filename: '[name].js'
+      }
+    }, {
+      manifestOptions: {
+        entryNameKeys: true
+      }
+    }, function(manifest, stats) {
+      expect(manifest).toEqual(
+        {
+          main: 'main.js'
+        }
+      );
+
+      done();
+    });
+  });
+
   describe('with CopyWebpackPlugin', function () {
     it('works when including copied assets', function (done) {
       webpackCompile({
