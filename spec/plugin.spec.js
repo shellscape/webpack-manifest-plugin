@@ -759,5 +759,34 @@ describe('ManifestPlugin', function() {
         done();
       });
     });
+
+    describe('using relative path', function() {
+      it('should use output to the correct location', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js'
+        }, {
+          manifestOptions: {
+            fileName: 'webpack.manifest.yml',
+            outputFormatter: function(manifest) {
+              var output = '';
+              for (var key in manifest) {
+                output += '- ' + key + ': "' + manifest[key] + '"\n';
+              }
+              return output;
+            },
+          }
+        }, function(manifest, stats, fs) {
+          var OUTPUT_DIR = path.join(__dirname, './webpack-out');
+          var manifestPath = path.join(OUTPUT_DIR, 'webpack.manifest.yml');
+
+          var manifest =fs.readFileSync(manifestPath).toString();
+
+          expect(manifest).toEqual('- main.js: "main.js"\n');
+
+          done();
+        });
+      });
+    });
   });
 });
