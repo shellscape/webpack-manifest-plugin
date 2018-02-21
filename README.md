@@ -115,7 +115,7 @@ All entries in `files` correspond to the object structure described in the `Hook
 
 Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [more details](#hooks-options)
 
-### `options.outputFormatter`
+### `options.serialize`
 
 Type: `function`<br>
 Default: `(manifest) => JSON.stringify(manifest, null, 2)`
