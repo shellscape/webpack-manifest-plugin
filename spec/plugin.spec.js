@@ -10,6 +10,8 @@ var plugin = require('../index.js');
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
+const isWebpack4 = (yes, no) => webpack.version && webpack.version.slice(0, 1) === '4' ? yes : no;
+
 function webpackConfig (webpackOpts, opts) {
   return _.merge({
     output: {
@@ -315,11 +317,21 @@ describe('ManifestPlugin', function() {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.txt',
-        module: {
+        module: isWebpack4({
+          rules: [{
+            test: /\.(txt)/,
+            use: [{
+              loader: 'file-loader',
+              options: {
+                name: '[name].[ext]'
+              }
+            }]
+          }]
+        }, {
           loaders: [
             { test: /\.(txt)/, loader: 'file-loader?name=file.[ext]' },
           ]
-        }
+        })
       }, {}, function(manifest, stats) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -335,11 +347,21 @@ describe('ManifestPlugin', function() {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.txt',
-        module: {
+        module: isWebpack4({
+          rules: [{
+            test: /\.(txt)/,
+            use: [{
+              loader: 'file-loader',
+              options: {
+                name: 'outputfile.[ext]'
+              }
+            }]
+          }]
+        }, {
           loaders: [
             { test: /\.(txt)/, loader: 'file-loader?name=outputfile.[ext]' },
           ]
-        }
+        })
       }, {}, function(manifest, stats) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -400,7 +422,15 @@ describe('ManifestPlugin', function() {
         output: {
           filename: '[name].js'
         },
-        module: {
+        module: isWebpack4({
+          rules: [{
+            test: /\.css$/,
+            use: ExtractTextPlugin.extract({
+              fallback: 'style-loader',
+              use: 'css-loader'
+            })
+          }]
+        }, {
           loaders: [{
             test: /\.css$/,
             loader: ExtractTextPlugin.extract({
@@ -408,7 +438,7 @@ describe('ManifestPlugin', function() {
               use: 'css-loader'
             })
           }]
-        },
+        }),
         plugins: [
           new plugin(),
           new ExtractTextPlugin({

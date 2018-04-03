@@ -2,7 +2,7 @@ function FakeCopyWebpackPlugin() {
 };
 
 FakeCopyWebpackPlugin.prototype.apply = function (compiler) {
-  compiler.plugin('emit', function (compilation, callback) {
+  const emit = function (compilation, callback) {
 
     var compiledMock = '// some compilation result\n';
     compilation.assets['third.party.js'] = {
@@ -15,7 +15,13 @@ FakeCopyWebpackPlugin.prototype.apply = function (compiler) {
     };
 
     callback();
-  });
+  };
+
+  if (compiler.hooks) {
+    compiler.hooks.emit.tapAsync('FakeCopyWebpackPlugin', emit)
+  } else {
+    compiler.plugin('emit', emit);
+  }
 };
 
 module.exports = FakeCopyWebpackPlugin;
