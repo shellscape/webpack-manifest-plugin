@@ -10,7 +10,7 @@ var ManifestPlugin = require('../index.js');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
 
-var isCI = (yes, no) => process.env.CI === 'true' ? yes : no;
+const isWebpack4 = (yes, no) => webpack.version && webpack.version.slice(0, 1) === '4' ? yes : no;
 
 function webpackConfig(webpackOpts, opts) {
   return _.merge({
@@ -25,7 +25,7 @@ function webpackCompile(config, compilerOps, cb) {
 
   _.assign(compiler, compilerOps);
 
-  compiler.watch({
+  return compiler.watch({
     aggregateTimeout: 300,
     poll: true
   }, function(err, stats){
@@ -104,13 +104,18 @@ describe('ManifestPlugin using real fs', function() {
         this.manifest = null;
       }
       TestPlugin.prototype.apply = function (compiler) {
-        var self = this;
-        compiler.plugin('compilation', function (compilation) {
-          compilation.plugin('webpack-manifest-plugin-after-emit', function (manifest, callback) {
-            self.manifest = manifest;
-            callback();
+        if (compiler.hooks) {
+          compiler.hooks.webpackManifestPluginAfterEmit.tap('ManifestPlugin', (manifest) => {
+            this.manifest = manifest;
+          })
+        } else {
+          compiler.plugin('compilation', (compilation) => {
+            compilation.plugin('webpack-manifest-plugin-after-emit', (manifest, callback) => {
+              this.manifest = manifest;
+              callback();
+            });
           });
-        });
+        }
       };
 
       var testPlugin = new TestPlugin();
@@ -145,7 +150,7 @@ describe('ManifestPlugin using real fs', function() {
     });
 
     it('outputs a manifest of one file', function(done) {
-      webpackCompile({
+      const compiler = webpackCompile({
         context: __dirname,
         output: {
           filename: '[name].[hash].js',
@@ -169,6 +174,7 @@ describe('ManifestPlugin using real fs', function() {
 
         if (hashes.length === 2) {
           expect(hashes[0]).not.toEqual(hashes[1]);
+          compiler.close()
           return done();
         }
 
@@ -178,7 +184,7 @@ describe('ManifestPlugin using real fs', function() {
   });
 
   describe('multiple compilation', function() {
-    var nbCompiler = isCI(4000, 1000);
+    var nbCompiler = 10;
     var originalTimeout;
     beforeEach(function() {
       rimraf.sync(path.join(__dirname, 'output/multiple-compilation'));
@@ -199,15 +205,7 @@ describe('ManifestPlugin using real fs', function() {
         plugins: [
           new ManifestPlugin({
             seed
-          }),
-          function () {
-            var compiler = this;
-
-            compiler.plugin('after-emit', function(compilation, cb) {
-              JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')));
-              cb();
-            });
-          }
+          })
         ]
       })), {}, function() {
         var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')))
