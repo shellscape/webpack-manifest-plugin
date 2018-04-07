@@ -10,7 +10,6 @@ var ManifestPlugin = require('../index.js');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
 
-var isCI = (yes, no) => process.env.CI === 'true' ? yes : no;
 const isWebpack4 = (yes, no) => webpack.version && webpack.version.slice(0, 1) === '4' ? yes : no;
 
 function webpackConfig(webpackOpts, opts) {
@@ -185,7 +184,7 @@ describe('ManifestPlugin using real fs', function() {
   });
 
   describe('multiple compilation', function() {
-    var nbCompiler = isCI(4000, 1000);
+    var nbCompiler = 10;
     var originalTimeout;
     beforeEach(function() {
       rimraf.sync(path.join(__dirname, 'output/multiple-compilation'));
