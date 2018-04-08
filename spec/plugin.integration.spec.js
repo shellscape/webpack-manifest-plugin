@@ -230,10 +230,13 @@ describe('ManifestPlugin using real fs', function() {
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
         } else {
-          expect(manifest).toEqual({
+          expect(manifest).toEqual(isWebpack4({
+            'main.js': 'main.js',
+            '1.js': '1.js',
+          }, {
             'main.js': 'main.js',
             '3.js': '3.js',
-          });
+          }));
 
           done();
         }
