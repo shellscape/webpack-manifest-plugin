@@ -14,7 +14,7 @@ install:
   - npm install webpack@$WEBPACK_VERSION extract-text-webpack-plugin@$EXTRACT_PLUGIN_VERSION || true
 
 script:
-  - npm test;
+  - npm test
 
 after_script:
-  - './node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov'
+  - $(npm bin)/codecov
