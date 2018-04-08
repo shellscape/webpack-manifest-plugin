@@ -142,6 +142,7 @@ describe('ManifestPlugin using real fs', function() {
   });
 
   describe('watch mode', function() {
+    var compiler;
     var hashes;
 
     beforeAll(function () {
@@ -149,8 +150,12 @@ describe('ManifestPlugin using real fs', function() {
       hashes = [];
     });
 
+    afterAll(() => {
+      compiler.close()
+    })
+
     it('outputs a manifest of one file', function(done) {
-      const compiler = webpackCompile({
+      compiler = webpackCompile({
         context: __dirname,
         output: {
           filename: '[name].[hash].js',
@@ -174,11 +179,67 @@ describe('ManifestPlugin using real fs', function() {
 
         if (hashes.length === 2) {
           expect(hashes[0]).not.toEqual(hashes[1]);
-          compiler.close()
           return done();
         }
 
         fse.outputFileSync(path.join(__dirname, 'output/watch-mode/index.js'), 'console.log(\'v2\')');
+      });
+    });
+  });
+
+  describe('import() update', () => {
+    let compiler;
+    let isFirstRun;
+
+    beforeAll(() => {
+      fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/chunk1.js'), 'console.log(\'chunk 1\')');
+      fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/chunk2.js'), 'console.log(\'chunk 2\')');
+      fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')\nimport(\'./chunk2\')');
+      isFirstRun = true;
+    });
+
+    afterAll(() => {
+      compiler.close()
+    })
+
+    it('outputs a manifest of one file', function(done) {
+      compiler = webpackCompile({
+        context: __dirname,
+        output: {
+          filename: '[name].js',
+          path: path.join(__dirname, 'output/watch-import-chunk')
+        },
+        entry: './output/watch-import-chunk/index.js',
+        watch: true,
+        plugins: [
+          new ManifestPlugin(),
+          new webpack.HotModuleReplacementPlugin()
+        ]
+      }, {}, function(stats) {
+        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/watch-import-chunk/manifest.json')))
+
+        expect(manifest).toBeDefined();
+
+        if (isFirstRun) {
+          expect(manifest).toEqual({
+            'main.js': 'main.js',
+            '0.js': '0.js',
+            '1.js': '1.js'
+          });
+
+          isFirstRun = false;
+          fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
+        } else {
+          expect(manifest).toEqual(isWebpack4({
+            'main.js': 'main.js',
+            '1.js': '1.js',
+          }, {
+            'main.js': 'main.js',
+            '3.js': '3.js',
+          }));
+
+          done();
+        }
       });
     });
   });
