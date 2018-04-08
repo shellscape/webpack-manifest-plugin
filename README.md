@@ -51,12 +51,6 @@ module.exports = {
 }
 ```
 
-### `publicPath`
-
-Type: `String`
-
-A path prefix that will be added to values of the manifest.
-
 ### `options.fileName`
 
 Type: `String`<br>
@@ -64,6 +58,12 @@ Default: `manifest.json`
 
 The manifest filename in your output directory.
 
+### `options.publicPath`
+
+Type: `String`
+Default: `output.publicPath`
+
+A path prefix that will be added to values of the manifest.
 
 ### `options.basePath`
 

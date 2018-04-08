@@ -153,22 +153,47 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('prefixes paths with a public path', function(done) {
-      webpackCompile({
-        context: __dirname,
-        entry: {
-          one: './fixtures/file.js',
-        },
-        output: {
-          filename: '[name].[hash].js',
-          publicPath: '/app/'
-        }
-      }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'one.js': '/app/one.' + stats.hash + '.js'
-        });
+    describe('publicPath', () => {
+      it('prefixes paths with a public path', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: {
+            one: './fixtures/file.js',
+          },
+          output: {
+            filename: '[name].[hash].js',
+            publicPath: '/app/'
+          }
+        }, {}, function(manifest, stats) {
+          expect(manifest).toEqual({
+            'one.js': '/app/one.' + stats.hash + '.js'
+          });
 
-        done();
+          done();
+        });
+      });
+
+      it('is possible to overrides publicPath', (done) => {
+        webpackCompile({
+          context: __dirname,
+          entry: {
+            one: './fixtures/file.js',
+          },
+          output: {
+            filename: '[name].[hash].js',
+            publicPath: '/app/'
+          }
+        }, {
+          manifestOptions: {
+            publicPath: '',
+          }
+        }, function(manifest, stats) {
+          expect(manifest).toEqual({
+            'one.js': 'one.' + stats.hash + '.js'
+          });
+
+          done();
+        });
       });
     });
 
