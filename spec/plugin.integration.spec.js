@@ -283,6 +283,58 @@ describe('ManifestPlugin using real fs', function() {
     });
   });
 
+  describe('multiple manifest', function() {
+    var nbCompiler = 10;
+    var originalTimeout;
+    beforeEach(function() {
+      rimraf.sync(path.join(__dirname, 'output/multiple-manifest'));
+    });
+
+    it('should produce two seperate manifests', function(done) {
+      webpackCompile([
+        {
+          context: __dirname,
+          output: {
+            filename: '[name].js',
+            path: path.join(__dirname, 'output/multiple-manifest/1')
+          },
+          entry: {
+            main: './fixtures/file.js'
+          },
+          plugins: [
+            new ManifestPlugin(),
+          ]
+        }, {
+          context: __dirname,
+          output: {
+            filename: '[name].js',
+            path: path.join(__dirname, 'output/multiple-manifest/2')
+          },
+          entry: {
+            main: './fixtures/file.js'
+          },
+          plugins: [
+            new ManifestPlugin()
+          ]
+      }], {}, function() {
+        var manifest1 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-manifest/1/manifest.json')));
+        var manifest2 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-manifest/2/manifest.json')));
+
+        expect(manifest1).toBeDefined();
+        expect(manifest1).toEqual({
+          'main.js': 'main.js'
+        });
+
+        expect(manifest2).toBeDefined();
+        expect(manifest2).toEqual({
+          'main.js': 'main.js'
+        });
+
+        done();
+      });
+    });
+  });
+
   describe('set location of manifest', function() {
     describe('using relative path', function() {
       beforeEach(function() {
