@@ -71,6 +71,12 @@ Type: `String`
 
 A path prefix for all keys. Useful for including your output path in the manifest.
 
+### `options.outputPath`
+
+Type: `String`
+Default: `output.path`
+
+Overwrites the default manifest output directory.
 
 ### `options.writeToFileEmit`
 
