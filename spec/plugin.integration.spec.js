@@ -438,26 +438,23 @@ describe('ManifestPlugin with memory-fs', function() {
 });
 
 describe('scoped hoisting', function() {
-  var compiler;
-  var hashes;
-
   beforeAll(function () {
     fse.outputFileSync(path.join(__dirname, 'output/scoped-hoisting/index.js'), 'import { ReactComponent } from "./logo.svg";');
     fse.outputFileSync(path.join(__dirname, 'output/scoped-hoisting/logo.svg'), '<svg />');
-
-    hashes = [];
   });
 
-  afterAll(() => {
-    compiler.close()
-  })
-
   it('outputs a manifest', function(done) {
-    const plugins = [
-      new ManifestPlugin(),
-    ];
-    if (webpack.optimize.ModuleConcatenationPlugin) {
-      plugins.unshift(new webpack.optimize.ModuleConcatenationPlugin());
+    let plugins;
+    if (webpack.version && webpack.version.slice(0, 1) === '2') {
+      plugins = [
+        new ManifestPlugin(),
+      ];
+    } else {
+      // ModuleConcatenationPlugin works with webpack 3, 4.
+      plugins = [
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new ManifestPlugin(),
+      ];
     }
     compiler = webpackCompile({
       context: __dirname,
