@@ -22,8 +22,10 @@
     "file-loader": "^1.1.11",
     "jest": "^22.4.3",
     "memory-fs": "^0.2.0",
+    "react": "^16.3.2",
     "rimraf": "^2.6.1",
     "style-loader": "^0.8.3",
+    "svgr": "^1.9.2",
     "webpack": "^3.5.2"
   },
   "files": [
