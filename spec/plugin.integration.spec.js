@@ -445,14 +445,14 @@ describe('scoped hoisting', function() {
 
   it('outputs a manifest', function(done) {
     let plugins;
-    if (webpack.version && webpack.version.slice(0, 1) === '2') {
-      plugins = [
-        new ManifestPlugin(),
-      ];
-    } else {
+    if (webpack.optimize.ModuleConcatenationPlugin) {
       // ModuleConcatenationPlugin works with webpack 3, 4.
       plugins = [
         new webpack.optimize.ModuleConcatenationPlugin(),
+        new ManifestPlugin(),
+      ];
+    } else {
+      plugins = [
         new ManifestPlugin(),
       ];
     }
