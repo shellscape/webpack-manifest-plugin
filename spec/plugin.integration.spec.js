@@ -453,6 +453,12 @@ describe('scoped hoisting', function() {
   })
 
   it('outputs a manifest', function(done) {
+    const plugins = [
+      new ManifestPlugin(),
+    ];
+    if (webpack.optimize.ModuleConcatenationPlugin) {
+      plugins.unshift(new webpack.optimize.ModuleConcatenationPlugin());
+    }
     compiler = webpackCompile({
       context: __dirname,
       entry: './output/scoped-hoisting/index.js',
@@ -468,10 +474,7 @@ describe('scoped hoisting', function() {
         filename: '[name].[hash].js',
         path: path.join(__dirname, 'output/scoped-hoisting')
       },
-      plugins: [
-        new webpack.optimize.ModuleConcatenationPlugin(),
-        new ManifestPlugin(),
-      ]
+      plugins,
     }, {}, function(stats) {
       var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/scoped-hoisting/manifest.json')))
 
