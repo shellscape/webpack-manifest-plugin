@@ -5,3 +5,4 @@ yarn.lock
 .nyc_output
 coverage
 spec/output/
+package-lock.json
