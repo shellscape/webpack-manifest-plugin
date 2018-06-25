@@ -653,6 +653,33 @@ describe('ManifestPlugin', function() {
     });
   });
 
+  describe('sort default', function() {
+    it('should order output alphabetically', function(done) {
+      webpackCompile({
+        context: __dirname,
+        entry: {
+          two: './fixtures/file-two.js',
+          one: './fixtures/file.js'
+        },
+        output: {
+          filename: '[name].js'
+        }
+      }, {
+        manifestOptions: {
+          seed: [],
+          sort: true,
+          generate: function (seed, files) {
+            return files.map(file => file.name);
+          }
+        }
+      }, function(manifest, stats) {
+        expect(manifest).toEqual(['one.js', 'two.js']);
+
+        done();
+      });
+    });
+  });
+
   describe('generate', function() {
     it('should generate custom manifest', function(done) {
       webpackCompile({

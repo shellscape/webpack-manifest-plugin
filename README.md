@@ -102,9 +102,10 @@ Modify files details before the manifest is created. [more details](#hooks-optio
 
 ### `options.sort`
 
-Type: `function`
+Type: `function`, `Boolean`<br>
+Default: false
 
-Sort files before they are passed to `generate`. [more details](#hooks-options)
+Sort files before they are passed to `generate`. Function with 2 arguments or `true` for default [Array.sort()](https://developer.mozilla.org/pl/docs/Web/JavaScript/Referencje/Obiekty/Array/sort). [more details](#hooks-options)
 
 ### `options.generate`
 
