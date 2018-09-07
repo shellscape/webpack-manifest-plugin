@@ -221,11 +221,15 @@ describe('ManifestPlugin using real fs', function() {
         expect(manifest).toBeDefined();
 
         if (isFirstRun) {
-          expect(manifest).toEqual({
+          expect(manifest).toEqual(isWebpack4({
+            'main.js': 'main.js',
+            '1.js': '1.js',
+            '2.js': '2.js'
+          }, {
             'main.js': 'main.js',
             '0.js': '0.js',
             '1.js': '1.js'
-          });
+          }));
 
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
