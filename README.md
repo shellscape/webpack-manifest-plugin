@@ -91,27 +91,27 @@ A cache of key/value pairs to used to seed the manifest. This may include a set 
 
 Type: `Function(FileDescriptor): Boolean`
 
-Filter out files. [FileDescriptor typings](#FileDescriptor)
+Filter out files. [FileDescriptor typings](#filedescriptor)
 
 
 ### `options.map`
 
 Type: `Function(FileDescriptor): FileDescriptor`
 
-Modify files details before the manifest is created. [FileDescriptor typings](#FileDescriptor)
+Modify files details before the manifest is created. [FileDescriptor typings](#filedescriptor)
 
 ### `options.sort`
 
 Type: `Function(FileDescriptor): number`
 
-Sort files before they are passed to `generate`. [FileDescriptor typings](#FileDescriptor)
+Sort files before they are passed to `generate`. [FileDescriptor typings](#filedescriptor)
 
 ### `options.generate`
 
 Type: `Function(Object, FileDescriptor): Object`<br>
 Default: `(seed, files) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
-Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [FileDescriptor typings](#FileDescriptor)
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [FileDescriptor typings](#filedescriptor)
 
 ### `options.serialize`
 
