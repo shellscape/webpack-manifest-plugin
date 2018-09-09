@@ -54,7 +54,7 @@ describe('ManifestPlugin using real fs', function() {
           new ManifestPlugin()
         ]
       }, {}, function() {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest.json')))
+        var manifest = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest.json'))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -83,13 +83,13 @@ describe('ManifestPlugin using real fs', function() {
         expect(stats.compilation.assets['manifest1.json'].emitted).toBe(true);
         expect(stats.compilation.assets['manifest2.json'].emitted).toBe(true);
 
-        var manifest1 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest1.json')))
+        var manifest1 = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest1.json'))
         expect(manifest1).toBeDefined();
         expect(manifest1).toEqual({
           'main.js': 'main.js'
         });
 
-        var manifest2 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/single-file/manifest2.json')))
+        var manifest2 = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest2.json'))
         expect(manifest2).toBeDefined();
         expect(manifest2).toEqual({
           'main.js': 'main.js'
@@ -168,7 +168,7 @@ describe('ManifestPlugin using real fs', function() {
           new webpack.HotModuleReplacementPlugin()
         ]
       }, {}, function(stats) {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/watch-mode/manifest.json')))
+        var manifest = fse.readJsonSync(path.join(__dirname, 'output/watch-mode/manifest.json'))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -216,16 +216,20 @@ describe('ManifestPlugin using real fs', function() {
           new webpack.HotModuleReplacementPlugin()
         ]
       }, {}, function(stats) {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/watch-import-chunk/manifest.json')))
+        var manifest = fse.readJsonSync(path.join(__dirname, 'output/watch-import-chunk/manifest.json'))
 
         expect(manifest).toBeDefined();
 
         if (isFirstRun) {
-          expect(manifest).toEqual({
+          expect(manifest).toEqual(isWebpack4({
+            'main.js': 'main.js',
+            '1.js': '1.js',
+            '2.js': '2.js'
+          }, {
             'main.js': 'main.js',
             '0.js': '0.js',
             '1.js': '1.js'
-          });
+          }));
 
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
@@ -269,7 +273,7 @@ describe('ManifestPlugin using real fs', function() {
           })
         ]
       })), {}, function() {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-compilation/manifest.json')))
+        var manifest = fse.readJsonSync(path.join(__dirname, 'output/multiple-compilation/manifest.json'))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual(Array.from({length: nbCompiler}).reduce((manifest, x, i) => {
@@ -317,8 +321,8 @@ describe('ManifestPlugin using real fs', function() {
             new ManifestPlugin()
           ]
       }], {}, function() {
-        var manifest1 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-manifest/1/manifest.json')));
-        var manifest2 = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/multiple-manifest/2/manifest.json')));
+        var manifest1 = fse.readJsonSync(path.join(__dirname, 'output/multiple-manifest/1/manifest.json'));
+        var manifest2 = fse.readJsonSync(path.join(__dirname, 'output/multiple-manifest/2/manifest.json'));
 
         expect(manifest1).toBeDefined();
         expect(manifest1).toEqual({
@@ -357,7 +361,7 @@ describe('ManifestPlugin using real fs', function() {
         }, {}, function(manifest, stats, fs) {
           var manifestPath = path.join(__dirname, 'output/relative-manifest', 'webpack.manifest.js');
 
-          var manifest = JSON.parse(fse.readFileSync(manifestPath).toString());
+          var manifest = fse.readJsonSync(manifestPath);
 
           expect(manifest).toEqual({
             'main.js': 'main.js'
@@ -389,7 +393,7 @@ describe('ManifestPlugin using real fs', function() {
         }, {}, function(manifest, stats, fs) {
           var manifestPath = path.join(__dirname, 'output/absolute-manifest', 'webpack.manifest.js');
 
-          var manifest = JSON.parse(fse.readFileSync(manifestPath).toString());
+          var manifest = fse.readJsonSync(manifestPath);
 
           expect(manifest).toEqual({
             'main.js': 'main.js'
@@ -424,7 +428,7 @@ describe('ManifestPlugin with memory-fs', function() {
       }, {
         outputFileSystem: new MemoryFileSystem()
       }, function() {
-        var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/emit/manifest.json')))
+        var manifest = fse.readJsonSync(path.join(__dirname, 'output/emit/manifest.json'))
 
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -473,7 +477,7 @@ describe('scoped hoisting', function() {
       },
       plugins,
     }, {}, function(stats) {
-      var manifest = JSON.parse(fse.readFileSync(path.join(__dirname, 'output/scoped-hoisting/manifest.json')))
+      var manifest = fse.readJsonSync(path.join(__dirname, 'output/scoped-hoisting/manifest.json'))
 
       expect(manifest).toBeDefined();
       expect(manifest['main.js']).toEqual('main.'+ stats.hash +'.js');
