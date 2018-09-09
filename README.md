@@ -89,74 +89,62 @@ A cache of key/value pairs to used to seed the manifest. This may include a set 
 
 ### `options.filter`
 
-Type: `function`
+Type: `Function(FileDescriptor): Boolean`
 
-Filter out files. [more details](#hooks-options)
+Filter out files. [FileDescriptor typings](#FileDescriptor)
 
 
 ### `options.map`
 
-Type: `function`
+Type: `Function(FileDescriptor): FileDescriptor`
 
-Modify files details before the manifest is created. [more details](#hooks-options)
+Modify files details before the manifest is created. [FileDescriptor typings](#FileDescriptor)
 
 ### `options.sort`
 
-Type: `function`
+Type: `Function(FileDescriptor): number`
 
-Sort files before they are passed to `generate`. [more details](#hooks-options)
+Sort files before they are passed to `generate`. [FileDescriptor typings](#FileDescriptor)
 
 ### `options.generate`
 
-Type: `function`<br>
+Type: `Function(Object, FileDescriptor): Object`<br>
 Default: `(seed, files) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
-All entries in `files` correspond to the object structure described in the `Hooks Options` section.
-
-Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [more details](#hooks-options)
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [FileDescriptor typings](#FileDescriptor)
 
 ### `options.serialize`
 
-Type: `function`<br>
+Type: `Function(Object): string`<br>
 Default: `(manifest) => JSON.stringify(manifest, null, 2)`
 
 Output manifest file in different format then json (i.e. yaml).
 
-## Hooks Options
+## FileDescriptor
 
-`filter`, `map`, `sort` takes as an input an Object with the following properties:
-
-### `path`
-
-Type: `String`
-
+```ts
+FileDescriptor {
+  path: string;
+  name: string | null;
+  isInitial: boolean;
+  isChunk: boolean;
+  chunk?: Chunk;
+  isAsset: boolean;
+  isModuleAsset: boolean;
+}
+```
 
 ### `chunk`
 
 Type: [`Chunk`](https://github.com/webpack/webpack/blob/master/lib/Chunk.js)
 
-
-### `name`
-
-Type: `String`, `null`
-
-
-### `isChunk`
-
-Type: `Boolean`
-
+Only available is `isChunk` is `true`
 
 ### `isInitial`
 
 Type: `Boolean`
 
 Is required to run you app. Cannot be `true` if `isChunk` is `false`.
-
-
-### `isAsset`
-
-Type: `Boolean`
-
 
 ### `isModuleAsset`
 
