@@ -152,6 +152,33 @@ Type: `Boolean`
 
 Is required by a module. Cannot be `true` if `isAsset` is `false`.
 
+## Hooks
+
+#### `webpackManifestPluginBeforeEmit` hook
+
+```
+AsyncSeriesWaterfallHook<>
+```
+
+#### `webpackManifestPluginAfterEmit` hook
+
+```
+SyncWaterfallHook<>
+```
+
+Example usage:
+
+```js
+class MyPlugin {
+  apply(compiler) {
+    compiler.hooks.webpackManifestPluginBeforeEmit.tapAsync('MyPlugin', (manifest, cb) => {
+      // You can change the manifest content
+      cb(null, { ...manifest, name: 'hello' })
+    })
+  }
+}
+```
+
 
 ## License
 
