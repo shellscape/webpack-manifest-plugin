@@ -138,7 +138,7 @@ FileDescriptor {
 
 Type: [`Chunk`](https://github.com/webpack/webpack/blob/master/lib/Chunk.js)
 
-Only available is `isChunk` is `true`
+Only available if `isChunk` is `true`
 
 ### `isInitial`
 
