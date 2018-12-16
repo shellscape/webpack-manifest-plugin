@@ -108,7 +108,7 @@ Sort files before they are passed to `generate`. [FileDescriptor typings](#filed
 
 ### `options.generate`
 
-Type: `Function(Object, FileDescriptor): Object`<br>
+Type: `Function(Object, FileDescriptor[]): Object`<br>
 Default: `(seed, files) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
 Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [FileDescriptor typings](#filedescriptor)
