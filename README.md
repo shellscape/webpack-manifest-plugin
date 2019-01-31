@@ -79,6 +79,25 @@ Default: `false`
 
 If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
 
+### `options.groupByEntry`
+
+Type: `Boolean`<br>
+Default: `false`
+
+If set to `true` will group the manifest by entry. For example, an entry object of `app` and `store` with `optimization.splitChunks` enabled will produce:
+
+```json
+{
+  "app": {
+    "vendors~app.js": "/style/vendors~app.1234567890.js",
+    "app.js": "/style/app.0987654321.js"
+  },
+  "store": {
+    "vendors~app~store.js": "/style/vendors~app~store.1357913579.js",
+    "store.js": "/style/store.0246802468.js"
+  }
+}
+```
 
 ### `options.seed`
 
