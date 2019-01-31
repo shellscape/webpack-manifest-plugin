@@ -842,4 +842,27 @@ describe('ManifestPlugin', function() {
       });
     });
   });
+
+  it('can group the files by entry', function(done) {
+    webpackCompile({
+      context: __dirname,
+      entry: {
+        one: './fixtures/file.js',
+        two: './fixtures/file-two.js'
+      },
+      output: {
+        filename: '[name].[hash].js'
+      }
+    }, {
+      manifestOptions: {
+        groupByEntry: true
+      }
+    }, function(manifest) {
+      expect(manifest.one).toBeDefined();
+      expect(manifest.one['one.js']).toMatch(/^one\.\w+\.js$/);
+      expect(manifest.two['two.js']).toMatch(/^two\.\w+\.js$/);
+
+      done();
+    });
+  });
 });
