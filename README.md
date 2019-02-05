@@ -56,7 +56,7 @@ module.exports = {
 Type: `String`<br>
 Default: `manifest.json`
 
-The manifest filename in your output directory.
+By default the plugin will emit `manifest.json` to your output directory. Can override with an absolute path. 
 
 ### `options.publicPath`
 
