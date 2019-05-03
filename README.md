@@ -71,6 +71,12 @@ Type: `String`
 
 A path prefix for all keys. Useful for including your output path in the manifest.
 
+### `options.outputPath`
+
+Type: `String`
+Default: `compiler.options.output.path`
+
+Path to the directory where you want the `manifest.json` to be written.
 
 ### `options.writeToFileEmit`
 
