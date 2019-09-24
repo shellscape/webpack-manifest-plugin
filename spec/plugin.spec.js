@@ -756,10 +756,10 @@ describe('ManifestPlugin', function() {
     {
       manifestOptions: {
         generate: (seed, files, entrypoints) => {
-          const manifestFiles = files.reduce((manifest, { name, path }) => ({
-            ...manifest,
-            [name]: path
-          }), seed);
+          const manifestFiles = files.reduce(
+            (manifest, { name, path }) => Object.assign(manifest, { [name]: path }),
+            seed
+          );
           return {
             files: manifestFiles,
             entrypoints
