@@ -150,8 +150,8 @@ describe('ManifestPlugin using real fs', function() {
       hashes = [];
     });
 
-    afterAll(() => {
-      compiler.close()
+    afterAll((done) => {
+      compiler.close(done)
     })
 
     it('outputs a manifest of one file', function(done) {
@@ -198,8 +198,8 @@ describe('ManifestPlugin using real fs', function() {
       isFirstRun = true;
     });
 
-    afterAll(() => {
-      compiler.close()
+    afterAll((done) => {
+      compiler.close(done)
     })
 
     it('outputs a manifest of one file', function(done) {
