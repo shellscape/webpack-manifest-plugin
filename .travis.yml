@@ -5,11 +5,11 @@ node_js:
   - '8.3.0'
 
 env:
-  - WEBPACK_VERSION=4 EXTRACT_PLUGIN_VERSION=next
+  - WEBPACK_VERSION=4
 
 install:
   - npm install
-  - npm install webpack@$WEBPACK_VERSION extract-text-webpack-plugin@$EXTRACT_PLUGIN_VERSION || true
+  - npm install webpack@$WEBPACK_VERSION || true
 
 script:
   - npm test

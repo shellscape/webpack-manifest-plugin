@@ -3,7 +3,8 @@ var path = require('path');
 var MemoryFileSystem = require('memory-fs');
 var webpack = require('webpack');
 var _ = require('lodash');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
 
@@ -424,7 +425,7 @@ describe('ManifestPlugin', function() {
     });
   });
 
-  describe('with ExtractTextPlugin', function() {
+  describe('with MiniCssExtractPlugin', function() {
     it('works when extracting css into a seperate file', function(done) {
       webpackCompile({
         context: __dirname,
@@ -440,17 +441,17 @@ describe('ManifestPlugin', function() {
         module: {
           rules: [{
             test: /\.css$/,
-            use: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: 'css-loader'
-            })
+            use: [
+              MiniCssExtractPlugin.loader,
+              'css-loader'
+            ]
           }]
         },
         plugins: [
           new plugin(),
-          new ExtractTextPlugin({
+          new MiniCssExtractPlugin({
             filename: '[name].css',
-            allChunks: true
+            // allChunks: true
           })
         ]
       }, {}, function(manifest, stats) {
