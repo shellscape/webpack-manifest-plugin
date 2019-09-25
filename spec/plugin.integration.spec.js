@@ -8,10 +8,6 @@ var rimraf = require('rimraf');
 
 var ManifestPlugin = require('../index.js');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
-
-const isWebpack4 = (yes, no) => webpack.version && webpack.version.slice(0, 1) === '4' ? yes : no;
-
 function webpackConfig(webpackOpts, opts) {
   return _.merge({
     plugins: [
@@ -234,26 +230,19 @@ describe('ManifestPlugin using real fs', function() {
         expect(manifest).toBeDefined();
 
         if (isFirstRun) {
-          expect(manifest).toEqual(isWebpack4({
+          expect(manifest).toEqual({
             'main.js': 'main.js',
             '1.js': '1.js',
             '2.js': '2.js'
-          }, {
-            'main.js': 'main.js',
-            '0.js': '0.js',
-            '1.js': '1.js'
-          }));
+          });
 
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
         } else {
-          expect(manifest).toEqual(isWebpack4({
+          expect(manifest).toEqual({
             'main.js': 'main.js',
             '1.js': '1.js',
-          }, {
-            'main.js': 'main.js',
-            '3.js': '3.js',
-          }));
+          });
 
           done();
         }
@@ -480,7 +469,7 @@ describe('scoped hoisting', function() {
         rules: [
           {
             test: /\.svg$/,
-            use: ['svgr/webpack', 'file-loader']
+            use: ['@svgr/webpack', 'file-loader']
           },
         ],
       },

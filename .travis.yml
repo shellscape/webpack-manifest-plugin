@@ -1,12 +1,10 @@
 language: node_js
 node_js:
-  - '9'
-  - '8'
-  - '6'
+  - 'node'
+  - '10'
+  - '8.3.0'
 
 env:
-  - WEBPACK_VERSION=2 EXTRACT_PLUGIN_VERSION=2
-  - WEBPACK_VERSION=3 EXTRACT_PLUGIN_VERSION=3.0.2
   - WEBPACK_VERSION=4 EXTRACT_PLUGIN_VERSION=next
 
 install:
