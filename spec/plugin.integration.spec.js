@@ -20,7 +20,7 @@ function webpackConfig(webpackOpts, opts) {
   }, webpackOpts);
 }
 
-function webpackCompile(config, compilerOps, cb) {
+function webpackWatch(config, compilerOps, cb) {
   var compiler = webpack(config);
 
   _.assign(compiler, compilerOps);
@@ -29,6 +29,19 @@ function webpackCompile(config, compilerOps, cb) {
     aggregateTimeout: 300,
     poll: true
   }, function(err, stats){
+    expect(err).toBeFalsy();
+    expect(stats.hasErrors()).toBe(false);
+
+    cb(stats);
+  });
+};
+
+function webpackCompile(config, compilerOps, cb) {
+  var compiler = webpack(config);
+
+  _.assign(compiler, compilerOps);
+
+  return compiler.run(function(err, stats){
     expect(err).toBeFalsy();
     expect(stats.hasErrors()).toBe(false);
 
@@ -155,7 +168,7 @@ describe('ManifestPlugin using real fs', function() {
     })
 
     it('outputs a manifest of one file', function(done) {
-      compiler = webpackCompile({
+      compiler = webpackWatch({
         context: __dirname,
         output: {
           filename: '[name].[hash].js',
@@ -203,7 +216,7 @@ describe('ManifestPlugin using real fs', function() {
     })
 
     it('outputs a manifest of one file', function(done) {
-      compiler = webpackCompile({
+      compiler = webpackWatch({
         context: __dirname,
         output: {
           filename: '[name].js',

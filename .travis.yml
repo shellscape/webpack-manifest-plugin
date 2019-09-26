@@ -14,7 +14,7 @@ install:
   - npm install webpack@$WEBPACK_VERSION extract-text-webpack-plugin@$EXTRACT_PLUGIN_VERSION || true
 
 script:
-  - npm test -- --forceExit
+  - npm test
 
 after_script:
   - $(npm bin)/codecov
