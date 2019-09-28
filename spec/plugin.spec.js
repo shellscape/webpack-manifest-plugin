@@ -750,6 +750,44 @@ describe('ManifestPlugin', function() {
     });
   });
 
+  it('should generate manifest with "entrypoints" key', done => {
+    webpackCompile({
+      context: __dirname,
+      entry: {
+        one: './fixtures/file.js',
+        two: './fixtures/file-two.js'
+      }
+    },
+    {
+      manifestOptions: {
+        generate: (seed, files, entrypoints) => {
+          const manifestFiles = files.reduce(
+            (manifest, { name, path }) => Object.assign(manifest, { [name]: path }),
+            seed
+          );
+          return {
+            files: manifestFiles,
+            entrypoints
+          };
+        }
+      }
+    },
+    (manifest, stats) => {
+      expect(manifest).toEqual({
+        entrypoints: {
+          one: ['one.js'],
+          two: ['two.js']
+        },
+        files: {
+          'one.js': 'one.js',
+          'two.js': 'two.js'
+        }
+      });
+
+      done();
+    });
+  });
+
   describe('with CopyWebpackPlugin', function () {
     it('works when including copied assets', function (done) {
       webpackCompile({
