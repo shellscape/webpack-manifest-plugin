@@ -10,6 +10,11 @@ env:
   - WEBPACK_VERSION=4 EXTRACT_PLUGIN_VERSION=next
   - WEBPACK_VERSION=next EXTRACT_PLUGIN_VERSION=next
 
+matrix:
+  exclude:
+    - node_js: '6'
+      env: WEBPACK_VERSION=next
+
 install:
   - npm install
   - npm install webpack@$WEBPACK_VERSION extract-text-webpack-plugin@$EXTRACT_PLUGIN_VERSION || true
