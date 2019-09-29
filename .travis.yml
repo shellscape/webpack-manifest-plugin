@@ -13,7 +13,7 @@ env:
 matrix:
   exclude:
     - node_js: '6'
-      env: WEBPACK_VERSION=next
+      env: WEBPACK_VERSION=next EXTRACT_PLUGIN_VERSION=next
 
 install:
   - npm install
