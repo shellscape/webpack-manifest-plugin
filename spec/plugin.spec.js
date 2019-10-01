@@ -402,20 +402,25 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('make manifest available to other webpack plugins', function(done) {
-      webpackCompile({
-        context: __dirname,
-        entry: './fixtures/file.js'
-      }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'main.js': 'main.js'
+    // Webpack 5 doesn't include file content in stats.compilation.assets
+    if (!isWebpackVersionGte(5)) {
+      it('make manifest available to other webpack plugins', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js'
+        }, {}, function(manifest, stats) {
+          expect(manifest).toEqual({
+            'main.js': 'main.js'
+          });
+  
+          expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
+            'main.js': 'main.js'
+          });
+  
+          done();
         });
-
-        expect(emittedAsset(stats.compilation, 'manifest.json')).toEqual(true)
-
-        done();
       });
-    });
+    }
 
     it('should output unix paths', function(done) {
       webpackCompile({
