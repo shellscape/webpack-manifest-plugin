@@ -620,7 +620,7 @@ describe('ManifestPlugin', function() {
         }
       }, function(manifest){
         expect(manifest).toEqual({
-          [`javascripts${path.sep}main.js`]: 'javascripts/main.js'
+          'javascripts/main.js': 'javascripts/main.js'
         });
 
         done();
