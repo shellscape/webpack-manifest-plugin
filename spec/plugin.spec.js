@@ -6,14 +6,13 @@ var _ = require('lodash');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
+var { emittedAsset, isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
-const isWebpack4 = (yes, no) => webpack.version && webpack.version.slice(0, 1) === '4' ? yes : no;
-
 function webpackConfig (webpackOpts, opts) {
-  return _.merge({
+  var defaults = {
     output: {
       path: OUTPUT_DIR,
       filename: '[name].js'
@@ -21,7 +20,11 @@ function webpackConfig (webpackOpts, opts) {
     plugins: [
       new plugin(opts.manifestOptions)
     ]
-  }, webpackOpts);
+  };
+  if (isWebpackVersionGte(4)) {
+    defaults.optimization = { chunkIds:  'named' };
+  }
+  return _.merge(defaults, webpackOpts);
 }
 
 function webpackCompile(webpackOpts, opts, cb) {
@@ -47,8 +50,9 @@ function webpackCompile(webpackOpts, opts, cb) {
       manifestFile = null
     }
 
-
-    expect(err).toBeFalsy();
+    if (err) {
+      throw err;
+    }
     expect(stats.hasErrors()).toBe(false);
 
     cb(manifestFile, stats, fs);
@@ -342,7 +346,7 @@ describe('ManifestPlugin', function() {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.txt',
-        module: isWebpack4({
+        module: isWebpackVersionGte(4) ?{
           rules: [{
             test: /\.(txt)/,
             use: [{
@@ -352,11 +356,11 @@ describe('ManifestPlugin', function() {
               }
             }]
           }]
-        }, {
+        } : {
           loaders: [
             { test: /\.(txt)/, loader: 'file-loader?name=file.[ext]' },
           ]
-        })
+        }
       }, {}, function(manifest, stats) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -372,7 +376,7 @@ describe('ManifestPlugin', function() {
       webpackCompile({
         context: __dirname,
         entry: './fixtures/file.txt',
-        module: isWebpack4({
+        module: isWebpackVersionGte(4) ? {
           rules: [{
             test: /\.(txt)/,
             use: [{
@@ -382,11 +386,11 @@ describe('ManifestPlugin', function() {
               }
             }]
           }]
-        }, {
+        } : {
           loaders: [
             { test: /\.(txt)/, loader: 'file-loader?name=outputfile.[ext]' },
           ]
-        })
+        }
       }, {}, function(manifest, stats) {
         expect(manifest).toBeDefined();
         expect(manifest).toEqual({
@@ -398,22 +402,25 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('make manifest available to other webpack plugins', function(done) {
-      webpackCompile({
-        context: __dirname,
-        entry: './fixtures/file.js'
-      }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'main.js': 'main.js'
+    // Webpack 5 doesn't include file content in stats.compilation.assets
+    if (!isWebpackVersionGte(5)) {
+      it('make manifest available to other webpack plugins', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js'
+        }, {}, function(manifest, stats) {
+          expect(manifest).toEqual({
+            'main.js': 'main.js'
+          });
+  
+          expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
+            'main.js': 'main.js'
+          });
+  
+          done();
         });
-
-        expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
-          'main.js': 'main.js'
-        });
-
-        done();
       });
-    });
+    }
 
     it('should output unix paths', function(done) {
       webpackCompile({
@@ -434,53 +441,56 @@ describe('ManifestPlugin', function() {
     });
   });
 
-  describe('with ExtractTextPlugin', function() {
-    it('works when extracting css into a seperate file', function(done) {
-      webpackCompile({
-        context: __dirname,
-        entry: {
-          wStyles: [
-            './fixtures/file.js',
-            './fixtures/style.css'
+  // Skip ExtractTextPlugin checks until it supports Webpack 5
+  if (!isWebpackVersionGte(5)) {
+    describe('with ExtractTextPlugin', function() {
+      it('works when extracting css into a seperate file', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: {
+            wStyles: [
+              './fixtures/file.js',
+              './fixtures/style.css'
+            ]
+          },
+          output: {
+            filename: '[name].js'
+          },
+          module: isWebpackVersionGte(4) ? {
+            rules: [{
+              test: /\.css$/,
+              use: ExtractTextPlugin.extract({
+                fallback: 'style-loader',
+                use: 'css-loader'
+              })
+            }]
+          } : {
+            loaders: [{
+              test: /\.css$/,
+              loader: ExtractTextPlugin.extract({
+                fallback: 'style-loader',
+                use: 'css-loader'
+              })
+            }]
+          },
+          plugins: [
+            new plugin(),
+            new ExtractTextPlugin({
+              filename: '[name].css',
+              allChunks: true
+            })
           ]
-        },
-        output: {
-          filename: '[name].js'
-        },
-        module: isWebpack4({
-          rules: [{
-            test: /\.css$/,
-            use: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: 'css-loader'
-            })
-          }]
-        }, {
-          loaders: [{
-            test: /\.css$/,
-            loader: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: 'css-loader'
-            })
-          }]
-        }),
-        plugins: [
-          new plugin(),
-          new ExtractTextPlugin({
-            filename: '[name].css',
-            allChunks: true
-          })
-        ]
-      }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'wStyles.js': 'wStyles.js',
-          'wStyles.css': 'wStyles.css'
+        }, {}, function(manifest, stats) {
+          expect(manifest).toEqual({
+            'wStyles.js': 'wStyles.js',
+            'wStyles.css': 'wStyles.css'
+          });
+  
+          done();
         });
-
-        done();
       });
     });
-  });
+  }
 
   describe('nameless chunks', function() {
     it('add a literal mapping of files generated by nameless chunks.', function(done) {
@@ -677,7 +687,7 @@ describe('ManifestPlugin', function() {
         expect(manifest).toEqual({
           'main.js': {
             file: 'main.js',
-            hash: stats.compilation.chunks[0].hash
+            hash: Array.from(stats.compilation.chunks)[0].hash
           }
         });
 
