@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
-var { emittedAsset, isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
+var { isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
@@ -20,11 +20,11 @@ function webpackConfig (webpackOpts, opts) {
     },
     plugins: [
       new plugin(opts.manifestOptions)
-    ]
+    ],
+    optimization: {
+      chunkIds: 'named'
+    }
   };
-  if (isWebpackVersionGte(4)) {
-    defaults.optimization = { chunkIds:  'named' };
-  }
   return _.merge(defaults, webpackOpts);
 }
 

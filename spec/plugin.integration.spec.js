@@ -12,11 +12,11 @@ var ManifestPlugin = require('../index.js');
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
 
 function applyDefaultWebpackConfig(webpackOpts) {
-  var defaults = isWebpackVersionGte(4) ? {
+  var defaults = {
     optimization: {
       chunkIds: 'natural',
     }
-  } : {};
+  };
   return _.merge(defaults, webpackOpts);
 }
 
@@ -246,19 +246,34 @@ describe('ManifestPlugin using real fs', function() {
         expect(manifest).toBeDefined();
 
         if (isFirstRun) {
-          expect(manifest).toEqual({
-            'main.js': 'main.js',
-            '1.js': '1.js',
-            '2.js': '2.js'
-          });
+          if (isWebpackVersionGte(5)) {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '0.js': '0.js',
+              '2.js': '2.js'
+            });
+          } else {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '1.js': '1.js',
+              '2.js': '2.js'
+            });
+          }
 
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
         } else {
-          expect(manifest).toEqual({
-            'main.js': 'main.js',
-            '1.js': '1.js',
-          });
+          if (isWebpackVersionGte(5)) {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '2.js': '2.js',
+            });
+          } else {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '1.js': '1.js',
+            });
+          }
 
           done();
         }
