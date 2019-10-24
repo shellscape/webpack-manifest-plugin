@@ -119,7 +119,7 @@ describe('ManifestPlugin', function() {
     it('works with source maps', function(done) {
       webpackCompile({
         context: __dirname,
-        devtool: 'sourcemap',
+        devtool: 'source-map',
         entry: {
           one: './fixtures/file.js',
         },
