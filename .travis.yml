@@ -6,6 +6,7 @@ node_js:
 
 env:
   - WEBPACK_VERSION=4
+  - WEBPACK_VERSION=next
 
 install:
   - npm install

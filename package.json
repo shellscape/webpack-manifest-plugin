@@ -1,6 +1,6 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "webpack plugin for generating asset manifests",
   "main": "index.js",
   "scripts": {
@@ -43,7 +43,6 @@
   "dependencies": {
     "fs-extra": "^8.1.0",
     "lodash": "^4",
-    "object.entries": "^1.1.0",
     "tapable": "^1.1.3"
   },
   "jest": {

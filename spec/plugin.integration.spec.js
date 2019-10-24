@@ -5,19 +5,30 @@ var _ = require('lodash');
 var webpack = require('webpack');
 var MemoryFileSystem = require('memory-fs');
 var rimraf = require('rimraf');
+var { emittedAsset, isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
 
 var ManifestPlugin = require('../index.js');
 
-function webpackConfig(webpackOpts, opts) {
-  return _.merge({
-    plugins: [
-      new ManifestPlugin(opts.manifestOptions)
-    ]
-  }, webpackOpts);
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000;
+
+function applyDefaultWebpackConfig(webpackOpts) {
+  var defaults = {
+    optimization: {
+      chunkIds: 'natural',
+    }
+  };
+  return _.merge(defaults, webpackOpts);
+}
+
+function webpackConfig(webpackOpts) {
+  if (Array.isArray(webpackOpts)) {
+    return webpackOpts.map(opts => applyDefaultWebpackConfig(opts));
+  }
+  return applyDefaultWebpackConfig(webpackOpts);
 }
 
 function webpackWatch(config, compilerOps, cb) {
-  var compiler = webpack(config);
+  var compiler = webpack(webpackConfig(config));
 
   _.assign(compiler, compilerOps);
 
@@ -33,7 +44,7 @@ function webpackWatch(config, compilerOps, cb) {
 };
 
 function webpackCompile(config, compilerOps, cb) {
-  var compiler = webpack(config);
+  var compiler = webpack(webpackConfig(config));
 
   _.assign(compiler, compilerOps);
 
@@ -87,10 +98,9 @@ describe('ManifestPlugin using real fs', function() {
           new ManifestPlugin({fileName: 'manifest2.json'})
         ]
       }, {}, function(stats) {
-
-        expect(stats.compilation.assets['main.js'].emitted).toBe(true);
-        expect(stats.compilation.assets['manifest1.json'].emitted).toBe(true);
-        expect(stats.compilation.assets['manifest2.json'].emitted).toBe(true);
+        expect(emittedAsset(stats.compilation, 'main.js')).toBe(true);
+        expect(emittedAsset(stats.compilation, 'manifest1.json')).toBe(true);
+        expect(emittedAsset(stats.compilation, 'manifest2.json')).toBe(true);
 
         var manifest1 = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest1.json'))
         expect(manifest1).toBeDefined();
@@ -114,7 +124,13 @@ describe('ManifestPlugin using real fs', function() {
       }
       TestPlugin.prototype.apply = function (compiler) {
         if (compiler.hooks) {
-          compiler.hooks.webpackManifestPluginAfterEmit.tap('ManifestPlugin', (manifest) => {
+          let hook;
+          if (Object.isFrozen(compiler.hooks)) {
+            hook = ManifestPlugin.getCompilerHooks(compiler).afterEmit;
+          } else {
+            hook = compiler.hooks.webpackManifestPluginAfterEmit;
+          }
+          hook.tap('ManifestPlugin', (manifest) => {
             this.manifest = manifest;
           })
         } else {
@@ -230,19 +246,34 @@ describe('ManifestPlugin using real fs', function() {
         expect(manifest).toBeDefined();
 
         if (isFirstRun) {
-          expect(manifest).toEqual({
-            'main.js': 'main.js',
-            '1.js': '1.js',
-            '2.js': '2.js'
-          });
+          if (isWebpackVersionGte(5)) {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '0.js': '0.js',
+              '2.js': '2.js'
+            });
+          } else {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '1.js': '1.js',
+              '2.js': '2.js'
+            });
+          }
 
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
         } else {
-          expect(manifest).toEqual({
-            'main.js': 'main.js',
-            '1.js': '1.js',
-          });
+          if (isWebpackVersionGte(5)) {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '2.js': '2.js',
+            });
+          } else {
+            expect(manifest).toEqual({
+              'main.js': 'main.js',
+              '1.js': '1.js',
+            });
+          }
 
           done();
         }

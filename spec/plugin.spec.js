@@ -7,20 +7,25 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 var FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 var plugin = require('../index.js');
+var { isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
 
 var OUTPUT_DIR = path.join(__dirname, './webpack-out');
 var manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
 
 function webpackConfig (webpackOpts, opts) {
-  return _.merge({
+  var defaults = {
     output: {
       path: OUTPUT_DIR,
       filename: '[name].js'
     },
     plugins: [
       new plugin(opts.manifestOptions)
-    ]
-  }, webpackOpts);
+    ],
+    optimization: {
+      chunkIds: 'named'
+    }
+  };
+  return _.merge(defaults, webpackOpts);
 }
 
 function webpackCompile(webpackOpts, opts, cb) {
@@ -46,8 +51,9 @@ function webpackCompile(webpackOpts, opts, cb) {
       manifestFile = null
     }
 
-
-    expect(err).toBeFalsy();
+    if (err) {
+      throw err;
+    }
     expect(stats.hasErrors()).toBe(false);
 
     cb(manifestFile, stats, fs);
@@ -389,22 +395,25 @@ describe('ManifestPlugin', function() {
       });
     });
 
-    it('make manifest available to other webpack plugins', function(done) {
-      webpackCompile({
-        context: __dirname,
-        entry: './fixtures/file.js'
-      }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'main.js': 'main.js'
-        });
+    // Webpack 5 doesn't include file content in stats.compilation.assets
+    if (!isWebpackVersionGte(5)) {
+      it('make manifest available to other webpack plugins', function(done) {
+        webpackCompile({
+          context: __dirname,
+          entry: './fixtures/file.js'
+        }, {}, function(manifest, stats) {
+          expect(manifest).toEqual({
+            'main.js': 'main.js'
+          });
 
-        expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
-          'main.js': 'main.js'
-        });
+          expect(JSON.parse(stats.compilation.assets['manifest.json'].source())).toEqual({
+            'main.js': 'main.js'
+          });
 
-        done();
+          done();
+        });
       });
-    });
+    }
 
     it('should output unix paths', function(done) {
       webpackCompile({
@@ -660,7 +669,7 @@ describe('ManifestPlugin', function() {
         expect(manifest).toEqual({
           'main.js': {
             file: 'main.js',
-            hash: stats.compilation.chunks[0].hash
+            hash: Array.from(stats.compilation.chunks)[0].hash
           }
         });
 
