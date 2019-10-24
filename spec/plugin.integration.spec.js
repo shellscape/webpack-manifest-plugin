@@ -6,6 +6,7 @@ var webpack = require('webpack');
 var MemoryFileSystem = require('memory-fs');
 var rimraf = require('rimraf');
 var { emittedAsset, isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
+const { compile } = require('./helpers/runner');
 
 var ManifestPlugin = require('../index.js');
 
@@ -62,59 +63,48 @@ describe('ManifestPlugin using real fs', function() {
   });
 
   describe('basic behavior', function() {
-    it('outputs a manifest of one file', function(done) {
-      webpackCompile({
+    it.only('outputs a manifest of one file', async () => {
+      const { manifest } = await compile({
         context: __dirname,
         output: {
           filename: '[name].js',
-          path: path.join(__dirname, 'output/single-file')
         },
         entry: './fixtures/file.js',
         plugins: [
           new ManifestPlugin()
         ]
-      }, {}, function() {
-        var manifest = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest.json'))
+      });
 
-        expect(manifest).toBeDefined();
-        expect(manifest).toEqual({
-          'main.js': 'main.js'
-        });
 
-        done();
+      expect(manifest).toEqual({
+        'main.js': 'main.js'
       });
     });
 
-    it('still works when there are multiple instances of the plugin', function(done) {
-      webpackCompile({
+    it.only('still works when there are multiple instances of the plugin', async () => {
+      const { manifests, files } = await compile({
         context: __dirname,
         output: {
           filename: '[name].js',
-          path: path.join(__dirname, 'output/single-file')
         },
         entry: './fixtures/file.js',
         plugins: [
           new ManifestPlugin({fileName: 'manifest1.json'}),
           new ManifestPlugin({fileName: 'manifest2.json'})
         ]
-      }, {}, function(stats) {
-        expect(emittedAsset(stats.compilation, 'main.js')).toBe(true);
-        expect(emittedAsset(stats.compilation, 'manifest1.json')).toBe(true);
-        expect(emittedAsset(stats.compilation, 'manifest2.json')).toBe(true);
+      });
 
-        var manifest1 = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest1.json'))
-        expect(manifest1).toBeDefined();
-        expect(manifest1).toEqual({
-          'main.js': 'main.js'
-        });
+      expect(files).toContain('main.js');
+      expect(files).toContain('manifest1.json');
+      expect(files).toContain('manifest2.json');
 
-        var manifest2 = fse.readJsonSync(path.join(__dirname, 'output/single-file/manifest2.json'))
-        expect(manifest2).toBeDefined();
-        expect(manifest2).toEqual({
-          'main.js': 'main.js'
-        });
+      const [manifest1, manifest2] = manifests;
 
-        done();
+      expect(manifest1).toEqual({
+        'main.js': 'main.js'
+      });
+      expect(manifest2).toEqual({
+        'main.js': 'main.js'
       });
     });
 
