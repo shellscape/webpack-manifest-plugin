@@ -31,7 +31,7 @@ function webpackConfig(webpackOpts) {
 function webpackWatch(config, compilerOps, cb) {
   var compiler = webpack(webpackConfig(config));
 
-  _.assign(compiler, compilerOps);
+  Object.assign(compiler, compilerOps);
 
   return compiler.watch({
     aggregateTimeout: 300,
@@ -47,7 +47,7 @@ function webpackWatch(config, compilerOps, cb) {
 function webpackCompile(config, compilerOps, cb) {
   var compiler = webpack(webpackConfig(config));
 
-  _.assign(compiler, compilerOps);
+  Object.assign(compiler, compilerOps);
 
   return compiler.run(function(err, stats){
     expect(err).toBeFalsy();
