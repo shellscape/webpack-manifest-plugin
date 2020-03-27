@@ -56,7 +56,7 @@ module.exports = {
 Type: `String`<br>
 Default: `manifest.json`
 
-By default the plugin will emit `manifest.json` to your output directory. Can override with an absolute path. 
+By default the plugin will emit `manifest.json` to your output directory. Can override with an absolute path.
 
 ### `options.publicPath`
 
@@ -108,10 +108,12 @@ Sort files before they are passed to `generate`. [FileDescriptor typings](#filed
 
 ### `options.generate`
 
-Type: `Function(Object, FileDescriptor, string[]): Object`<br>
-Default: `(seed, files, entrypoints) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
+Type: `Function(Object, FileDescriptor, string[], webpack.Compilation): Object`<br>
+Default: `(seed, files, entrypoints, compilation) => files.reduce((manifest, {name, path}) => ({...manifest, [name]: path}), seed)`
 
-Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [FileDescriptor typings](#filedescriptor)
+Create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`. [FileDescriptor typings](#filedescriptor).
+
+The `compilation` object is a reference to the [Webpack Compilation](https://webpack.js.org/api/compilation-object/) object and allows you to extend this package's functionalitiy with for example Integrity checking. See [`./examples/integrity-manifest.js`](./examples/integrity-manifest.js) for an example.
 
 ### `options.serialize`
 
