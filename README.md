@@ -102,7 +102,7 @@ Modify files details before the manifest is created. [FileDescriptor typings](#f
 
 ### `options.sort`
 
-Type: `Function(FileDescriptor): number`
+Type: `Function(FileDescriptor, FileDescriptor): number`
 
 Sort files before they are passed to `generate`. [FileDescriptor typings](#filedescriptor)
 
