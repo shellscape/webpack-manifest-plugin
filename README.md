@@ -1,4 +1,6 @@
-# **DEPRECATED** - no longer actively maintained
+# It's Back!
+
+This repo was recently transferred and we're going to be giving the project a refresh. Please do continue to add your issues and pull requests and we'll get to them as soon as is possible. :beers:
 
 ---
 
