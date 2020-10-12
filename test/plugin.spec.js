@@ -5,11 +5,11 @@ const webpack = require('webpack');
 const _ = require('lodash');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const plugin = require('../index.js');
+const Plugin = require('../lib');
 
 const FakeCopyWebpackPlugin = require('./helpers/copy-plugin-mock');
 
-const { emittedAsset, isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
+const { isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
 
 const OUTPUT_DIR = path.join(__dirname, './webpack-out');
 const manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
@@ -20,7 +20,7 @@ function webpackConfig(webpackOpts, opts) {
       path: OUTPUT_DIR,
       filename: '[name].js'
     },
-    plugins: [new plugin(opts.manifestOptions)]
+    plugins: [new Plugin(opts.manifestOptions)]
   };
   if (isWebpackVersionGte(4)) {
     defaults.optimization = { chunkIds: 'named' };
@@ -38,6 +38,7 @@ function webpackCompile(webpackOpts, opts, cb) {
 
   const compiler = webpack(config);
 
+  // eslint-disable-next-line no-multi-assign
   const fs = (compiler.outputFileSystem = new MemoryFileSystem());
 
   compiler.run((err, stats) => {
@@ -59,7 +60,7 @@ function webpackCompile(webpackOpts, opts, cb) {
 
 describe('ManifestPlugin', () => {
   it('exists', () => {
-    expect(plugin).toBeDefined();
+    expect(Plugin).toBeDefined();
   });
 
   describe('basic behavior', () => {
@@ -137,7 +138,7 @@ describe('ManifestPlugin', () => {
           }
         },
         {},
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual({
             'one.js': 'one.js',
             'one.js.map': 'one.js.map'
@@ -269,7 +270,7 @@ describe('ManifestPlugin', () => {
             basePath: 'https://www/example.com/'
           }
         },
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual({
             'https://www/example.com/one.js': 'one.js'
           });
@@ -292,7 +293,7 @@ describe('ManifestPlugin', () => {
           }
         },
         {},
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual({
             'one.js': 'http://www/example.com/one.js'
           });
@@ -420,7 +421,7 @@ describe('ManifestPlugin', () => {
               }
         },
         {},
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toBeDefined();
           expect(manifest).toEqual({
             'main.js': 'main.js',
@@ -458,7 +459,7 @@ describe('ManifestPlugin', () => {
               }
         },
         {},
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toBeDefined();
           expect(manifest).toEqual({
             'main.js': 'main.js',
@@ -554,7 +555,7 @@ describe('ManifestPlugin', () => {
                   ]
                 },
             plugins: [
-              new plugin(),
+              new Plugin(),
               new ExtractTextPlugin({
                 filename: '[name].css',
                 allChunks: true
@@ -562,7 +563,7 @@ describe('ManifestPlugin', () => {
             ]
           },
           {},
-          (manifest, stats) => {
+          (manifest) => {
             expect(manifest).toEqual({
               'wStyles.js': 'wStyles.js',
               'wStyles.css': 'wStyles.css'
@@ -614,10 +615,9 @@ describe('ManifestPlugin', () => {
           (manifest, stats, fs) => {
             const OUTPUT_DIR = path.join(__dirname, './webpack-out');
             const manifestPath = path.join(OUTPUT_DIR, 'webpack.manifest.js');
+            const result = JSON.parse(fs.readFileSync(manifestPath).toString());
 
-            var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
-
-            expect(manifest).toEqual({
+            expect(result).toEqual({
               'main.js': 'main.js'
             });
 
@@ -641,10 +641,9 @@ describe('ManifestPlugin', () => {
           },
           (manifest, stats, fs) => {
             const manifestPath = path.join(__dirname, 'webpack.manifest.js');
+            const result = JSON.parse(fs.readFileSync(manifestPath).toString());
 
-            var manifest = JSON.parse(fs.readFileSync(manifestPath).toString());
-
-            expect(manifest).toEqual({
+            expect(result).toEqual({
               'main.js': 'main.js'
             });
 
@@ -702,7 +701,7 @@ describe('ManifestPlugin', () => {
             }
           }
         },
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual({
             0: 'main.js'
           });
@@ -756,7 +755,7 @@ describe('ManifestPlugin', () => {
         {
           manifestOptions: {
             seed: [],
-            sort(a, b) {
+            sort(a) {
               // make sure one is the latest
               return a.name === 'one.js' ? 1 : -1;
             },
@@ -765,7 +764,7 @@ describe('ManifestPlugin', () => {
             }
           }
         },
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual(['two.js', 'one.js']);
 
           done();
@@ -832,7 +831,7 @@ describe('ManifestPlugin', () => {
             }
           }
         },
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual({
             key: 'value'
           });
@@ -866,7 +865,7 @@ describe('ManifestPlugin', () => {
             }
           }
         },
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual([
             {
               name: 'main.js',
@@ -903,7 +902,7 @@ describe('ManifestPlugin', () => {
           }
         }
       },
-      (manifest, stats) => {
+      (manifest) => {
         expect(manifest).toEqual({
           entrypoints: {
             one: ['one.js'],
@@ -928,10 +927,10 @@ describe('ManifestPlugin', () => {
           entry: {
             one: './fixtures/file.js'
           },
-          plugins: [new FakeCopyWebpackPlugin(), new plugin()]
+          plugins: [new FakeCopyWebpackPlugin(), new Plugin()]
         },
         {},
-        (manifest, stats) => {
+        (manifest) => {
           expect(manifest).toEqual({
             'one.js': 'one.js',
             'third.party.js': 'third.party.js'
@@ -955,7 +954,7 @@ describe('ManifestPlugin', () => {
           },
           plugins: [
             new FakeCopyWebpackPlugin(),
-            new plugin({
+            new Plugin({
               basePath: '/app/'
             })
           ]
@@ -982,7 +981,7 @@ describe('ManifestPlugin', () => {
           output: {
             filename: '[name].[hash].js'
           },
-          plugins: [new FakeCopyWebpackPlugin(), new plugin()]
+          plugins: [new FakeCopyWebpackPlugin(), new Plugin()]
         },
         {},
         (manifest, stats) => {
@@ -1007,6 +1006,7 @@ describe('ManifestPlugin', () => {
             fileName: 'webpack.manifest.yml',
             serialize(manifest) {
               let output = '';
+              // eslint-disable-next-line guard-for-in
               for (const key in manifest) {
                 output += `- ${key}: "${manifest[key]}"\n`;
               }
@@ -1017,10 +1017,9 @@ describe('ManifestPlugin', () => {
         (manifest, stats, fs) => {
           const OUTPUT_DIR = path.join(__dirname, './webpack-out');
           const manifestPath = path.join(OUTPUT_DIR, 'webpack.manifest.yml');
+          const result = fs.readFileSync(manifestPath).toString();
 
-          var manifest = fs.readFileSync(manifestPath).toString();
-
-          expect(manifest).toEqual('- main.js: "main.js"\n');
+          expect(result).toEqual('- main.js: "main.js"\n');
 
           done();
         }

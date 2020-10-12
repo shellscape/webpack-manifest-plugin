@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 
 const isWebpackVersionGte = (minVersion) =>
-  webpack.version && parseInt(webpack.version.slice(0, 1)) >= minVersion;
+  webpack.version && parseInt(webpack.version.slice(0, 1), 10) >= minVersion;
 
 const emittedAsset = (compilation, assetName) =>
   isWebpackVersionGte(5)

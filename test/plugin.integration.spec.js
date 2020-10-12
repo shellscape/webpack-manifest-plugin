@@ -7,7 +7,7 @@ const webpack = require('webpack');
 const MemoryFileSystem = require('memory-fs');
 const rimraf = require('rimraf');
 
-const ManifestPlugin = require('../index.js');
+const ManifestPlugin = require('../lib');
 
 const { emittedAsset, isWebpackVersionGte } = require('./helpers/webpack-version-helpers');
 
@@ -212,6 +212,7 @@ describe('ManifestPlugin using real fs', () => {
           plugins: [new ManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
         },
         {},
+        // eslint-disable-next-line consistent-return
         (stats) => {
           const manifest = fse.readJsonSync(
             path.join(__dirname, 'output/watch-mode/manifest.json')
@@ -275,7 +276,7 @@ describe('ManifestPlugin using real fs', () => {
           plugins: [new ManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
         },
         {},
-        (stats) => {
+        () => {
           const manifest = fse.readJsonSync(
             path.join(__dirname, 'output/watch-import-chunk/manifest.json')
           );
@@ -335,7 +336,6 @@ describe('ManifestPlugin using real fs', () => {
 
   describe('multiple compilation', () => {
     const nbCompiler = 10;
-    let originalTimeout;
     beforeEach(() => {
       rimraf.sync(path.join(__dirname, 'output/multiple-compilation'));
     });
@@ -383,8 +383,6 @@ describe('ManifestPlugin using real fs', () => {
   });
 
   describe('multiple manifest', () => {
-    const nbCompiler = 10;
-    let originalTimeout;
     beforeEach(() => {
       rimraf.sync(path.join(__dirname, 'output/multiple-manifest'));
     });
@@ -462,16 +460,16 @@ describe('ManifestPlugin using real fs', () => {
             ]
           },
           {},
-          (manifest, stats, fs) => {
+          () => {
             const manifestPath = path.join(
               __dirname,
               'output/relative-manifest',
               'webpack.manifest.js'
             );
 
-            var manifest = fse.readJsonSync(manifestPath);
+            const result = fse.readJsonSync(manifestPath);
 
-            expect(manifest).toEqual({
+            expect(result).toEqual({
               'main.js': 'main.js'
             });
 
@@ -502,16 +500,16 @@ describe('ManifestPlugin using real fs', () => {
             ]
           },
           {},
-          (manifest, stats, fs) => {
+          () => {
             const manifestPath = path.join(
               __dirname,
               'output/absolute-manifest',
               'webpack.manifest.js'
             );
 
-            var manifest = fse.readJsonSync(manifestPath);
+            const result = fse.readJsonSync(manifestPath);
 
-            expect(manifest).toEqual({
+            expect(result).toEqual({
               'main.js': 'main.js'
             });
 
@@ -579,7 +577,7 @@ describe('scoped hoisting', () => {
     } else {
       plugins = [new ManifestPlugin()];
     }
-    compiler = webpackCompile(
+    webpackCompile(
       {
         context: __dirname,
         entry: './output/scoped-hoisting/index.js',

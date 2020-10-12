@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/danethurber/webpack-manifest-plugin/issues"
   },
-  "main": "index.js",
+  "main": "lib/index.js",
   "engines": {
     "node": ">=10.22.1"
   },
@@ -30,7 +30,6 @@
     "test": "jest"
   },
   "files": [
-    "index.js",
     "lib",
     "README.md",
     "LICENSE"
@@ -76,8 +75,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "maintainers": [
