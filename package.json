@@ -1,6 +1,6 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "webpack plugin for generating asset manifests",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "node": ">=10.22.1"
   },
   "peerDependencies": {
-    "webpack": "4"
+    "webpack": "^4.44.2"
   },
   "devDependencies": {
     "codecov": "^3.1.0",
@@ -31,7 +31,9 @@
   },
   "files": [
     "index.js",
-    "lib"
+    "lib",
+    "LICENSE",
+    "README.md"
   ],
   "repository": {
     "type": "git",

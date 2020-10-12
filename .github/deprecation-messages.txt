@@ -1,0 +1,7 @@
+"This package has been deprecated and is no longer maintained. Please use @rollup/plugin-."
+
+# Moved
+
+This package has moved and is now available at [@rollup/plugin-](https://github.com/rollup/plugins). Please update your dependencies. This repository is no longer maintained.
+
+This package has moved and is now available at @rollup/plugin- / https://github.com/rollup/plugins
