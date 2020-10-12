@@ -4,8 +4,7 @@ This repo was recently transferred and we're going to be giving the project a re
 
 ---
 
-# Webpack Manifest Plugin [![Build Status](https://travis-ci.org/danethurber/webpack-manifest-plugin.svg?branch=master)](https://travis-ci.org/danethurber/webpack-manifest-plugin)  [![codecov](https://codecov.io/gh/danethurber/webpack-manifest-plugin/badge.svg?branch=master)](https://codecov.io/gh/danethurber/webpack-manifest-plugin?branch=master) [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/webpack-manifest-plugin#)
-
+# Webpack Manifest Plugin [![Build Status](https://travis-ci.org/danethurber/webpack-manifest-plugin.svg?branch=master)](https://travis-ci.org/danethurber/webpack-manifest-plugin) [![codecov](https://codecov.io/gh/danethurber/webpack-manifest-plugin/badge.svg?branch=master)](https://codecov.io/gh/danethurber/webpack-manifest-plugin?branch=master) [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/webpack-manifest-plugin#)
 
 Webpack plugin for generating an asset manifest.
 
@@ -25,10 +24,8 @@ In your `webpack.config.js`
 var ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
-    // ...
-    plugins: [
-      new ManifestPlugin()
-    ]
+  // ...
+  plugins: [new ManifestPlugin()]
 };
 ```
 
@@ -41,7 +38,6 @@ This will generate a `manifest.json` file in your root output directory with a m
 }
 ```
 
-
 ## API:
 
 ```js
@@ -51,10 +47,8 @@ module.exports = {
   output: {
     publicPath
   },
-  plugins: [
-    new ManifestPlugin(options)
-  ]
-}
+  plugins: [new ManifestPlugin(options)]
+};
 ```
 
 ### `options.fileName`
@@ -62,7 +56,7 @@ module.exports = {
 Type: `String`<br>
 Default: `manifest.json`
 
-By default the plugin will emit `manifest.json` to your output directory. Can override with an absolute path. 
+By default the plugin will emit `manifest.json` to your output directory. Can override with an absolute path.
 
 ### `options.publicPath`
 
@@ -77,14 +71,12 @@ Type: `String`
 
 A path prefix for all keys. Useful for including your output path in the manifest.
 
-
 ### `options.writeToFileEmit`
 
 Type: `Boolean`<br>
 Default: `false`
 
 If set to `true` will emit to build folder and memory in combination with `webpack-dev-server`
-
 
 ### `options.seed`
 
@@ -98,7 +90,6 @@ A cache of key/value pairs to used to seed the manifest. This may include a set 
 Type: `Function(FileDescriptor): Boolean`
 
 Filter out files. [FileDescriptor typings](#filedescriptor)
-
 
 ### `options.map`
 
@@ -157,7 +148,6 @@ Is required to run you app. Cannot be `true` if `isChunk` is `false`.
 Type: `Boolean`
 
 Is required by a module. Cannot be `true` if `isAsset` is `false`.
-
 
 ## License
 

@@ -1,15 +1,13 @@
-function FakeCopyWebpackPlugin() {
-};
+function FakeCopyWebpackPlugin() {}
 
 FakeCopyWebpackPlugin.prototype.apply = function (compiler) {
   const emit = function (compilation, callback) {
-
-    var compiledMock = '// some compilation result\n';
+    const compiledMock = '// some compilation result\n';
     compilation.assets['third.party.js'] = {
-      size: function () {
+      size() {
         return compiledMock.length;
       },
-      source: function () {
+      source() {
         return compiledMock;
       }
     };
@@ -18,7 +16,7 @@ FakeCopyWebpackPlugin.prototype.apply = function (compiler) {
   };
 
   if (compiler.hooks) {
-    compiler.hooks.emit.tapAsync('FakeCopyWebpackPlugin', emit)
+    compiler.hooks.emit.tapAsync('FakeCopyWebpackPlugin', emit);
   } else {
     compiler.plugin('emit', emit);
   }

@@ -15,8 +15,8 @@ coverage: &coverage
         name: Run unit tests.
         command: npm run ci:coverage
     - run:
-        name: Submit coverage data to codecov.
-        command: npm run ci:coverage:submit
+        name: Submit Coverage
+        command: bash <(curl -s https://codecov.io/bash)
         when: on_success
 
 unit_tests: &unit_tests

@@ -1,10 +1,18 @@
 {
   "extends": "shellscape",
   "globals": {
-    "document": true,
-    "ʎɐɹɔosǝʌɹǝs": true,
-    "WebSocket": true,
-    "window": true,
-    "__webpack_hash__": true
+    "jasmine": true
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "arrowParens": "always",
+        "printWidth": 100,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "plugins": ["prettier-plugin-package"]
+      }
+    ]
   }
 }

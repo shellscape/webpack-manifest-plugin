@@ -1,56 +1,95 @@
 {
   "name": "webpack-manifest-plugin",
   "version": "3.0.0",
-  "description": "webpack plugin for generating asset manifests",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest",
-    "codecov": "codecov"
+  "description": "A Webpack Plugin for generating Asset Manifests",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danethurber/webpack-manifest-plugin.git"
   },
   "author": "Dane Thurber <dane.thurber@gmail.com>",
-  "license": "MIT",
+  "homepage": "https://github.com/danethurber/webpack-manifest-plugin",
+  "bugs": {
+    "url": "https://github.com/danethurber/webpack-manifest-plugin/issues"
+  },
+  "main": "index.js",
   "engines": {
     "node": ">=10.22.1"
   },
+  "scripts": {
+    "ci:coverage": "nyc npm run test && nyc report --reporter=text-lcov > coverage.lcov",
+    "ci:lint": "npm run lint && npm run security",
+    "ci:test": "npm run test -- --verbose",
+    "lint": "npm run lint:docs && npm run lint:json && npm run lint:package && npm run lint:js",
+    "lint-staged": "lint-staged",
+    "lint:docs": "prettier --single-quote --arrow-parens avoid --trailing-comma none --write README.md",
+    "lint:js": "eslint --fix --cache lib test",
+    "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
+    "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
+    "security": "npm audit --audit-level=moderate",
+    "test": "jest"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
   "peerDependencies": {
     "webpack": "^4.44.2"
   },
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "object.entries": "^1.1.0",
+    "tapable": "^2.0.0"
+  },
   "devDependencies": {
+    "@ava/babel": "^1.0.1",
+    "ava": "^3.13.0",
     "codecov": "^3.1.0",
     "css-loader": "^1.0.0",
+    "eslint-config-shellscape": "^2.1.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^2.0.0",
     "jest": "^23.5.0",
+    "lint-staged": "^10.4.0",
     "lodash": ">=3.5 <5",
     "memory-fs": "^0.4.1",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.1.2",
+    "prettier-plugin-package": "^1.2.0",
     "react": "^16.3.2",
     "rimraf": "^2.6.1",
     "style-loader": "^0.23.0",
     "svgr": "^1.9.2",
     "webpack": "^3.12.0"
   },
-  "files": [
-    "index.js",
-    "lib",
-    "LICENSE",
-    "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/danethurber/webpack-manifest-plugin.git"
-  },
-  "bugs": {
-    "url": "https://github.com/danethurber/webpack-manifest-plugin/issues"
-  },
-  "homepage": "https://github.com/danethurber/webpack-manifest-plugin",
-  "dependencies": {
-    "fs-extra": "^9.0.1",
-    "object.entries": "^1.1.0",
-    "tapable": "^2.0.0"
+  "ava": {
+    "files": [
+      "!**/fixtures/**"
+    ]
   },
   "jest": {
     "testEnvironment": "node",
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
-  }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "maintainers": [
+    "Andrew Powell <andrew@shellscape.org>"
+  ],
+  "nyc": {
+    "include": [
+      "lib/*.js"
+    ],
+    "exclude": [
+      "test/"
+    ]
+  },
+  "pre-commit": "lint-staged"
 }
