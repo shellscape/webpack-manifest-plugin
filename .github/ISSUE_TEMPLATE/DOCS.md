@@ -12,14 +12,13 @@ about: Are the docs lacking or missing something? Do they need some new 🔥 hot
   Or your issue may be closed.
 
   👉🏽 Need help or tech support? Don't open an issue!
-  Head to https://gitter.im/rollup/rollup or https://stackoverflow.com/questions/tagged/rollupjs
+  Head to https://gitter.im/webpack/webpack or https://stackoverflow.com/questions/tagged/webpack
 
-  ❤️ Rollup? Please consider supporting our collective:
-  👉 https://opencollective.com/rollup/donate
+  ❤️ This plugin? Please consider sponsoring this project:
+  👉 https://github.com/sponsors/shellscape
 -->
 
-- Rollup Plugin Name: <!-- the plugin(s) this issue is about -->
-- Rollup Plugin Version:
+- Manifest Plugin Version:
 
 Documentation Is:
 

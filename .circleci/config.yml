@@ -1,76 +1,92 @@
 version: 2
+aliases:
+  - &npm_install
+    name: Install Dependencies
+    command: npm ci
+  - &restore_cache
+    key: dependency-cache-{{ checksum "pnpm-lock.yaml" }}
+
+coverage: &coverage
+  steps:
+    - checkout
+    - restore_cache: *restore_cache
+    - run: *npm_install
+    - run:
+        name: Run unit tests.
+        command: npm run ci:coverage
+    - run:
+        name: Submit coverage data to codecov.
+        command: npm run ci:coverage:submit
+        when: on_success
+
+unit_tests: &unit_tests
+  steps:
+    - checkout
+    - restore_cache: *restore_cache
+    - run: *npm_install
+    - run:
+        name: Env Info
+        command: |
+          node --version
+          npm --version
+    - run:
+        name: Run Tests
+        command: |
+          npm run ci:test
+          echo "prev return code: $?"
+
 jobs:
-  dependency_cache:
-    docker:
-      - image: rollupcabal/circleci-node-base:latest
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Node Info
-          command: node --version && npm --version
-      - run:
-          name: Install Dependencies
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-  node-v12-latest:
-    machine: true
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Setup Node 12 and Run Tests
-          command: |
-            set +e
-            touch $BASH_ENV
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install 12
-            nvm alias default 12
-            node --version && npm --version
-            npm install
-            npm run ci:coverage
-      - run:
-          name: Submit coverage data to codecov.
-          command: bash <(curl -s https://codecov.io/bash)
-          when: on_success
   analysis:
     docker:
       - image: rollupcabal/circleci-node-base:latest
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache: *restore_cache
+      - run: *npm_install
       - run:
-          name: NPM Rebuild
-          command: npm install
-      - run:
-          name: Run linting.
-          command: npm run lint
-      - run:
-          name: Run NSP Security Check.
+          name: Run Audit
           command: npm run security
       - run:
-          name: Validate Commit Messages
-          command: npm run ci:lint:commits
+          name: Run Linting
+          command: npm run ci:lint
+      - save_cache:
+          key: dependency-cache-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ./node_modules
+  node-v10-latest:
+    docker:
+      - image: rollupcabal/circleci-node-v10:latest
+    <<: *unit_tests
+  node-v12-latest:
+    docker:
+      - image: rollupcabal/circleci-node-v12:latest
+    <<: *unit_tests
+  node-v14-latest:
+    docker:
+      - image: rollupcabal/circleci-node-v14:latest
+    <<: *coverage
+
 workflows:
   version: 2
-  validate:
+  validate-test:
     jobs:
-      - dependency_cache
       - analysis:
+          filters:
+            tags:
+              only: /.*/
+      - node-v10-latest:
           requires:
-            - dependency_cache
+            - analysis
           filters:
             tags:
               only: /.*/
       - node-v12-latest:
+          requires:
+            - analysis
+          filters:
+            tags:
+              only: /.*/
+      - node-v14-latest:
           requires:
             - analysis
           filters:

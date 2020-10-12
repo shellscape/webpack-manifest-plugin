@@ -13,10 +13,6 @@
   Please place an x (no spaces - [x]) in all [ ] that apply.
 -->
 
-<!-- the plugin(s) this PR is for -->
-
-## Rollup Plugin Name: `{name}`
-
 This PR contains:
 
 - [ ] bugfix
@@ -35,7 +31,7 @@ Breaking Changes?
 - [ ] yes (_breaking changes will not be merged unless absolutely necessary_)
 - [ ] no
 
-If yes, then include "BREAKING CHANGES:" in the first commit message body, followed by a description of what is breaking. 
+If yes, then include "BREAKING CHANGES:" in the first commit message body, followed by a description of what is breaking.
 
 List any relevant issue numbers:
 
