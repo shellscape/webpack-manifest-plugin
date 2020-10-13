@@ -1,7 +1,7 @@
 function FakeCopyWebpackPlugin() {}
 
-FakeCopyWebpackPlugin.prototype.apply = function (compiler) {
-  const emit = function (compilation, callback) {
+FakeCopyWebpackPlugin.prototype.apply = (compiler) => {
+  const emit = (compilation, callback) => {
     const compiledMock = '// some compilation result\n';
     compilation.assets['third.party.js'] = {
       size() {

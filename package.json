@@ -17,7 +17,7 @@
     "node": ">=10.22.1"
   },
   "scripts": {
-    "ci:coverage": "nyc npm run test && nyc report --reporter=text-lcov > coverage.lcov",
+    "ci:coverage": "nyc npm run ci:test && nyc report --reporter=text-lcov > coverage.lcov",
     "ci:lint": "npm run lint && npm run security",
     "ci:test": "npm run test -- --verbose",
     "lint": "npm run lint:docs && npm run lint:json && npm run lint:package && npm run lint:js",
@@ -27,7 +27,7 @@
     "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
     "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
     "security": "npm audit --audit-level=moderate",
-    "test": "jest"
+    "test": "ava"
   },
   "files": [
     "lib",
@@ -50,9 +50,7 @@
     "eslint-config-shellscape": "^2.1.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^2.0.0",
-    "jest": "^23.5.0",
     "lint-staged": "^10.4.0",
-    "lodash": ">=3.5 <5",
     "memory-fs": "^0.4.1",
     "nyc": "^15.1.0",
     "pre-commit": "^1.2.2",
@@ -62,11 +60,15 @@
     "rimraf": "^2.6.1",
     "style-loader": "^0.23.0",
     "svgr": "^1.9.2",
-    "webpack": "^3.12.0"
+    "webpack": "^4.44.2",
+    "webpack-merge": "^5.2.0"
   },
   "ava": {
     "files": [
-      "!**/fixtures/**"
+      "!**/fixtures/**",
+      "!**/helpers/**",
+      "!**/output/**",
+      "!**/plugin/**"
     ]
   },
   "jest": {
