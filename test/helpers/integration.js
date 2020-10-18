@@ -1,6 +1,8 @@
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 
+const { log } = console;
+
 const applyDefaults = (webpackOpts) => {
   const defaults = {
     optimization: {
@@ -17,10 +19,8 @@ const prepare = (webpackOpts) => {
   return applyDefaults(webpackOpts);
 };
 
-const watch = (config, compilerOps, cb) => {
+const watch = (config, t, cb) => {
   const compiler = webpack(prepare(config));
-
-  Object.assign(compiler, compilerOps);
 
   return compiler.watch(
     {
@@ -28,8 +28,8 @@ const watch = (config, compilerOps, cb) => {
       poll: true
     },
     (err, stats) => {
-      expect(err).toBeFalsy();
-      expect(stats.hasErrors()).toBe(false);
+      t.falsy(err);
+      t.is(stats.hasErrors(), false);
 
       cb(stats);
     }
@@ -44,6 +44,9 @@ const compile = (config, compilerOps, t) => {
   return new Promise((p) => {
     compiler.run((err, stats) => {
       t.falsy(err);
+      if (stats.hasErrors()) {
+        log(stats.toJson());
+      }
       t.is(stats.hasErrors(), false);
 
       p(stats);

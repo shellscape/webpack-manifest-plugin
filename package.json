@@ -68,7 +68,7 @@
       "!**/fixtures/**",
       "!**/helpers/**",
       "!**/output/**",
-      "!**/plugin/**"
+      "!**/unit/**"
     ]
   },
   "jest": {

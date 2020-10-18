@@ -1,98 +1,52 @@
+const { join } = require('path');
+
 const test = require('ava');
+const fse = require('fs-extra');
+const webpack = require('webpack');
 
-test('pass', (t) => t.pass());
+const { WebpackManifestPlugin } = require('../../lib');
+const { watch } = require('../helpers/integration');
 
-// describe('import() update', () => {
-//   let compiler;
-//   let isFirstRun;
-//
-//   beforeAll(() => {
-//     fse.outputFileSync(
-//       path.join(__dirname, 'output/watch-import-chunk/chunk1.js'),
-//       "console.log('chunk 1')"
-//     );
-//     fse.outputFileSync(
-//       path.join(__dirname, 'output/watch-import-chunk/chunk2.js'),
-//       "console.log('chunk 2')"
-//     );
-//     fse.outputFileSync(
-//       path.join(__dirname, 'output/watch-import-chunk/index.js'),
-//       "import('./chunk1')\nimport('./chunk2')"
-//     );
-//     isFirstRun = true;
-//   });
-//
-//   afterAll((done) => {
-//     compiler.close(done);
-//   });
-//
-//   test('outputs a manifest of one file', (done) => {
-//     compiler = webpackWatch(
-//       {
-//         context: __dirname,
-//         output: {
-//           filename: '[name].js',
-//           path: path.join(__dirname, 'output/watch-import-chunk')
-//         },
-//         entry: './output/watch-import-chunk/index.js',
-//         watch: true,
-//         plugins: [new ManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
-//       },
-//       {},
-//       () => {
-//         const manifest = fse.readJsonSync(
-//           path.join(__dirname, 'output/watch-import-chunk/manifest.json')
-//         );
-//
-//         expect(manifest).toBeDefined();
-//
-//         if (isFirstRun) {
-//           expect(manifest).toEqual(
-//             isWebpackVersionGte(5)
-//               ? {
-//                   'main.js': 'main.js',
-//                   '0.js': '0.js',
-//                   '2.js': '2.js'
-//                 }
-//               : isWebpackVersionGte(4)
-//               ? {
-//                   'main.js': 'main.js',
-//                   '1.js': '1.js',
-//                   '2.js': '2.js'
-//                 }
-//               : {
-//                   'main.js': 'main.js',
-//                   '0.js': '0.js',
-//                   '1.js': '1.js'
-//                 }
-//           );
-//
-//           isFirstRun = false;
-//           fse.outputFileSync(
-//             path.join(__dirname, 'output/watch-import-chunk/index.js'),
-//             "import('./chunk1')"
-//           );
-//         } else {
-//           expect(manifest).toEqual(
-//             isWebpackVersionGte(5)
-//               ? {
-//                   'main.js': 'main.js',
-//                   '2.js': '2.js'
-//                 }
-//               : isWebpackVersionGte(4)
-//               ? {
-//                   'main.js': 'main.js',
-//                   '1.js': '1.js'
-//                 }
-//               : {
-//                   'main.js': 'main.js',
-//                   '3.js': '3.js'
-//                 }
-//           );
-//
-//           done();
-//         }
-//       }
-//     );
-//   });
-// });
+const outputPath = join(__dirname, '../output/watch-import-chunk');
+
+let compiler;
+let isFirstRun;
+
+test.before(() => {
+  fse.outputFileSync(join(outputPath, 'chunk1.js'), "console.log('chunk 1')");
+  fse.outputFileSync(join(outputPath, 'chunk2.js'), "console.log('chunk 2')");
+  fse.outputFileSync(join(outputPath, 'index.js'), "import('./chunk1')\nimport('./chunk2')");
+  isFirstRun = true;
+});
+
+test.after.cb((t) => {
+  compiler.close(t.end);
+});
+
+test.cb('outputs a manifest of one file', (t) => {
+  const config = {
+    context: __dirname,
+    output: {
+      filename: '[name].js',
+      path: outputPath
+    },
+    entry: '../output/watch-import-chunk/index.js',
+    watch: true,
+    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
+  };
+
+  compiler = watch(config, t, () => {
+    const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+
+    t.truthy(manifest);
+
+    if (isFirstRun) {
+      t.deepEqual(manifest, { 'main.js': 'main.js', '1.js': '1.js', '2.js': '2.js' });
+      isFirstRun = false;
+      fse.outputFileSync(join(outputPath, 'index.js'), "import('./chunk1')");
+    } else {
+      t.deepEqual(manifest, { 'main.js': 'main.js', '1.js': '1.js' });
+      t.end();
+    }
+  });
+});

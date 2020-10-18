@@ -1,85 +1,53 @@
+const { join } = require('path');
+
 const test = require('ava');
+const fse = require('fs-extra');
+const rimraf = require('rimraf');
 
-test('pass', (t) => t.pass());
+const { WebpackManifestPlugin } = require('../../lib');
+const { compile } = require('../helpers/integration');
 
-// describe('set location of manifest', () => {
-//   describe('using relative path', () => {
-//     beforeEach(() => {
-//       rimraf.sync(path.join(__dirname, 'output/relative-manifest'));
-//     });
-//
-//     test('should use output to the correct location', (done) => {
-//       webpackCompile(
-//         {
-//           context: __dirname,
-//           entry: './fixtures/file.js',
-//           output: {
-//             path: path.join(__dirname, 'output/relative-manifest'),
-//             filename: '[name].js'
-//           },
-//           plugins: [
-//             new ManifestPlugin({
-//               fileName: 'webpack.manifest.js'
-//             })
-//           ]
-//         },
-//         {},
-//         () => {
-//           const manifestPath = path.join(
-//             __dirname,
-//             'output/relative-manifest',
-//             'webpack.manifest.js'
-//           );
-//
-//           const result = fse.readJsonSync(manifestPath);
-//
-//           expect(result).toEqual({
-//             'main.js': 'main.js'
-//           });
-//
-//           done();
-//         }
-//       );
-//     });
-//   });
-//
-//   describe('using absolute path', () => {
-//     beforeEach(() => {
-//       rimraf.sync(path.join(__dirname, 'output/absolute-manifest'));
-//     });
-//
-//     test('should use output to the correct location', (done) => {
-//       webpackCompile(
-//         {
-//           context: __dirname,
-//           entry: './fixtures/file.js',
-//           output: {
-//             path: path.join(__dirname, 'output/absolute-manifest'),
-//             filename: '[name].js'
-//           },
-//           plugins: [
-//             new ManifestPlugin({
-//               fileName: path.join(__dirname, 'output/absolute-manifest', 'webpack.manifest.js')
-//             })
-//           ]
-//         },
-//         {},
-//         () => {
-//           const manifestPath = path.join(
-//             __dirname,
-//             'output/absolute-manifest',
-//             'webpack.manifest.js'
-//           );
-//
-//           const result = fse.readJsonSync(manifestPath);
-//
-//           expect(result).toEqual({
-//             'main.js': 'main.js'
-//           });
-//
-//           done();
-//         }
-//       );
-//     });
-//   });
-// });
+const absOutputPath = join(__dirname, '../output/absolute-manifest');
+const outputPath = join(__dirname, '../output/relative-manifest');
+
+test.beforeEach(() => {
+  rimraf.sync(outputPath);
+  rimraf.sync(absOutputPath);
+});
+
+test('output to the correct location', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/file.js',
+    output: {
+      filename: '[name].js',
+      path: outputPath
+    },
+    plugins: [new WebpackManifestPlugin({ fileName: 'webpack.manifest.js' })]
+  };
+
+  await compile(config, {}, t);
+
+  const manifestPath = join(outputPath, 'webpack.manifest.js');
+  const result = fse.readJsonSync(manifestPath);
+
+  t.deepEqual(result, { 'main.js': 'main.js' });
+});
+
+test('output using absolute path', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/file.js',
+    output: {
+      filename: '[name].js',
+      path: absOutputPath
+    },
+    plugins: [new WebpackManifestPlugin({ fileName: join(absOutputPath, 'webpack.manifest.js') })]
+  };
+  await compile(config, {}, t);
+
+  const manifestPath = join(absOutputPath, 'webpack.manifest.js');
+  const result = fse.readJsonSync(manifestPath);
+
+  t.deepEqual(result, { 'main.js': 'main.js' });
+});

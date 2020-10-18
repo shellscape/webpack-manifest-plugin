@@ -1,51 +1,51 @@
+const { join } = require('path');
+
 const test = require('ava');
+const fse = require('fs-extra');
+const webpack = require('webpack');
 
-test('pass', (t) => t.pass());
+const { WebpackManifestPlugin } = require('../../lib');
+const { watch } = require('../helpers/integration');
 
-// describe('watch mode', () => {
-//   let compiler;
-//   let hashes;
-//
-//   beforeAll(() => {
-//     fse.outputFileSync(path.join(__dirname, 'output/watch-mode/index.js'), "console.log('v1')");
-//     hashes = [];
-//   });
-//
-//   afterAll((done) => {
-//     compiler.close(done);
-//   });
-//
-//   test('outputs a manifest of one file', (done) => {
-//     compiler = webpackWatch(
-//       {
-//         context: __dirname,
-//         output: {
-//           filename: '[name].[hash].js',
-//           path: path.join(__dirname, 'output/watch-mode')
-//         },
-//         entry: './output/watch-mode/index.js',
-//         watch: true,
-//         plugins: [new ManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
-//       },
-//       {},
-//       // eslint-disable-next-line consistent-return
-//       (stats) => {
-//         const manifest = fse.readJsonSync(path.join(__dirname, 'output/watch-mode/manifest.json'));
-//
-//         expect(manifest).toBeDefined();
-//         expect(manifest).toEqual({
-//           'main.js': `main.${stats.hash}.js`
-//         });
-//
-//         hashes.push(stats.hash);
-//
-//         if (hashes.length === 2) {
-//           expect(hashes[0]).not.toEqual(hashes[1]);
-//           return done();
-//         }
-//
-//         fse.outputFileSync(path.join(__dirname, 'output/watch-mode/index.js'), "console.log('v2')");
-//       }
-//     );
-//   });
-// });
+const outputPath = join(__dirname, '../output/watch-mode');
+
+let compiler;
+let hashes;
+
+test.before(() => {
+  fse.outputFileSync(join(outputPath, 'index.js'), "console.log('v1')");
+  hashes = [];
+});
+
+test.after.cb((t) => {
+  compiler.close(t.end);
+});
+
+test.cb('outputs a manifest of one file', (t) => {
+  const config = {
+    context: __dirname,
+    output: {
+      filename: '[name].[hash].js',
+      path: outputPath
+    },
+    entry: '../output/watch-mode/index.js',
+    watch: true,
+    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
+  };
+
+  compiler = watch(config, t, (stats) => {
+    const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+
+    t.truthy(manifest);
+    t.deepEqual(manifest, { 'main.js': `main.${stats.hash}.js` });
+
+    hashes.push(stats.hash);
+
+    if (hashes.length === 2) {
+      t.notDeepEqual(hashes[0], hashes[1]);
+      t.end();
+    }
+
+    fse.outputFileSync(join(outputPath, 'index.js'), "console.log('v2')");
+  });
+});

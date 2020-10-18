@@ -1,51 +1,46 @@
-const test = require('ava');
+const { join } = require('path');
 
-test('pass', (t) => t.pass());
-// describe('scoped hoisting', () => {
-//   beforeAll(() => {
-//     fse.outputFileSync(
-//       path.join(__dirname, 'output/scoped-hoisting/index.js'),
-//       'import { ReactComponent } from "./logo.svg";'
-//     );
-//     fse.outputFileSync(path.join(__dirname, 'output/scoped-hoisting/logo.svg'), '<svg />');
-//   });
-//
-//   test('outputs a manifest', (done) => {
-//     let plugins;
-//     if (webpack.optimize.ModuleConcatenationPlugin) {
-//       // ModuleConcatenationPlugin works with webpack 3, 4.
-//       plugins = [new webpack.optimize.ModuleConcatenationPlugin(), new ManifestPlugin()];
-//     } else {
-//       plugins = [new ManifestPlugin()];
-//     }
-//     webpackCompile(
-//       {
-//         context: __dirname,
-//         entry: './output/scoped-hoisting/index.js',
-//         module: {
-//           rules: [
-//             {
-//               test: /\.svg$/,
-//               use: ['svgr/webpack', 'file-loader']
-//             }
-//           ]
-//         },
-//         output: {
-//           filename: '[name].[hash].js',
-//           path: path.join(__dirname, 'output/scoped-hoisting')
-//         },
-//         plugins
-//       },
-//       {},
-//       (stats) => {
-//         const manifest = fse.readJsonSync(
-//           path.join(__dirname, 'output/scoped-hoisting/manifest.json')
-//         );
-//
-//         expect(manifest).toBeDefined();
-//         expect(manifest['main.js']).toEqual(`main.${stats.hash}.js`);
-//         return done();
-//       }
-//     );
-//   });
-// });
+const test = require('ava');
+const fse = require('fs-extra');
+const webpack = require('webpack');
+
+const { WebpackManifestPlugin } = require('../../lib');
+const { compile } = require('../helpers/integration');
+
+const outputPath = join(__dirname, '../output/scoped-hoisting');
+
+test.before(() => {
+  fse.outputFileSync(join(outputPath, 'index.js'), 'import { ReactComponent } from "./logo.svg";');
+  fse.outputFileSync(join(outputPath, 'logo.svg'), '<svg />');
+});
+
+test('outputs a manifest', async (t) => {
+  const plugins = [new WebpackManifestPlugin()];
+  // webpack v4
+  if (webpack.optimize.ModuleConcatenationPlugin) {
+    plugins.unshift(new webpack.optimize.ModuleConcatenationPlugin());
+  }
+
+  const config = {
+    context: __dirname,
+    entry: '../output/scoped-hoisting/index.js',
+    module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          use: ['svgr/webpack', 'file-loader']
+        }
+      ]
+    },
+    output: {
+      filename: '[name].[hash].js',
+      path: outputPath
+    },
+    plugins
+  };
+  const stats = await compile(config, {}, t);
+  const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+
+  t.truthy(manifest);
+  t.is(manifest['main.js'], `main.${stats.hash}.js`);
+});
