@@ -1,54 +1,38 @@
-// describe('set location of manifest', () => {
-//   describe('using relative path', () => {
-//     test('should use output to the correct location', (done) => {
-//       webpackCompile(
-//         {
-//           context: __dirname,
-//           entry: './fixtures/file.js'
-//         },
-//         {
-//           manifestOptions: {
-//             fileName: 'webpack.manifest.js'
-//           }
-//         },
-//         (manifest, stats, fs) => {
-//           const OUTPUT_DIR = path.join(__dirname, './webpack-out');
-//           const manifestPath = path.join(OUTPUT_DIR, 'webpack.manifest.js');
-//           const result = JSON.parse(fs.readFileSync(manifestPath).toString());
-//
-//           expect(result).toEqual({
-//             'main.js': 'main.js'
-//           });
-//
-//           done();
-//         }
-//       );
-//     });
-//   });
-//
-//   describe('using absolute path', () => {
-//     test('should use output to the correct location', (done) => {
-//       webpackCompile(
-//         {
-//           context: __dirname,
-//           entry: './fixtures/file.js'
-//         },
-//         {
-//           manifestOptions: {
-//             fileName: path.join(__dirname, 'webpack.manifest.js')
-//           }
-//         },
-//         (manifest, stats, fs) => {
-//           const manifestPath = path.join(__dirname, 'webpack.manifest.js');
-//           const result = JSON.parse(fs.readFileSync(manifestPath).toString());
-//
-//           expect(result).toEqual({
-//             'main.js': 'main.js'
-//           });
-//
-//           done();
-//         }
-//       );
-//     });
-//   });
-// });
+const { join } = require('path');
+
+const test = require('ava');
+const del = require('del');
+
+const { compile } = require('../helpers/unit');
+
+const outputPath = join(__dirname, '../output/manifest-location');
+
+test.after(() => del(outputPath));
+
+test('relative path', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/file.js',
+    output: { path: join(outputPath, 'relative') }
+  };
+
+  const { manifest } = await compile(config, t, {
+    fileName: 'webpack.manifest.js'
+  });
+
+  t.deepEqual(manifest, { 'main.js': 'main.js' });
+});
+
+test('absolute path', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/file.js',
+    output: { path: join(outputPath, 'absolute') }
+  };
+
+  const { manifest } = await compile(config, t, {
+    fileName: join(outputPath, 'absolute/webpack.manifest.js')
+  });
+
+  t.deepEqual(manifest, { 'main.js': 'main.js' });
+});

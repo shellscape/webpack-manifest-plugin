@@ -1,8 +1,8 @@
 const { join } = require('path');
 
 const test = require('ava');
+const del = require('del');
 const fse = require('fs-extra');
-const rimraf = require('rimraf');
 
 const { compile } = require('../helpers/integration');
 const { getAsset } = require('../helpers/webpack-version-helpers');
@@ -10,9 +10,7 @@ const { getCompilerHooks, WebpackManifestPlugin } = require('../../lib');
 
 const outputPath = join(__dirname, '../output/single-file');
 
-test.beforeEach(() => {
-  rimraf.sync(outputPath);
-});
+test.beforeEach(() => del(outputPath));
 
 test.serial('outputs a manifest of one file', async (t) => {
   const config = {

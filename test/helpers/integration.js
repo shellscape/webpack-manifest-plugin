@@ -42,8 +42,8 @@ const compile = (config, compilerOps, t) => {
   Object.assign(compiler, compilerOps);
 
   return new Promise((p) => {
-    compiler.run((err, stats) => {
-      t.falsy(err);
+    compiler.run((error, stats) => {
+      t.falsy(error);
       if (stats.hasErrors()) {
         log(stats.toJson());
       }
@@ -54,4 +54,4 @@ const compile = (config, compilerOps, t) => {
   });
 };
 
-module.exports = { compile, watch };
+module.exports = { compile, prepare, watch };

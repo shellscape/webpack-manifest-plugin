@@ -1,8 +1,8 @@
 const { join } = require('path');
 
 const test = require('ava');
+const del = require('del');
 const fse = require('fs-extra');
-const rimraf = require('rimraf');
 
 const { WebpackManifestPlugin } = require('../../lib');
 const { compile } = require('../helpers/integration');
@@ -11,9 +11,9 @@ const outputPath = join(__dirname, '../output/multiple-compilation');
 const outputMultiPath = join(__dirname, '../output/multiple-manifest');
 const nbCompiler = 10;
 
-test.beforeEach(() => {
-  rimraf.sync(outputPath);
-  rimraf.sync(outputMultiPath);
+test.beforeEach(async () => {
+  await del(outputPath);
+  await del(outputMultiPath);
 });
 
 test('should not produce mangle output', async (t) => {

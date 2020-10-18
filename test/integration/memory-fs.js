@@ -1,18 +1,16 @@
 const { join } = require('path');
 
 const test = require('ava');
+const del = require('del');
 const fse = require('fs-extra');
 const MemoryFileSystem = require('memory-fs');
-const rimraf = require('rimraf');
 
 const { WebpackManifestPlugin } = require('../../lib');
 const { compile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/emit');
 
-test.beforeEach(() => {
-  rimraf.sync(outputPath);
-});
+test.beforeEach(() => del(outputPath));
 
 test('outputs a manifest when using memory fs', async (t) => {
   const config = {

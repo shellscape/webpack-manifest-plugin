@@ -1,8 +1,8 @@
 const { join } = require('path');
 
 const test = require('ava');
+const del = require('del');
 const fse = require('fs-extra');
-const rimraf = require('rimraf');
 
 const { WebpackManifestPlugin } = require('../../lib');
 const { compile } = require('../helpers/integration');
@@ -10,9 +10,9 @@ const { compile } = require('../helpers/integration');
 const absOutputPath = join(__dirname, '../output/absolute-manifest');
 const outputPath = join(__dirname, '../output/relative-manifest');
 
-test.beforeEach(() => {
-  rimraf.sync(outputPath);
-  rimraf.sync(absOutputPath);
+test.beforeEach(async () => {
+  await del(outputPath);
+  await del(absOutputPath);
 });
 
 test('output to the correct location', async (t) => {

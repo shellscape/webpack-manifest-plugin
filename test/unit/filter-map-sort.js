@@ -1,118 +1,101 @@
-// describe('filter', () => {
-//   test('should filter out non-initial chunks', (done) => {
-//     webpackCompile(
-//       {
-//         context: __dirname,
-//         entry: {
-//           nameless: './fixtures/nameless.js'
-//         },
-//         output: {
-//           filename: '[name].[hash].js'
-//         }
-//       },
-//       {
-//         manifestOptions: {
-//           filter(file) {
-//             return file.isInitial;
-//           }
-//         }
-//       },
-//       (manifest, stats) => {
-//         expect(Object.keys(manifest).length).toEqual(1);
-//         expect(manifest['nameless.js']).toEqual(`nameless.${stats.hash}.js`);
-//
-//         done();
-//       }
-//     );
-//   });
-// });
-//
-// describe('map', () => {
-//   test('should allow modifying files defails', (done) => {
-//     webpackCompile(
-//       {
-//         context: __dirname,
-//         entry: './fixtures/file.js',
-//         output: {
-//           filename: '[name].js'
-//         }
-//       },
-//       {
-//         manifestOptions: {
-//           map(file, i) {
-//             file.name = i.toString();
-//             return file;
-//           }
-//         }
-//       },
-//       (manifest) => {
-//         expect(manifest).toEqual({
-//           0: 'main.js'
-//         });
-//
-//         done();
-//       }
-//     );
-//   });
-//
-//   test('should add subfolders', (done) => {
-//     webpackCompile(
-//       {
-//         context: __dirname,
-//         entry: './fixtures/file.js',
-//         output: {
-//           filename: 'javascripts/main.js'
-//         }
-//       },
-//       {
-//         manifestOptions: {
-//           map(file) {
-//             file.name = path.join(path.dirname(file.path), file.name);
-//             return file;
-//           }
-//         }
-//       },
-//       (manifest) => {
-//         expect(manifest).toEqual({
-//           'javascripts/main.js': 'javascripts/main.js'
-//         });
-//
-//         done();
-//       }
-//     );
-//   });
-// });
-//
-// describe('sort', () => {
-//   test('should allow ordering of output', (done) => {
-//     webpackCompile(
-//       {
-//         context: __dirname,
-//         entry: {
-//           one: './fixtures/file.js',
-//           two: './fixtures/file-two.js'
-//         },
-//         output: {
-//           filename: '[name].js'
-//         }
-//       },
-//       {
-//         manifestOptions: {
-//           seed: [],
-//           sort(a) {
-//             // make sure one is the latest
-//             return a.name === 'one.js' ? 1 : -1;
-//           },
-//           generate(seed, files) {
-//             return files.map((file) => file.name);
-//           }
-//         }
-//       },
-//       (manifest) => {
-//         expect(manifest).toEqual(['two.js', 'one.js']);
-//
-//         done();
-//       }
-//     );
-//   });
-// });
+const { dirname, join } = require('path');
+
+const test = require('ava');
+const del = require('del');
+
+const { compile } = require('../helpers/unit');
+
+const outputPath = join(__dirname, '../output/filter-map-sort');
+
+test.after(() => del(outputPath));
+
+test('filter non-initial chunks', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      nameless: '../fixtures/nameless.js'
+    },
+    output: {
+      filename: '[name].[hash].js',
+      path: join(outputPath, 'filter-chunks')
+    }
+  };
+
+  const { manifest, stats } = await compile(config, t, {
+    filter(file) {
+      return file.isInitial;
+    }
+  });
+
+  t.is(Object.keys(manifest).length, 1);
+  t.is(manifest['nameless.js'], `nameless.${stats.hash}.js`);
+});
+
+test('map file details', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/file.js',
+    output: {
+      filename: '[name].js',
+      path: join(outputPath, 'map-files')
+    }
+  };
+  const { manifest } = await compile(config, t, {
+    map(file, i) {
+      file.name = i.toString();
+      return file;
+    }
+  });
+
+  t.deepEqual(manifest, {
+    0: 'main.js'
+  });
+});
+
+test('map subfolders', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/file.js',
+    output: {
+      filename: 'javascripts/main.js',
+      path: join(outputPath, 'map-subfolders')
+    }
+  };
+
+  const { manifest } = await compile(config, t, {
+    map(file) {
+      file.name = join(dirname(file.path), file.name);
+      return file;
+    }
+  });
+
+  t.deepEqual(manifest, {
+    'javascripts/main.js': 'javascripts/main.js'
+  });
+});
+
+test('sort', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js',
+      two: '../fixtures/file-two.js'
+    },
+    output: {
+      filename: '[name].js',
+      path: join(outputPath, 'sort')
+    }
+  };
+  const { manifest } = await compile(config, t, {
+    seed: [],
+    sort(a) {
+      // make sure one is the latest
+      return a.name === 'one.js' ? 1 : -1;
+    },
+    generate(seed, files) {
+      return files.map((file) => file.name);
+    }
+  });
+
+  t.deepEqual(manifest, ['two.js', 'one.js']);
+});
