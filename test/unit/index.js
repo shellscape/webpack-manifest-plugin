@@ -3,14 +3,15 @@ const { join } = require('path');
 const test = require('ava');
 const del = require('del');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { getCompilerHooks, WebpackManifestPlugin } = require('../../lib');
 const { compile } = require('../helpers/unit');
 
 const outputPath = join(__dirname, '../output/unit');
 
 test.after(() => del(outputPath));
 
-test('exists', async (t) => {
+test('exports', async (t) => {
+  t.truthy(getCompilerHooks);
   t.truthy(WebpackManifestPlugin);
 });
 
