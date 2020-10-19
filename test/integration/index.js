@@ -66,12 +66,7 @@ test('exposes a plugin hook with the manifest content', async (t) => {
 
     apply(compiler) {
       if (compiler.hooks) {
-        let hook;
-        if (Object.isFrozen(compiler.hooks)) {
-          hook = getCompilerHooks(compiler).afterEmit;
-        } else {
-          hook = compiler.hooks.webpackManifestPluginAfterEmit;
-        }
+        const hook = getCompilerHooks(compiler).afterEmit;
         hook.tap('WebpackManifestPlugin', (manifest) => {
           this.manifest = manifest;
         });
