@@ -1,17 +1,16 @@
 const { join } = require('path');
 
 const test = require('ava');
-const fse = require('fs-extra');
 const webpack = require('webpack');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { compile } = require('../helpers/integration');
+const { compile, readJson, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/scoped-hoisting');
 
 test.before(() => {
-  fse.outputFileSync(join(outputPath, 'index.js'), 'import { ReactComponent } from "./logo.svg";');
-  fse.outputFileSync(join(outputPath, 'logo.svg'), '<svg />');
+  writeFile(join(outputPath, 'index.js'), 'import { ReactComponent } from "./logo.svg";');
+  writeFile(join(outputPath, 'logo.svg'), '<svg />');
 });
 
 test('outputs a manifest', async (t) => {
@@ -39,7 +38,7 @@ test('outputs a manifest', async (t) => {
     plugins
   };
   const stats = await compile(config, {}, t);
-  const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+  const manifest = readJson(join(outputPath, 'manifest.json'));
 
   t.truthy(manifest);
   t.is(manifest['main.js'], `main.${stats.hash}.js`);

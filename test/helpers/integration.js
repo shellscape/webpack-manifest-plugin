@@ -1,3 +1,6 @@
+const { mkdirSync, readFileSync, writeFileSync } = require('fs');
+const { dirname } = require('path');
+
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 
@@ -19,23 +22,6 @@ const prepare = (webpackOpts) => {
   return applyDefaults(webpackOpts);
 };
 
-const watch = (config, t, cb) => {
-  const compiler = webpack(prepare(config));
-
-  return compiler.watch(
-    {
-      aggregateTimeout: 300,
-      poll: true
-    },
-    (err, stats) => {
-      t.falsy(err);
-      t.is(stats.hasErrors(), false);
-
-      cb(stats);
-    }
-  );
-};
-
 const compile = (config, compilerOps, t) => {
   const compiler = webpack(prepare(config));
 
@@ -54,4 +40,31 @@ const compile = (config, compilerOps, t) => {
   });
 };
 
-module.exports = { compile, prepare, watch };
+const readJson = (path) => {
+  const content = readFileSync(path, 'utf-8');
+  return JSON.parse(content);
+};
+
+const watch = (config, t, cb) => {
+  const compiler = webpack(prepare(config));
+
+  return compiler.watch(
+    {
+      aggregateTimeout: 300,
+      poll: true
+    },
+    (err, stats) => {
+      t.falsy(err);
+      t.is(stats.hasErrors(), false);
+
+      cb(stats);
+    }
+  );
+};
+
+const writeFile = (fileName, content) => {
+  mkdirSync(dirname(fileName), { recursive: true });
+  writeFileSync(fileName, content);
+};
+
+module.exports = { compile, prepare, readJson, watch, writeFile };

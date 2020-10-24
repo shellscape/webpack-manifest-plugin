@@ -2,10 +2,9 @@ const { join } = require('path');
 
 const test = require('ava');
 const del = require('del');
-const fse = require('fs-extra');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { compile } = require('../helpers/integration');
+const { compile, readJson } = require('../helpers/integration');
 
 const absOutputPath = join(__dirname, '../output/absolute-manifest');
 const outputPath = join(__dirname, '../output/relative-manifest');
@@ -29,7 +28,7 @@ test('output to the correct location', async (t) => {
   await compile(config, {}, t);
 
   const manifestPath = join(outputPath, 'webpack.manifest.js');
-  const result = fse.readJsonSync(manifestPath);
+  const result = readJson(manifestPath);
 
   t.deepEqual(result, { 'main.js': 'main.js' });
 });
@@ -47,7 +46,7 @@ test('output using absolute path', async (t) => {
   await compile(config, {}, t);
 
   const manifestPath = join(absOutputPath, 'webpack.manifest.js');
-  const result = fse.readJsonSync(manifestPath);
+  const result = readJson(manifestPath);
 
   t.deepEqual(result, { 'main.js': 'main.js' });
 });

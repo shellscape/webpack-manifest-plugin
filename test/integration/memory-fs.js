@@ -2,11 +2,11 @@ const { join } = require('path');
 
 const test = require('ava');
 const del = require('del');
-const fse = require('fs-extra');
+
 const MemoryFileSystem = require('memory-fs');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { compile } = require('../helpers/integration');
+const { compile, readJson } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/emit');
 
@@ -24,7 +24,7 @@ test('outputs a manifest when using memory fs', async (t) => {
   };
   await compile(config, { outputFileSystem: new MemoryFileSystem() }, t);
 
-  const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+  const manifest = readJson(join(outputPath, 'manifest.json'));
 
   t.truthy(manifest);
   t.deepEqual(manifest, { 'main.js': 'main.js' });

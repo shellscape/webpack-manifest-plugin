@@ -2,10 +2,9 @@ const { join } = require('path');
 
 const test = require('ava');
 const del = require('del');
-const fse = require('fs-extra');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { compile } = require('../helpers/integration');
+const { compile, readJson } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/multiple-compilation');
 const outputMultiPath = join(__dirname, '../output/multiple-manifest');
@@ -34,7 +33,7 @@ test('should not produce mangle output', async (t) => {
 
   await compile(config, {}, t);
 
-  const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+  const manifest = readJson(join(outputPath, 'manifest.json'));
   const expected = Array.from({ length: nbCompiler }).reduce((man, x, i) => {
     // eslint-disable-next-line no-param-reassign
     man[`main-${i}.js`] = `main-${i}.js`;
@@ -73,8 +72,8 @@ test('should produce two seperate manifests', async (t) => {
   ];
   await compile(config, {}, t);
 
-  const manifest1 = fse.readJsonSync(join(outputMultiPath, '1/manifest.json'));
-  const manifest2 = fse.readJsonSync(join(outputMultiPath, '2/manifest.json'));
+  const manifest1 = readJson(join(outputMultiPath, '1/manifest.json'));
+  const manifest2 = readJson(join(outputMultiPath, '2/manifest.json'));
 
   t.truthy(manifest1);
   t.truthy(manifest2);

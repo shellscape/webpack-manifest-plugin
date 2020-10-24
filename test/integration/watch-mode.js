@@ -1,11 +1,10 @@
 const { join } = require('path');
 
 const test = require('ava');
-const fse = require('fs-extra');
 const webpack = require('webpack');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { watch } = require('../helpers/integration');
+const { readJson, watch, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/watch-mode');
 
@@ -13,7 +12,7 @@ let compiler;
 let hashes;
 
 test.before(() => {
-  fse.outputFileSync(join(outputPath, 'index.js'), "console.log('v1')");
+  writeFile(join(outputPath, 'index.js'), "console.log('v1')");
   hashes = [];
 });
 
@@ -34,7 +33,7 @@ test.cb('outputs a manifest of one file', (t) => {
   };
 
   compiler = watch(config, t, (stats) => {
-    const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+    const manifest = readJson(join(outputPath, 'manifest.json'));
 
     t.truthy(manifest);
     t.deepEqual(manifest, { 'main.js': `main.${stats.hash}.js` });
@@ -46,6 +45,6 @@ test.cb('outputs a manifest of one file', (t) => {
       t.end();
     }
 
-    fse.outputFileSync(join(outputPath, 'index.js'), "console.log('v2')");
+    writeFile(join(outputPath, 'index.js'), "console.log('v2')");
   });
 });

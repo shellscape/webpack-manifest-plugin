@@ -33,8 +33,6 @@
     "webpack": "^4.44.2"
   },
   "dependencies": {
-    "fs-extra": "^9.0.1",
-    "object.entries": "^1.1.0",
     "tapable": "^2.0.0"
   },
   "devDependencies": {

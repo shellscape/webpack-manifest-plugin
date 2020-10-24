@@ -2,9 +2,8 @@ const { join } = require('path');
 
 const test = require('ava');
 const del = require('del');
-const fse = require('fs-extra');
 
-const { compile } = require('../helpers/integration');
+const { compile, readJson } = require('../helpers/integration');
 const { getAsset } = require('../helpers/webpack-version-helpers');
 const { getCompilerHooks, WebpackManifestPlugin } = require('../../lib');
 
@@ -24,7 +23,7 @@ test.serial('outputs a manifest of one file', async (t) => {
   };
 
   await compile(config, {}, t);
-  const manifest = fse.readJsonSync(join(outputPath, 'manifest.json'));
+  const manifest = readJson(join(outputPath, 'manifest.json'));
 
   t.truthy(manifest);
   t.deepEqual(manifest, { 'main.js': 'main.js' });
@@ -49,11 +48,11 @@ test.serial('still works when there are multiple instances of the plugin', async
   t.is(getAsset(stats.compilation, 'manifest1.json'), true);
   t.is(getAsset(stats.compilation, 'manifest2.json'), true);
 
-  const manifest1 = fse.readJsonSync(join(outputPath, 'manifest1.json'));
+  const manifest1 = readJson(join(outputPath, 'manifest1.json'));
   t.truthy(manifest1);
   t.deepEqual(manifest1, { 'main.js': 'main.js' });
 
-  const manifest2 = fse.readJsonSync(join(outputPath, 'manifest2.json'));
+  const manifest2 = readJson(join(outputPath, 'manifest2.json'));
   t.truthy(manifest2);
   t.deepEqual(manifest2, { 'main.js': 'main.js' });
 });
