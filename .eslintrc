@@ -4,6 +4,7 @@
     "jasmine": true
   },
   "rules": {
+    "no-void": "off",
     "prettier/prettier": [
       "error",
       {
