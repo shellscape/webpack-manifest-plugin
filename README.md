@@ -93,22 +93,21 @@ Specifies the file name to use for the resulting manifest. By default the plugin
 Type: `Function`<br>
 Default: `undefined`
 
-Allows filtering the files which make up the manifest. The passed function should match the signature of `(FileDescriptor) => Boolean`. Return `true` to keep the file, `false` to remove the file.
+Allows filtering the files which make up the manifest. The passed function should match the signature of `(file: FileDescriptor) => Boolean`. Return `true` to keep the file, `false` to remove the file.
 
 ### `generate`
 
-Type: `Function(seed, files, entrypoints): => Object`<br>
-Parameter Types: `(Object, FileDescriptor, string[])`<br>
+Type: `Function`<br>
 Default: `undefined`
 
-A custom `Function` to create the manifest. It can return anything as long as it's serialisable by `JSON.stringify`.
+A custom `Function` to create the manifest. The passed function should match the signature of `(seed: Object, files: FileDescriptor[], entries: string[]) => Object` and can return anything as long as it's serialisable by `JSON.stringify`.
 
 ### `map`
 
 Type: `Function`<br>
 Default: `undefined`
 
-Allows modifying the files which make up the manifest. The passed function should match the signature of `(FileDescriptor) => FileDescriptor` where an object matching `FileDescriptor` is returned.
+Allows modifying the files which make up the manifest. The passed function should match the signature of `(file: FileDescriptor) => FileDescriptor` where an object matching `FileDescriptor` is returned.
 
 ### `publicPath`
 
@@ -136,7 +135,7 @@ A `Function` which can be leveraged to serialize the manifest in a different for
 Type: `Function`<br>
 Default: `undefined`
 
-Allows sorting the files which make up the manifest. The passed function should match the signature of `(FileDescriptor, FileDescriptor) => Number`. Return `0` to indicate no change, `-1` to indicate the file should be moved to a lower index, and `1` to indicate the file shoud be moved to a higher index.
+Allows sorting the files which make up the manifest. The passed function should match the signature of `(fileA: FileDescriptor, fileB: FileDescriptor) => Number`. Return `0` to indicate no change, `-1` to indicate the file should be moved to a lower index, and `1` to indicate the file shoud be moved to a higher index.
 
 ### `writeToFileEmit`
 
