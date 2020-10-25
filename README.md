@@ -136,7 +136,7 @@ A `Function` which can be leveraged to serialize the manifest in a different for
 Type: `Function`<br>
 Default: `undefined`
 
-Allows sorting the files which make up the manifest. The passed function should match the signature of `(FileDescriptor) => Number`. Return `0` to indicate no change, `-1` to indicate the file should be moved to a lower index, and `1` to indicate the file shoud be moved to a higher index.
+Allows sorting the files which make up the manifest. The passed function should match the signature of `(FileDescriptor, FileDescriptor) => Number`. Return `0` to indicate no change, `-1` to indicate the file should be moved to a lower index, and `1` to indicate the file shoud be moved to a higher index.
 
 ### `writeToFileEmit`
 
