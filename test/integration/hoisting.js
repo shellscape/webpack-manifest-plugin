@@ -27,7 +27,7 @@ test('outputs a manifest', async (t) => {
       rules: [
         {
           test: /\.svg$/,
-          use: ['svgr/webpack', 'file-loader']
+          use: ['@svgr/webpack', 'file-loader']
         }
       ]
     },
