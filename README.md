@@ -44,7 +44,7 @@ _Note: We recommend using [webpack-nano](https://github.com/shellscape/webpack-n
 Create a `webpack.config.js` file:
 
 ```js
-const { WebpackManifestPlugin: Manifest } = require('webpack-manifest-plugin');
+const Manifest = require('webpack-manifest-plugin');
 const options = { ... };
 
 module.exports = {
