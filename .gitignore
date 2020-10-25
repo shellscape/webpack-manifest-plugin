@@ -1,7 +1,7 @@
-node_modules
 .DS_Store
-spec/webpack-out
-yarn.lock
+.eslintcache
 .nyc_output
 coverage
-spec/output/
+coverage.lcov
+node_modules
+test/output/

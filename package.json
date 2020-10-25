@@ -1,54 +1,88 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "2.2.0",
-  "description": "webpack plugin for generating asset manifests",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest",
-    "codecov": "codecov"
-  },
-  "author": "Dane Thurber <dane.thurber@gmail.com>",
+  "version": "3.0.0",
+  "description": "A Webpack Plugin for generating Asset Manifests",
   "license": "MIT",
+  "repository": "shellscape/webpack-manifest-plugin",
+  "author": "Dane Thurber <dane.thurber@gmail.com>",
+  "homepage": "https://github.com/shellscape/webpack-manifest-plugin",
+  "bugs": "https://github.com/shellscape/webpack-manifest-plugin/issues",
+  "main": "lib/index.js",
   "engines": {
-    "node": ">=6.11.5"
+    "node": ">=10.22.1"
   },
-  "peerDependencies": {
-    "webpack": "2 || 3 || 4"
-  },
-  "devDependencies": {
-    "codecov": "^3.1.0",
-    "css-loader": "^1.0.0",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^2.0.0",
-    "jest": "^23.5.0",
-    "lodash": ">=3.5 <5",
-    "memory-fs": "^0.4.1",
-    "react": "^16.3.2",
-    "rimraf": "^2.6.1",
-    "style-loader": "^0.23.0",
-    "svgr": "^1.9.2",
-    "webpack": "^3.12.0"
+  "scripts": {
+    "ci:coverage": "nyc npm run ci:test && nyc report --reporter=text-lcov > coverage.lcov",
+    "ci:lint": "npm run lint && npm run security",
+    "ci:test": "npm run test -- --verbose",
+    "lint": "npm run lint:docs && npm run lint:json && npm run lint:package && npm run lint:js",
+    "lint-staged": "lint-staged",
+    "lint:docs": "prettier --single-quote --arrow-parens avoid --trailing-comma none --write README.md",
+    "lint:js": "eslint --fix --cache lib test",
+    "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
+    "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
+    "security": "npm audit --audit-level=moderate",
+    "test": "ava"
   },
   "files": [
-    "index.js",
-    "lib"
+    "lib",
+    "README.md",
+    "LICENSE"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/danethurber/webpack-manifest-plugin.git"
+  "peerDependencies": {
+    "webpack": "^4.44.2"
   },
-  "bugs": {
-    "url": "https://github.com/danethurber/webpack-manifest-plugin/issues"
-  },
-  "homepage": "https://github.com/danethurber/webpack-manifest-plugin",
   "dependencies": {
-    "fs-extra": "^7.0.0",
-    "object.entries": "^1.1.0",
-    "tapable": "^1.0.0"
+    "tapable": "^2.0.0"
+  },
+  "devDependencies": {
+    "@ava/babel": "^1.0.1",
+    "ava": "^3.13.0",
+    "codecov": "^3.1.0",
+    "css-loader": "^1.0.0",
+    "del": "^6.0.0",
+    "eslint-config-shellscape": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^2.0.0",
+    "lint-staged": "^10.4.0",
+    "memory-fs": "^0.4.1",
+    "nyc": "^15.1.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.1.2",
+    "prettier-plugin-package": "^1.2.0",
+    "react": "^16.3.2",
+    "style-loader": "^0.23.0",
+    "svgr": "^1.9.2",
+    "webpack": "^4.44.2",
+    "webpack-merge": "^5.2.0"
+  },
+  "ava": {
+    "files": [
+      "!**/fixtures/**",
+      "!**/helpers/**",
+      "!**/output/**"
+    ]
   },
   "jest": {
     "testEnvironment": "node",
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
-  }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ]
+  },
+  "maintainers": [
+    "Andrew Powell <andrew@shellscape.org>"
+  ],
+  "nyc": {
+    "include": [
+      "lib/*.js"
+    ],
+    "exclude": [
+      "test/"
+    ]
+  },
+  "pre-commit": "lint-staged"
 }

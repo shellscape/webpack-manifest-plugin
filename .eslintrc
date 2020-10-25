@@ -1,0 +1,19 @@
+{
+  "extends": "shellscape",
+  "globals": {
+    "jasmine": true
+  },
+  "rules": {
+    "no-void": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "arrowParens": "always",
+        "printWidth": 100,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "plugins": ["prettier-plugin-package"]
+      }
+    ]
+  }
+}
