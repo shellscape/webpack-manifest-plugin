@@ -10,6 +10,8 @@ const outputPath = join(__dirname, '../output/options');
 
 test.after(() => del(outputPath));
 
+const clean = (what) => what.replace(/([a-f0-9]{20,32})/gi, '[test-hash]');
+
 test('removeKeyHash', async (t) => {
   const config = {
     context: __dirname,
@@ -30,9 +32,19 @@ test('removeKeyHash', async (t) => {
 
   let { manifest } = await compile(config, t);
 
+  manifest = Object.keys(manifest).reduce((prev, key) => {
+    prev[clean(key)] = clean(manifest[key]);
+    return prev;
+  }, {});
+
   t.snapshot(manifest);
 
   ({ manifest } = await compile(config, t, { removeKeyHash: false }));
+
+  manifest = Object.keys(manifest).reduce((prev, key) => {
+    prev[clean(key)] = clean(manifest[key]);
+    return prev;
+  }, {});
 
   t.snapshot(manifest);
 });
