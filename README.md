@@ -111,10 +111,31 @@ Allows modifying the files which make up the manifest. The passed function shoul
 
 ### `publicPath`
 
-Type: `String`
+Type: `String`<br>
 Default: `<webpack-config>.output.publicPath`
 
 A path prefix that will be added to values of the manifest.
+
+### `removeKeyHash`
+
+Type: `RegExp | Boolean`<br>
+Default: `/([a-f0-9]{32}\.?)/gi`
+
+If set to a valid `RegExp`, removes hashes from manifest keys. e.g.
+
+```json
+{
+  "index.c5a9bff71fdfed9b6046.html": "index.c5a9bff71fdfed9b6046.html"
+}
+```
+
+```json
+{
+  "index.html": "index.c5a9bff71fdfed9b6046.html"
+}
+```
+
+The default value for this option is a regular expression targeting Webpack's [default md5 hash](https://webpack.js.org/configuration/output/#outputhashfunction). To target other hashing functions / algorithms, set this option to an appropriate `RegExp`. To disable replacing the hashes in key names, set this option to `false`.
 
 ### `seed`
 
