@@ -95,3 +95,30 @@ test('exposes a plugin hook with the manifest content', async (t) => {
   t.truthy(testPlugin.manifest);
   t.deepEqual(testPlugin.manifest, { 'main.js': 'main.js' });
 });
+
+test.serial('outputs a manifest of one file with contenthash', async (t) => {
+  const config = {
+    context: __dirname,
+    output: {
+      filename: '[contenthash].js',
+      path: outputPath
+    },
+    entry: '../fixtures/file-css.js',
+    module: {
+      rules: [
+        {
+          test: /\.(css)$/,
+          use: ['style-loader', 'css-loader']
+        }
+      ]
+    },
+    plugins: [new WebpackManifestPlugin()]
+  };
+
+  await compile(config, {}, t);
+  const manifest = readJson(join(outputPath, 'manifest.json'));
+
+  console.log(manifest);
+  t.truthy(manifest);
+  t.deepEqual(manifest, { 'main.js': 'f409ab1915466fccb119.js' });
+});
