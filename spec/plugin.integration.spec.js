@@ -66,6 +66,7 @@ describe('ManifestPlugin using real fs', function() {
       webpackCompile({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].js',
           path: path.join(__dirname, 'output/single-file')
         },
@@ -89,6 +90,7 @@ describe('ManifestPlugin using real fs', function() {
       webpackCompile({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].js',
           path: path.join(__dirname, 'output/single-file')
         },
@@ -147,6 +149,7 @@ describe('ManifestPlugin using real fs', function() {
       webpackCompile({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].js',
           path: path.join(__dirname, 'output/single-file')
         },
@@ -183,6 +186,7 @@ describe('ManifestPlugin using real fs', function() {
       compiler = webpackWatch({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].[hash].js',
           path: path.join(__dirname, 'output/watch-mode')
         },
@@ -231,6 +235,7 @@ describe('ManifestPlugin using real fs', function() {
       compiler = webpackWatch({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].js',
           path: path.join(__dirname, 'output/watch-import-chunk')
         },
@@ -246,19 +251,11 @@ describe('ManifestPlugin using real fs', function() {
         expect(manifest).toBeDefined();
 
         if (isFirstRun) {
-          if (isWebpackVersionGte(5)) {
-            expect(manifest).toEqual({
-              'main.js': 'main.js',
-              '0.js': '0.js',
-              '2.js': '2.js'
-            });
-          } else {
-            expect(manifest).toEqual({
-              'main.js': 'main.js',
-              '1.js': '1.js',
-              '2.js': '2.js'
-            });
-          }
+          expect(manifest).toEqual({
+            'main.js': 'main.js',
+            '1.js': '1.js',
+            '2.js': '2.js'
+          });
 
           isFirstRun = false;
           fse.outputFileSync(path.join(__dirname, 'output/watch-import-chunk/index.js'), 'import(\'./chunk1\')');
@@ -294,6 +291,7 @@ describe('ManifestPlugin using real fs', function() {
       webpackCompile(Array.from({length: nbCompiler}).map((x, i) => ({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].js',
           path: path.join(__dirname, 'output/multiple-compilation')
         },
@@ -332,6 +330,7 @@ describe('ManifestPlugin using real fs', function() {
         {
           context: __dirname,
           output: {
+            publicPath: '',
             filename: '[name].js',
             path: path.join(__dirname, 'output/multiple-manifest/1')
           },
@@ -344,6 +343,7 @@ describe('ManifestPlugin using real fs', function() {
         }, {
           context: __dirname,
           output: {
+            publicPath: '',
             filename: '[name].js',
             path: path.join(__dirname, 'output/multiple-manifest/2')
           },
@@ -384,6 +384,7 @@ describe('ManifestPlugin using real fs', function() {
           entry: './fixtures/file.js',
           output: {
             path: path.join(__dirname, 'output/relative-manifest'),
+            publicPath: '',
             filename: '[name].js'
           },
           plugins: [
@@ -416,6 +417,7 @@ describe('ManifestPlugin using real fs', function() {
           entry: './fixtures/file.js',
           output: {
             path: path.join(__dirname, 'output/absolute-manifest'),
+            publicPath: '',
             filename: '[name].js'
           },
           plugins: [
@@ -449,6 +451,7 @@ describe('ManifestPlugin with memory-fs', function() {
       webpackCompile({
         context: __dirname,
         output: {
+          publicPath: '',
           filename: '[name].js',
           path: path.join(__dirname, 'output/emit')
         },
@@ -505,6 +508,7 @@ describe('scoped hoisting', function() {
         ],
       },
       output: {
+        publicPath: '',
         filename: '[name].[hash].js',
         path: path.join(__dirname, 'output/scoped-hoisting')
       },

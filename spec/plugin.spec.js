@@ -16,6 +16,7 @@ function webpackConfig (webpackOpts, opts) {
   var defaults = {
     output: {
       path: OUTPUT_DIR,
+      publicPath: '',
       filename: '[name].js'
     },
     plugins: [
@@ -124,13 +125,20 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {}, function(manifest, stats) {
-        expect(manifest).toEqual({
-          'one.js': 'one.js',
-          'one.js.map': 'one.js.map'
-        });
+        if (isWebpackVersionGte(5)) {
+          expect(manifest).toEqual({
+            'one.js': 'one.js',
+          });
+        } else {
+          expect(manifest).toEqual({
+            'one.js': 'one.js',
+            'one.js.map': 'one.js.map'
+          });
+        }
 
         done();
       });
@@ -143,6 +151,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js'
         }
       }, {
@@ -166,6 +175,7 @@ describe('ManifestPlugin', function() {
             one: './fixtures/file.js',
           },
           output: {
+            publicPath: '',
             filename: '[name].[hash].js',
             publicPath: '/app/'
           }
@@ -185,6 +195,7 @@ describe('ManifestPlugin', function() {
             one: './fixtures/file.js',
           },
           output: {
+            publicPath: '',
             filename: '[name].[hash].js',
             publicPath: '/app/'
           }
@@ -209,6 +220,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js',
           publicPath: '/app/'
         }
@@ -232,6 +244,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -254,6 +267,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].js',
           publicPath: 'http://www/example.com/',
         }
@@ -273,6 +287,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -298,6 +313,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js',
           publicPath: '/app/'
         }
@@ -445,6 +461,7 @@ describe('ManifestPlugin', function() {
           ]
         },
         output: {
+          publicPath: '',
           filename: '[name].js'
         },
         module: {
@@ -482,6 +499,7 @@ describe('ManifestPlugin', function() {
           nameless: './fixtures/nameless.js'
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js'
         }
       }, {}, function(manifest, stats) {
@@ -550,6 +568,7 @@ describe('ManifestPlugin', function() {
           nameless: './fixtures/nameless.js'
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js'
         }
       }, {
@@ -573,6 +592,7 @@ describe('ManifestPlugin', function() {
         context: __dirname,
         entry: './fixtures/file.js',
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -596,6 +616,7 @@ describe('ManifestPlugin', function() {
         context: __dirname,
         entry: './fixtures/file.js',
         output: {
+          publicPath: '',
           filename: 'javascripts/main.js'
         }
       }, {
@@ -624,6 +645,7 @@ describe('ManifestPlugin', function() {
           two: './fixtures/file-two.js'
         },
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -651,6 +673,7 @@ describe('ManifestPlugin', function() {
         context: __dirname,
         entry: './fixtures/file.js',
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -682,6 +705,7 @@ describe('ManifestPlugin', function() {
         context: __dirname,
         entry: './fixtures/file.js',
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -710,6 +734,7 @@ describe('ManifestPlugin', function() {
         context: __dirname,
         entry: './fixtures/file.js',
         output: {
+          publicPath: '',
           filename: '[name].js'
         }
       }, {
@@ -803,6 +828,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js',
           publicPath: '/app/'
         },
@@ -829,6 +855,7 @@ describe('ManifestPlugin', function() {
           one: './fixtures/file.js',
         },
         output: {
+          publicPath: '',
           filename: '[name].[hash].js'
         },
         plugins: [
