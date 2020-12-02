@@ -18,7 +18,7 @@ test('removeKeyHash', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[contenthash].removeKeyHash.js',
-      path: join(outputPath, 'options')
+      path: join(outputPath, 'removeKeyHash')
     },
     plugins: [
       new CopyPlugin({
@@ -45,6 +45,39 @@ test('removeKeyHash', async (t) => {
     prev[clean(key)] = clean(manifest[key]);
     return prev;
   }, {});
+
+  t.snapshot(manifest);
+});
+
+test('useEntryKeys', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      main: '../fixtures/file.js'
+    },
+    output: {
+      filename: '[name].js',
+      path: join(outputPath, 'useEntryKeys')
+    }
+  };
+  const { manifest } = await compile(config, t, { useEntryKeys: true });
+
+  t.snapshot(manifest);
+});
+
+test('useEntryKeys, exclude ourcemap', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      main: '../fixtures/file.js'
+    },
+    output: {
+      filename: '[name].js',
+      path: join(outputPath, 'useEntryKeys-exclude')
+    },
+    devtool: 'source-map'
+  };
+  const { manifest } = await compile(config, t, { useEntryKeys: true });
 
   t.snapshot(manifest);
 });

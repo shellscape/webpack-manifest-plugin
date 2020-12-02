@@ -158,6 +158,13 @@ Default: `undefined`
 
 Allows sorting the files which make up the manifest. The passed function should match the signature of `(fileA: FileDescriptor, fileB: FileDescriptor) => Number`. Return `0` to indicate no change, `-1` to indicate the file should be moved to a lower index, and `1` to indicate the file shoud be moved to a higher index.
 
+### `useEntryKeys`
+
+Type: `Boolean`<br>
+Default: `false`
+
+If `true`, the keys specified in the `entry` property will be used as keys in the manifest. No file extension will be added (unless specified as part of an `entry` property key).
+
 ### `writeToFileEmit`
 
 Type: `Boolean`<br>
