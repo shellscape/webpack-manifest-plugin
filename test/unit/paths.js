@@ -72,7 +72,26 @@ test('prefixes paths with a public path', async (t) => {
   });
 });
 
-test('is possible to overrides publicPath', async (t) => {
+test('prefixes paths with a public path and handle [hash] from public path', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js'
+    },
+    output: {
+      filename: '[name].js',
+      path: join(outputPath, 'public-hash'),
+      publicPath: '/[hash]/app/'
+    }
+  };
+  const { manifest, stats } = await compile(config, t);
+
+  t.deepEqual(manifest, {
+    'one.js': `/${stats.hash}/app/one.js`
+  });
+});
+
+test('is possible to override publicPath', async (t) => {
   const config = {
     context: __dirname,
     entry: {
