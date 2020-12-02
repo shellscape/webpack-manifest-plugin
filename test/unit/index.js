@@ -13,6 +13,11 @@ test.after(() => del(outputPath));
 test('exports', async (t) => {
   t.truthy(getCompilerHooks);
   t.truthy(WebpackManifestPlugin);
+
+  const compiler = {};
+  const hooks = getCompilerHooks(compiler);
+  t.snapshot(Object.keys(hooks));
+  t.is(hooks, getCompilerHooks(compiler));
 });
 
 test('outputs a manifest of one file', async (t) => {

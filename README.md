@@ -44,7 +44,7 @@ _Note: We recommend using [webpack-nano](https://github.com/shellscape/webpack-n
 Create a `webpack.config.js` file:
 
 ```js
-const Manifest = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const options = { ... };
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
 	entry: [ 'app.js'	],
   ...
   plugins: [
-    new Manifest(options)
+    new WebpackManifestPlugin(options)
   ]
 };
 ```
@@ -199,6 +199,31 @@ Is required to run you app. Cannot be `true` if `isChunk` is `false`.
 Type: `Boolean`
 
 Is required by a module. Cannot be `true` if `isAsset` is `false`.
+
+## Compiler Hooks
+
+This plugin supports the following hooks via the `getCompilerHooks` export; `afterEmit`, `beforeEmit`. These hooks can be useful, e.g. changing manifest contents before emitting to disk.
+
+### `getCompilerHooks`
+
+Returns: `{ afterEmit: SyncWaterfallHook, beforeEmit: AsyncSeriesWaterfallHook }`
+
+#### Usage
+
+```js
+const { getCompilerHooks } = require('webpack-manifest-plugin');
+
+class BatmanPlugin {
+  apply(compiler) {
+    const { beforeEmit } = getCompilerHooks();
+
+    beforeEmit.tapAsync('MyPlugin', (manifest, cb) => {
+      cb(null, { ...manifest, name: 'hello' })
+    })
+  }
+}
+
+```
 
 ## Attiribution
 
