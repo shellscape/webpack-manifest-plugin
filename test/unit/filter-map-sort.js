@@ -3,7 +3,7 @@ const { dirname, join } = require('path');
 const test = require('ava');
 const del = require('del');
 
-const { compile } = require('../helpers/unit');
+const { compile, hashLiteral } = require('../helpers/unit');
 
 const outputPath = join(__dirname, '../output/filter-map-sort');
 
@@ -16,7 +16,7 @@ test('filter non-initial chunks', async (t) => {
       nameless: '../fixtures/nameless.js'
     },
     output: {
-      filename: '[name].[hash].js',
+      filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'filter-chunks')
     }
   };

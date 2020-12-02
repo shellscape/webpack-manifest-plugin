@@ -4,7 +4,7 @@ const test = require('ava');
 const webpack = require('webpack');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { readJson, watch, writeFile } = require('../helpers/integration');
+const { hashLiteral, readJson, watch, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/watch-mode');
 
@@ -24,7 +24,7 @@ test.cb('outputs a manifest of one file', (t) => {
   const config = {
     context: __dirname,
     output: {
-      filename: '[name].[hash].js',
+      filename: `[name].${hashLiteral}.js`,
       path: outputPath
     },
     entry: '../output/watch-mode/index.js',

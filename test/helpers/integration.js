@@ -10,10 +10,15 @@ const applyDefaults = (webpackOpts) => {
   const defaults = {
     optimization: {
       chunkIds: 'natural'
+    },
+    output: {
+      publicPath: ''
     }
   };
   return merge(defaults, webpackOpts);
 };
+
+const hashLiteral = webpack.version.startsWith('4') ? '[hash]' : '[fullhash]';
 
 const prepare = (webpackOpts) => {
   if (Array.isArray(webpackOpts)) {
@@ -67,4 +72,4 @@ const writeFile = (fileName, content) => {
   writeFileSync(fileName, content);
 };
 
-module.exports = { compile, prepare, readJson, watch, writeFile };
+module.exports = { compile, hashLiteral, prepare, readJson, watch, writeFile };

@@ -4,7 +4,7 @@ const test = require('ava');
 const webpack = require('webpack');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { compile, readJson, writeFile } = require('../helpers/integration');
+const { compile, hashLiteral, readJson, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/scoped-hoisting');
 
@@ -32,7 +32,7 @@ test('outputs a manifest', async (t) => {
       ]
     },
     output: {
-      filename: '[name].[hash].js',
+      filename: `[name].${hashLiteral}.js`,
       path: outputPath
     },
     plugins

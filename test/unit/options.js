@@ -65,7 +65,7 @@ test('useEntryKeys', async (t) => {
   t.snapshot(manifest);
 });
 
-test('useEntryKeys, exclude ourcemap', async (t) => {
+test('useEntryKeys, exclude sourcemap', async (t) => {
   const config = {
     context: __dirname,
     entry: {

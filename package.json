@@ -21,8 +21,11 @@
     "lint:js": "eslint --fix --cache lib test",
     "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
     "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
+    "posttest": "npm install webpack@^4.44.2",
     "security": "npm audit --audit-level=moderate",
-    "test": "ava"
+    "test": "npm run test:v4 && npm run test:v5",
+    "test:v4": "ava",
+    "test:v5": "npm install webpack@^5.0.0 --no-save && ava"
   },
   "files": [
     "lib",
@@ -30,10 +33,11 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "webpack": "^4.44.2"
+    "webpack": ">=4.44.2"
   },
   "dependencies": {
-    "tapable": "^2.0.0"
+    "tapable": "^2.0.0",
+    "webpack-sources": "^2.2.0"
   },
   "devDependencies": {
     "@ava/babel": "^1.0.1",

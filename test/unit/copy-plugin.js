@@ -4,7 +4,7 @@ const test = require('ava');
 const del = require('del');
 
 const { WebpackManifestPlugin } = require('../../lib');
-const { compile } = require('../helpers/unit');
+const { compile, hashLiteral } = require('../helpers/unit');
 const { MockCopyPlugin } = require('../helpers/MockCopyPlugin');
 
 const outputPath = join(__dirname, '../output/copy-plugin');
@@ -34,7 +34,7 @@ test(`doesn't add duplicates when prefixes definitions with a base path`, async 
       one: '../fixtures/file.js'
     },
     output: {
-      filename: '[name].[hash].js',
+      filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'prefix-duplicates'),
       publicPath: '/app/'
     },
@@ -59,7 +59,7 @@ test(`doesn't add duplicates when used with hashes in the filename`, async (t) =
       one: '../fixtures/file.js'
     },
     output: {
-      filename: '[name].[hash].js',
+      filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'hash-dupes')
     },
     plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()]

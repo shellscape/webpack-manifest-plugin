@@ -12,12 +12,15 @@ const applyDefaults = (webpackOpts, manifestOptions) => {
   const defaults = {
     optimization: { chunkIds: 'named' },
     output: {
-      filename: '[name].js'
+      filename: '[name].js',
+      publicPath: ''
     },
     plugins: [new WebpackManifestPlugin(manifestOptions)]
   };
   return merge(defaults, webpackOpts);
 };
+
+const hashLiteral = webpack.version.startsWith('4') ? '[hash]' : '[fullhash]';
 
 const prepare = (webpackOpts, manifestOptions) => {
   if (Array.isArray(webpackOpts)) {
@@ -55,7 +58,7 @@ const compile = (config, t, manifestOptions = {}) => {
       }
 
       if (stats.hasErrors()) {
-        log(stats.toJson());
+        log('Stat Errors', stats.toJson());
       }
 
       t.is(stats.hasErrors(), false);
@@ -65,4 +68,4 @@ const compile = (config, t, manifestOptions = {}) => {
   });
 };
 
-module.exports = { compile };
+module.exports = { compile, hashLiteral };
