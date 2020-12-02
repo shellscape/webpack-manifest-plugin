@@ -213,7 +213,7 @@ This plugin supports the following hooks via the `getCompilerHooks` export; `aft
 
 ### `getCompilerHooks`
 
-Returns: `{ afterEmit: SyncWaterfallHook, beforeEmit: AsyncSeriesWaterfallHook }`
+Returns: `{ afterEmit: SyncWaterfallHook, beforeEmit: SyncWaterfallHook }`
 
 #### Usage
 
@@ -222,10 +222,10 @@ const { getCompilerHooks } = require('webpack-manifest-plugin');
 
 class BatmanPlugin {
   apply(compiler) {
-    const { beforeEmit } = getCompilerHooks();
+    const { beforeEmit } = getCompilerHooks(compiler);
 
-    beforeEmit.tapAsync('MyPlugin', (manifest, cb) => {
-      cb(null, { ...manifest, name: 'hello' })
+    beforeEmit.tap('BatmanPlugin', (manifest) => {
+      return { ...manifest, name: 'hello' };
     })
   }
 }
