@@ -63,7 +63,7 @@ And run `webpack`:
 $ npx wp
 ...
 
-With the default options, the example above will create a `manifest.json` file in the output directory for the build. The manfist file will contain a map of source filenames to the corresponding build output file. e.g.
+With the default options, the example above will create a `manifest.json` file in the output directory for the build. The manifest file will contain a map of source filenames to the corresponding build output file. e.g.
 
 ```json
 {
