@@ -23,7 +23,7 @@
     "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
     "posttest": "npm install webpack@^4.44.2",
     "security": "npm audit --audit-level=moderate",
-    "test": "npm run test:v4 && npm run test:v5",
+    "test": "npm run test:v4",
     "test:v4": "ava",
     "test:v5": "npm install webpack@^5.0.0 --no-save && ava"
   },
