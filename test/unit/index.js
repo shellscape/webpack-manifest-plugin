@@ -210,7 +210,9 @@ if (!webpack.version.startsWith('4')) {
     };
 
     t.truthy(manifest);
-    t.deepEqual(manifest, expected);
+    t.deepEqual(Object.keys(expected), ['main.js', 'images/manifest.svg']);
+    t.deepEqual(manifest['main.js'], 'main.js');
+    t.regex(manifest['images/manifest.svg'], /images\/manifest\.[a-z|\d]{4}\.svg/);
   });
 } else {
   test.skip('works with asset modules', () => {});
