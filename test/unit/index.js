@@ -75,15 +75,15 @@ test('works with source maps', async (t) => {
       one: '../fixtures/file.js'
     },
     output: {
-      filename: '[name].js',
+      filename: 'build/[name].js',
       path: join(outputPath, 'source-maps')
     }
   };
   const { manifest } = await compile(config, t);
 
   t.deepEqual(manifest, {
-    'one.js': 'one.js',
-    'one.js.map': 'one.js.map'
+    'one.js': 'build/one.js',
+    'one.js.map': 'build/one.js.map'
   });
 });
 
@@ -158,11 +158,6 @@ test('outputs a manifest of no-js file', async (t) => {
     'file.txt': 'file.txt'
   };
 
-  // Note: I believe this to be another bug in webpack v5 and cannot find a good workaround atm
-  if (webpack.version.startsWith('5')) {
-    expected['main.txt'] = 'file.txt';
-  }
-
   t.truthy(manifest);
   t.deepEqual(manifest, expected);
 });
@@ -188,3 +183,37 @@ test('make manifest available to other webpack plugins', async (t) => {
     t.pass();
   }
 });
+
+if (!webpack.version.startsWith('4')) {
+  test('works with asset modules', async (t) => {
+    const config = {
+      context: __dirname,
+      entry: '../fixtures/import_image.js',
+      output: {
+        path: join(outputPath, 'auxiliary-assets'),
+        assetModuleFilename: `images/[name].[hash:4][ext]`
+      },
+      module: {
+        rules: [
+          {
+            test: /\.(svg)/,
+            type: 'asset/resource'
+          }
+        ]
+      }
+    };
+
+    const { manifest } = await compile(config, t);
+    const expected = {
+      'main.js': 'main.js',
+      'images/manifest.svg': `images/manifest.14ca.svg`
+    };
+
+    t.truthy(manifest);
+    t.deepEqual(Object.keys(expected), ['main.js', 'images/manifest.svg']);
+    t.deepEqual(manifest['main.js'], 'main.js');
+    t.regex(manifest['images/manifest.svg'], /images\/manifest\.[a-z|\d]{4}\.svg/);
+  });
+} else {
+  test.skip('works with asset modules', () => {});
+}

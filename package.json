@@ -1,6 +1,6 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A Webpack Plugin for generating Asset Manifests",
   "license": "MIT",
   "repository": "shellscape/webpack-manifest-plugin",
@@ -21,11 +21,11 @@
     "lint:js": "eslint --fix --cache lib test",
     "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
     "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
-    "posttest": "npm install webpack@^4.44.2",
+    "posttest": "node set-webpack-version.js \"^4.44.2\" && npm install",
     "security": "npm audit --audit-level=moderate",
-    "test": "npm run test:v4",
+    "test": "npm run test:v4 && npm run test:v5",
     "test:v4": "ava",
-    "test:v5": "npm install webpack@^5.0.0 --no-save && ava"
+    "test:v5": "node set-webpack-version.js \"^5\" && npm install && ava"
   },
   "files": [
     "lib",

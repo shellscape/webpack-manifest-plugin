@@ -2,7 +2,6 @@ const { join } = require('path');
 
 const test = require('ava');
 const del = require('del');
-const webpack = require('webpack');
 
 const { compile, hashLiteral } = require('../helpers/unit');
 
@@ -199,11 +198,6 @@ test('ensures the manifest is mapping paths to names', async (t) => {
     'main.js': 'main.js',
     'file.txt': 'outputfile.txt'
   };
-
-  // Note: I believe this to be another bug in webpack v5 and cannot find a good workaround atm
-  if (webpack.version.startsWith('5')) {
-    expected['main.txt'] = 'outputfile.txt';
-  }
 
   t.truthy(manifest);
   t.deepEqual(manifest, expected);

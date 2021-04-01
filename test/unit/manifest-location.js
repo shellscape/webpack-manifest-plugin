@@ -17,7 +17,7 @@ test('relative path', async (t) => {
   };
 
   const { manifest } = await compile(config, t, {
-    fileName: 'webpack.manifest.js'
+    fileName: 'webpack.manifest.json'
   });
 
   t.deepEqual(manifest, { 'main.js': 'main.js' });
@@ -31,7 +31,7 @@ test('absolute path', async (t) => {
   };
 
   const { manifest } = await compile(config, t, {
-    fileName: join(outputPath, 'absolute/webpack.manifest.js')
+    fileName: join(outputPath, 'absolute/webpack.manifest.json')
   });
 
   t.deepEqual(manifest, { 'main.js': 'main.js' });
