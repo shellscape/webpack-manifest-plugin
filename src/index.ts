@@ -14,6 +14,7 @@ export type Manifest = Record<string, any>;
 
 export interface InternalOptions {
   [key: string]: any;
+  assetHookStage: number;
   basePath: string;
   fileName: string;
   filter: (file: FileDescriptor) => Boolean;
@@ -37,6 +38,7 @@ export interface InternalOptions {
 export type ManifestPluginOptions = Partial<InternalOptions>;
 
 const defaults = {
+  assetHookStage: Infinity,
   basePath: '',
   fileName: 'manifest.json',
   filter: null,
@@ -84,7 +86,7 @@ class WebpackManifestPlugin implements WebpackPluginInstance {
     const normalModuleLoader = normalModuleLoaderHook.bind(this, { moduleAssets });
     const hookOptions = {
       name: 'WebpackManifestPlugin',
-      stage: Infinity
+      stage: this.options.assetHookStage
     };
 
     compiler.hooks.compilation.tap(hookOptions, (compilation) => {
