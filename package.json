@@ -33,7 +33,7 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "webpack": "^4.44.2"
+    "webpack": "^4.44.2 || ^5.46.0"
   },
   "dependencies": {
     "tapable": "^2.0.0",
