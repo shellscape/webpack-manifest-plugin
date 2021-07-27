@@ -22,7 +22,7 @@
     "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
     "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
     "posttest": "node set-webpack-version.js \"^4.44.2\" && npm install",
-    "security": "npm audit --audit-level=moderate",
+    "security": "npm audit --audit-level=high",
     "test": "npm run test:v4 && npm run test:v5",
     "test:v4": "ava",
     "test:v5": "node set-webpack-version.js \"^5\" && npm install && ava"
