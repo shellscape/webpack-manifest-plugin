@@ -9,7 +9,7 @@
   "bugs": "https://github.com/shellscape/webpack-manifest-plugin/issues",
   "main": "lib/index.js",
   "engines": {
-    "node": ">=10.22.1"
+    "node": ">=12.22.0"
   },
   "scripts": {
     "ci:coverage": "nyc npm run ci:test && nyc report --reporter=text-lcov > coverage.lcov",
