@@ -29,6 +29,16 @@ A Webpack plugin for generating an asset manifest.
 
 This module requires an [Active LTS](https://github.com/nodejs/Release) Node version (v10.0.0+) and Webpack v4.44.0+.
 
+## Contributing
+
+This repository leverages [pnpm](https://pnpm.js.org/) for dependency management.
+
+To begin, please install `pnpm`:
+
+```console
+$ npm install pnpm -g
+```
+
 ## Install
 
 Using npm:
