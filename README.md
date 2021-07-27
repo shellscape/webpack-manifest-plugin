@@ -241,6 +241,10 @@ class BatmanPlugin {
 
 ```
 
+## Notes
+
+- If using this plugin with `webpack-clean` and `webpack-dev-server`, please review [this issue](https://github.com/shellscape/webpack-manifest-plugin/issues/267).
+
 ## Attiribution
 
 Special thanks to [Dane Thurber](https://github.com/danethurber), the original author of this plugin, without whom this plugin would not exist.
