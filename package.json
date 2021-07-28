@@ -7,7 +7,7 @@
   "author": "Dane Thurber <dane.thurber@gmail.com>",
   "homepage": "https://github.com/shellscape/webpack-manifest-plugin",
   "bugs": "https://github.com/shellscape/webpack-manifest-plugin/issues",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "engines": {
     "node": ">=12.22.0"
   },
@@ -19,10 +19,11 @@
     "lint": "pnpm lint:docs && pnpm lint:json && pnpm lint:js",
     "lint-staged": "lint-staged",
     "lint:docs": "prettier --write README.md",
-    "lint:js": "eslint --cache --fix --cache scripts",
+    "lint:js": "eslint --cache --fix --cache scripts src test",
     "lint:json": "prettier --write codecov.yml package.json",
     "posttest": "pnpm switch -- '4' && pnpm install",
     "prepublishOnly": "pnpm lint && pnpm build",
+    "pretest": "pnpm build",
     "security": "pnpm audit --audit-level=high --prod",
     "switch": "cd scripts && ts-node --project ./tsconfig.json ./set-webpack-version.ts",
     "test": "pnpm test:v4 && pnpm test:v5",

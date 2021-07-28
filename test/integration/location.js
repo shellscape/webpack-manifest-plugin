@@ -3,7 +3,7 @@ const { join } = require('path');
 const test = require('ava');
 const del = require('del');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 const { compile, readJson } = require('../helpers/integration');
 
 const absOutputPath = join(__dirname, '../output/absolute-manifest');

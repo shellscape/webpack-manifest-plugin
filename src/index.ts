@@ -19,7 +19,7 @@ export interface InternalOptions {
   map: (file: FileDescriptor) => FileDescriptor;
   publicPath: string;
   removeKeyHash: RegExp;
-  seed: Record<any, any>;
+  seed: Record<any, any> | any[];
   serialize: (manifest: any) => string;
   sort: (fileA: FileDescriptor, fileB: FileDescriptor) => Number;
   transformExtensions: RegExp;

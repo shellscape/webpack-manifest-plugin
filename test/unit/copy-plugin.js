@@ -3,7 +3,7 @@ const { join } = require('path');
 const test = require('ava');
 const del = require('del');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 const { compile, hashLiteral } = require('../helpers/unit');
 const { MockCopyPlugin } = require('../helpers/MockCopyPlugin');
 
@@ -17,8 +17,8 @@ test('works when including copied assets', async (t) => {
     entry: {
       one: '../fixtures/file.js'
     },
-    plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()],
-    output: { path: join(outputPath, 'copied-assets') }
+    output: { path: join(outputPath, 'copied-assets') },
+    plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()]
   };
   const { manifest } = await compile(config, t);
   t.deepEqual(manifest, {

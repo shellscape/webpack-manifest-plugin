@@ -1646,7 +1646,7 @@ packages:
   /@types/webpack/4.41.30:
     resolution: {integrity: sha512-GUHyY+pfuQ6haAfzu4S14F+R5iGRwN6b2FRNJY7U0NilmFAqbsOfK6j1HwuLBAqwRIT+pVdNDJGJ6e8rpp0KHA==}
     dependencies:
-      '@types/node': 16.4.3
+      '@types/node': 16.4.4
       '@types/tapable': 1.0.8
       '@types/uglify-js': 3.13.1
       '@types/webpack-sources': 2.1.1

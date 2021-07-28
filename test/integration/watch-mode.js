@@ -3,7 +3,7 @@ const { join } = require('path');
 const test = require('ava');
 const webpack = require('webpack');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 const { hashLiteral, readJson, watch, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/watch-mode');
@@ -23,13 +23,13 @@ test.after.cb((t) => {
 test.cb('outputs a manifest of one file', (t) => {
   const config = {
     context: __dirname,
+    entry: '../output/watch-mode/index.js',
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: outputPath
     },
-    entry: '../output/watch-mode/index.js',
-    watch: true,
-    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
+    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
+    watch: true
   };
 
   compiler = watch(config, t, (stats) => {

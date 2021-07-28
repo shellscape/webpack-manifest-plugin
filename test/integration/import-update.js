@@ -3,7 +3,7 @@ const { join } = require('path');
 const test = require('ava');
 const webpack = require('webpack');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 const { readJson, watch, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/watch-import-chunk');
@@ -25,13 +25,13 @@ test.after.cb((t) => {
 test.cb('outputs a manifest of one file', (t) => {
   const config = {
     context: __dirname,
+    entry: '../output/watch-import-chunk/index.js',
     output: {
       filename: '[name].js',
       path: outputPath
     },
-    entry: '../output/watch-import-chunk/index.js',
-    watch: true,
-    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()]
+    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
+    watch: true
   };
 
   compiler = watch(config, t, () => {
@@ -40,13 +40,16 @@ test.cb('outputs a manifest of one file', (t) => {
     t.truthy(manifest);
 
     if (isFirstRun) {
+      // eslint-disable-next-line sort-keys
       t.deepEqual(manifest, { 'main.js': 'main.js', '1.js': '1.js', '2.js': '2.js' });
       isFirstRun = false;
       writeFile(join(outputPath, 'index.js'), "import('./chunk1')");
     } else {
       const expected = webpack.version.startsWith('4')
-        ? { 'main.js': 'main.js', '1.js': '1.js' }
-        : { 'main.js': 'main.js', '2.js': '2.js' };
+        ? // eslint-disable-next-line sort-keys
+          { 'main.js': 'main.js', '1.js': '1.js' }
+        : // eslint-disable-next-line sort-keys
+          { 'main.js': 'main.js', '2.js': '2.js' };
       t.deepEqual(manifest, expected);
       t.end();
     }

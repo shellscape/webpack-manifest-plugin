@@ -87,13 +87,13 @@ test('sort', async (t) => {
     }
   };
   const { manifest } = await compile(config, t, {
+    generate(seed, files) {
+      return files.map((file) => file.name);
+    },
     seed: [],
     sort(a) {
       // make sure one is the latest
       return a.name === 'one.js' ? 1 : -1;
-    },
-    generate(seed, files) {
-      return files.map((file) => file.name);
     }
   });
 
