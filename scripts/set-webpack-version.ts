@@ -25,7 +25,7 @@ if (!version) {
 
 const versions = (pkg['webpack-versions'] as Versions)[version];
 
-pkg.peerDependencies.webpack = versions.webpack;
+// pkg.peerDependencies.webpack = versions.webpack;
 
 Object.keys(versions).forEach((key) => ((pkg.devDependencies as Deps)[key] = versions[key]));
 
