@@ -12,28 +12,30 @@
     "node": ">=12.22.0"
   },
   "scripts": {
-    "ci:coverage": "nyc npm run ci:test && nyc report --reporter=text-lcov > coverage.lcov",
-    "ci:lint": "npm run lint && npm run security",
-    "ci:test": "npm run test -- --verbose",
-    "lint": "npm run lint:docs && npm run lint:json && npm run lint:package && npm run lint:js",
+    "build": "tsc --project tsconfig.json",
+    "ci:coverage": "nyc pnpm ci:test && nyc report --reporter=text-lcov > coverage.lcov",
+    "ci:lint": "pnpm lint && pnpm security",
+    "ci:test": "pnpm test -- --verbose",
+    "lint": "pnpm lint:docs && pnpm lint:json && pnpm lint:js",
     "lint-staged": "lint-staged",
-    "lint:docs": "prettier --single-quote --arrow-parens avoid --trailing-comma none --write README.md",
-    "lint:js": "eslint --fix --cache lib test",
-    "lint:json": "prettier --write codecov.yml .circleci/config.yml .eslintrc",
-    "lint:package": "prettier --write package.json --plugin=prettier-plugin-package",
-    "posttest": "node set-webpack-version.js \"^4.44.2\" && npm install",
-    "security": "npm audit --audit-level=high",
-    "test": "npm run test:v4 && npm run test:v5",
+    "lint:docs": "prettier --write README.md",
+    "lint:js": "eslint --cache --fix --cache scripts",
+    "lint:json": "prettier --write codecov.yml package.json",
+    "posttest": "pnpm switch -- '4' && pnpm install",
+    "prepublishOnly": "pnpm lint && pnpm build",
+    "security": "pnpm audit --audit-level=high --prod",
+    "switch": "cd scripts && ts-node --project ./tsconfig.json ./set-webpack-version.ts",
+    "test": "pnpm test:v4 && pnpm test:v5",
     "test:v4": "ava",
-    "test:v5": "node set-webpack-version.js \"^5\" && npm install && ava"
+    "test:v5": "pnpm switch -- '5' && pnpm install && ava"
   },
   "files": [
-    "lib",
+    "dist",
     "README.md",
     "LICENSE"
   ],
   "peerDependencies": {
-    "webpack": "^4.44.2 || ^5.46.0"
+    "webpack": "^4.44.2"
   },
   "dependencies": {
     "tapable": "^2.0.0",
@@ -41,17 +43,23 @@
   },
   "devDependencies": {
     "@ava/babel": "^1.0.1",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@svgr/webpack": "^5.4.0",
+    "@types/node": "^16.4.3",
+    "@types/webpack": "^4.41.26",
+    "@types/webpack-sources": "^2.1.1",
     "@wordpress/dependency-extraction-webpack-plugin": "^3.1.0",
     "ava": "^3.13.0",
     "codecov": "^3.1.0",
     "copy-webpack-plugin": "^6.2.1",
     "css-loader": "^1.0.0",
     "del": "^6.0.0",
-    "eslint-config-shellscape": "^4.0.1",
+    "eslint-config-shellscape": "^4.2.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^2.0.0",
-    "lint-staged": "^10.4.0",
+    "husky": "4.3.8",
+    "lint-staged": "11.1.1",
     "memory-fs": "^0.4.1",
     "nyc": "^15.1.0",
     "pre-commit": "^1.2.2",
@@ -59,6 +67,9 @@
     "prettier-plugin-package": "^1.2.0",
     "react": "^16.3.2",
     "style-loader": "^0.23.0",
+    "ts-node": "^10.1.0",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5",
     "webpack": "^4.44.2",
     "webpack-merge": "^5.2.0"
   },
@@ -68,6 +79,11 @@
       "!**/helpers/**",
       "!**/output/**"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "jest": {
     "testEnvironment": "node",
@@ -84,11 +100,21 @@
   ],
   "nyc": {
     "include": [
-      "lib/*.js"
+      "src/*.ts"
     ],
     "exclude": [
       "test/"
     ]
   },
-  "pre-commit": "lint-staged"
+  "pre-commit": "lint-staged",
+  "webpack-versions": {
+    "4": {
+      "webpack": "^4.44.2",
+      "@types/webpack": "^4.41.26"
+    },
+    "5": {
+      "webpack": "latest",
+      "@types/webpack": "latest"
+    }
+  }
 }

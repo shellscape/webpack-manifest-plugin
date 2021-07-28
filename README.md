@@ -1,9 +1,7 @@
-[tests]: 	https://img.shields.io/circleci/project/github/shellscape/webpack-manifest-plugin.svg
+[tests]: https://img.shields.io/circleci/project/github/shellscape/webpack-manifest-plugin.svg
 [tests-url]: https://circleci.com/gh/shellscape/webpack-manifest-plugin
-
 [cover]: https://codecov.io/gh/shellscape/webpack-manifest-plugin/branch/master/graph/badge.svg
 [cover-url]: https://codecov.io/gh/shellscape/webpack-manifest-plugin
-
 [size]: https://packagephobia.now.sh/badge?p=webpack-manifest-plugin
 [size-url]: https://packagephobia.now.sh/result?p=webpack-manifest-plugin
 
@@ -15,7 +13,6 @@
 [![cover][cover]][cover-url]
 [![size][size]][size-url]
 [![libera manifesto](https://img.shields.io/badge/libera-manifesto-lightgrey.svg)](https://liberamanifesto.com)
-
 
 # webpack-manifest-plugin
 
@@ -191,7 +188,6 @@ Default: `false`
 
 If `true`, will emit the manifest to the build directory _and_ in memory for compatibility with `webpack-dev-server`.
 
-
 ## Manifest File Descriptor
 
 This plugin utilizes the following object structure to work with files. Many options for this plugin utilize the structure below.
@@ -245,10 +241,9 @@ class BatmanPlugin {
 
     beforeEmit.tap('BatmanPlugin', (manifest) => {
       return { ...manifest, name: 'hello' };
-    })
+    });
   }
 }
-
 ```
 
 ## Notes
