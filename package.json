@@ -1,6 +1,6 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "description": "A Webpack Plugin for generating Asset Manifests",
   "license": "MIT",
   "repository": "shellscape/webpack-manifest-plugin",
