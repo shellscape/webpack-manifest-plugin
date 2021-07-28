@@ -4,7 +4,7 @@ const { join, isAbsolute } = require('path');
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 
 const { log } = console;
 

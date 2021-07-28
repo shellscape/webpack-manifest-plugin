@@ -3,7 +3,7 @@ const { join } = require('path');
 const test = require('ava');
 const del = require('del');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 const { compile, readJson } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/multiple-compilation');
@@ -20,12 +20,12 @@ test('should not produce mangle output', async (t) => {
   const config = Array.from({ length: nbCompiler }).map((x, i) => {
     return {
       context: __dirname,
+      entry: {
+        [`main-${i}`]: '../fixtures/file.js'
+      },
       output: {
         filename: '[name].js',
         path: outputPath
-      },
-      entry: {
-        [`main-${i}`]: '../fixtures/file.js'
       },
       plugins: [new WebpackManifestPlugin({ seed })]
     };
@@ -49,23 +49,23 @@ test('should produce two seperate manifests', async (t) => {
   const config = [
     {
       context: __dirname,
+      entry: {
+        main: '../fixtures/file.js'
+      },
       output: {
         filename: '[name].js',
         path: join(outputMultiPath, '1')
-      },
-      entry: {
-        main: '../fixtures/file.js'
       },
       plugins: [new WebpackManifestPlugin()]
     },
     {
       context: __dirname,
+      entry: {
+        main: '../fixtures/file.js'
+      },
       output: {
         filename: '[name].js',
         path: join(outputMultiPath, '2')
-      },
-      entry: {
-        main: '../fixtures/file.js'
       },
       plugins: [new WebpackManifestPlugin()]
     }

@@ -3,7 +3,7 @@ const { join } = require('path');
 const test = require('ava');
 const webpack = require('webpack');
 
-const { WebpackManifestPlugin } = require('../../lib');
+const { WebpackManifestPlugin } = require('../../');
 const { compile, hashLiteral, readJson, writeFile } = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/scoped-hoisting');

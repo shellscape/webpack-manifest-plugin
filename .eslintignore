@@ -1,1 +1,8 @@
-test/output
+/node_modules
+dist
+*.snap
+output.js
+*-wps-hmr.*
+*.hot-update.js
+test/**/output
+.eslintrc.js

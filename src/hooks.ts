@@ -1,16 +1,48 @@
-const { mkdirSync, writeFileSync } = require('fs');
-const { basename, dirname, join } = require('path');
+import { mkdirSync, writeFileSync } from 'fs';
+import { basename, dirname, join } from 'path';
 
-const { SyncWaterfallHook } = require('tapable');
-const webpack = require('webpack');
-// eslint-disable-next-line global-require
-const { RawSource } = webpack.sources || require('webpack-sources');
+import { SyncWaterfallHook } from 'tapable';
+import webpack, { Compiler, Module } from 'webpack';
+// Note: This was the old delcaration. It appears to be Webpack v3 compat.
+// const { RawSource } = (webpack as any).sources || require('webpack-sources');
+import { RawSource } from 'webpack-sources';
 
-const { generateManifest, reduceAssets, reduceChunk, transformFiles } = require('./helpers');
+import { EmitCountMap, InternalOptions } from './';
+
+import {
+  CompilationAsset,
+  generateManifest,
+  reduceAssets,
+  reduceChunk,
+  transformFiles,
+  FileDescriptor
+} from './helpers';
+
+interface BeforeRunHookArgs {
+  emitCountMap: EmitCountMap;
+  manifestFileName: string;
+}
+
+interface WebpackV5CompatJsonOptions extends webpack.Stats.ToJsonOptionsObject {
+  ids?: boolean;
+}
+
+interface EmitHookArgs {
+  compiler: Compiler;
+  emitCountMap: EmitCountMap;
+  manifestAssetId: string;
+  manifestFileName: string;
+  moduleAssets: Record<any, any>;
+  options: InternalOptions;
+}
+
+interface EmitCompilation {
+  emitAsset: Function;
+}
 
 const compilerHookMap = new WeakMap();
 
-const getCompilerHooks = (compiler) => {
+const getCompilerHooks = (compiler: Compiler) => {
   let hooks = compilerHookMap.get(compiler);
   if (typeof hooks === 'undefined') {
     hooks = {
@@ -22,7 +54,11 @@ const getCompilerHooks = (compiler) => {
   return hooks;
 };
 
-const beforeRunHook = ({ emitCountMap, manifestFileName }, compiler, callback) => {
+const beforeRunHook = (
+  { emitCountMap, manifestFileName }: BeforeRunHookArgs,
+  _: Compiler,
+  callback: Function
+) => {
   const emitCount = emitCountMap.get(manifestFileName) || 0;
   emitCountMap.set(manifestFileName, emitCount + 1);
 
@@ -33,8 +69,15 @@ const beforeRunHook = ({ emitCountMap, manifestFileName }, compiler, callback) =
 };
 
 const emitHook = function emit(
-  { compiler, emitCountMap, manifestAssetId, manifestFileName, moduleAssets, options },
-  compilation
+  {
+    compiler,
+    emitCountMap,
+    manifestAssetId,
+    manifestFileName,
+    moduleAssets,
+    options
+  }: EmitHookArgs,
+  compilation: webpack.compilation.Compilation
 ) {
   const emitCount = emitCountMap.get(manifestFileName) - 1;
   // Disable everything we don't use, add asset info, show cached assets
@@ -42,34 +85,39 @@ const emitHook = function emit(
     all: false,
     assets: true,
     cachedAssets: true,
+    // Note: Webpack v5 compat
     ids: true,
     publicPath: true
-  });
+  } as WebpackV5CompatJsonOptions);
 
   const publicPath = options.publicPath !== null ? options.publicPath : stats.publicPath;
   const { basePath, removeKeyHash } = options;
 
   emitCountMap.set(manifestFileName, emitCount);
 
-  const auxiliaryFiles = {};
-  let files = Array.from(compilation.chunks).reduce(
+  const auxiliaryFiles: Record<any, any> = {};
+  let files = Array.from(compilation.chunks).reduce<FileDescriptor[]>(
     (prev, chunk) => reduceChunk(prev, chunk, options, auxiliaryFiles),
-    []
+    [] as FileDescriptor[]
   );
 
   // module assets don't show up in assetsByChunkName, we're getting them this way
-  files = stats.assets.reduce((prev, asset) => reduceAssets(prev, asset, moduleAssets), files);
+  files = (stats.assets! as unknown as CompilationAsset[]).reduce(
+    (prev, asset) => reduceAssets(prev, asset, moduleAssets),
+    files
+  );
 
   // don't add hot updates and don't add manifests from other instances
   files = files.filter(
-    ({ name, path }) =>
+    ({ name, path }: { name: string; path: string }) =>
       !path.includes('hot-update') &&
-      typeof emitCountMap.get(join(compiler.options.output.path, name)) === 'undefined'
+      typeof emitCountMap.get(join(compiler.options.output?.path || '<unknown>', name)) ===
+        'undefined'
   );
 
   // auxiliary files are "extra" files that are probably already included
   // in other ways. Loop over files and remove any from auxiliaryFiles
-  files.forEach((file) => {
+  files.forEach((file: FileDescriptor) => {
     delete auxiliaryFiles[file.path];
   });
   // if there are any auxiliaryFiles left, add them to the files
@@ -78,7 +126,7 @@ const emitHook = function emit(
     files = files.concat(auxiliaryFiles[auxiliaryFile]);
   });
 
-  files = files.map((file) => {
+  files = files.map((file: FileDescriptor) => {
     const changes = {
       // Append optional basepath onto all references. This allows output path to be reflected in the manifest.
       name: basePath ? basePath + file.name : file.name,
@@ -102,19 +150,8 @@ const emitHook = function emit(
 
   if (isLastEmit) {
     const output = options.serialize(manifest);
-    //
-    // Object.assign(compilation.assets, {
-    //   [manifestAssetId]: {
-    //     source() {
-    //       return output;
-    //     },
-    //     size() {
-    //       return output.length;
-    //     }
-    //   }
-    // });
-    //
-    compilation.emitAsset(manifestAssetId, new RawSource(output));
+
+    (compilation as unknown as EmitCompilation).emitAsset(manifestAssetId, new RawSource(output));
 
     if (options.writeToFileEmit) {
       mkdirSync(dirname(manifestFileName), { recursive: true });
@@ -125,11 +162,19 @@ const emitHook = function emit(
   getCompilerHooks(compiler).afterEmit.call(manifest);
 };
 
-const normalModuleLoaderHook = ({ moduleAssets }, loaderContext, module) => {
+interface LegacyModule extends Module {
+  userRequest?: any;
+}
+
+const normalModuleLoaderHook = (
+  { moduleAssets }: { moduleAssets: Record<any, any> },
+  loaderContext: webpack.loader.LoaderContext,
+  module: LegacyModule
+) => {
   const { emitFile } = loaderContext;
 
   // eslint-disable-next-line no-param-reassign
-  loaderContext.emitFile = (file, content, sourceMap) => {
+  loaderContext.emitFile = (file: string, content: string, sourceMap: any) => {
     if (module.userRequest && !moduleAssets[file]) {
       Object.assign(moduleAssets, { [file]: join(dirname(file), basename(module.userRequest)) });
     }
@@ -138,4 +183,4 @@ const normalModuleLoaderHook = ({ moduleAssets }, loaderContext, module) => {
   };
 };
 
-module.exports = { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook };
+export { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook };

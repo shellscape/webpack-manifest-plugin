@@ -5,7 +5,7 @@ const del = require('del');
 
 const { compile, readJson } = require('../helpers/integration');
 const { getAsset } = require('../helpers/webpack-version-helpers');
-const { getCompilerHooks, WebpackManifestPlugin } = require('../../lib');
+const { getCompilerHooks, WebpackManifestPlugin } = require('../../');
 
 const outputPath = join(__dirname, '../output/single-file');
 
@@ -14,11 +14,11 @@ test.beforeEach(() => del(outputPath));
 test.serial('outputs a manifest of one file', async (t) => {
   const config = {
     context: __dirname,
+    entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
       path: outputPath
     },
-    entry: '../fixtures/file.js',
     plugins: [new WebpackManifestPlugin()]
   };
 
@@ -32,11 +32,11 @@ test.serial('outputs a manifest of one file', async (t) => {
 test.serial('still works when there are multiple instances of the plugin', async (t) => {
   const config = {
     context: __dirname,
+    entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
       path: outputPath
     },
-    entry: '../fixtures/file.js',
     plugins: [
       new WebpackManifestPlugin({ fileName: 'manifest1.json' }),
       new WebpackManifestPlugin({ fileName: 'manifest2.json' })
@@ -83,11 +83,11 @@ test('exposes a plugin hook with the manifest content', async (t) => {
   const testPlugin = new TestPlugin();
   const config = {
     context: __dirname,
+    entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
       path: outputPath
     },
-    entry: '../fixtures/file.js',
     plugins: [new WebpackManifestPlugin(), testPlugin]
   };
 

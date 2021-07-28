@@ -55,8 +55,8 @@ test('removeKeyHash, custom hash length', async (t) => {
     context: __dirname,
     entry: '../fixtures/file.js',
     output: {
-      hashDigestLength: 16,
       filename: '[contenthash].removeKeyHash.js',
+      hashDigestLength: 16,
       path: join(outputPath, 'removeKeyHashCustomLength')
     },
     plugins: [
@@ -107,14 +107,14 @@ test('useEntryKeys', async (t) => {
 test('useEntryKeys, exclude sourcemap', async (t) => {
   const config = {
     context: __dirname,
+    devtool: 'source-map',
     entry: {
       main: '../fixtures/file.js'
     },
     output: {
       filename: '[name].js',
       path: join(outputPath, 'useEntryKeys-exclude')
-    },
-    devtool: 'source-map'
+    }
   };
   const { manifest } = await compile(config, t, { useEntryKeys: true });
 

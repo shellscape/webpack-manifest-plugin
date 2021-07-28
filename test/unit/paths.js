@@ -195,8 +195,8 @@ test('ensures the manifest is mapping paths to names', async (t) => {
   };
   const { manifest } = await compile(config, t);
   const expected = {
-    'main.js': 'main.js',
-    'file.txt': 'outputfile.txt'
+    'file.txt': 'outputfile.txt',
+    'main.js': 'main.js'
   };
 
   t.truthy(manifest);

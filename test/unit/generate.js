@@ -50,12 +50,12 @@ test('should default to `seed`', async (t) => {
   };
 
   const { manifest } = await compile(config, t, {
-    seed: {
-      key: 'value'
-    },
     generate(seed) {
       t.deepEqual(seed, { key: 'value' });
       return seed;
+    },
+    seed: {
+      key: 'value'
     }
   });
 
@@ -75,23 +75,23 @@ test('should output an array', async (t) => {
   };
 
   const { manifest } = await compile(config, t, {
-    seed: [],
     generate(seed, files) {
       return seed.concat(
         files.map((file) => {
           return {
-            name: file.name,
-            file: file.path
+            file: file.path,
+            name: file.name
           };
         })
       );
-    }
+    },
+    seed: []
   });
 
   t.deepEqual(manifest, [
     {
-      name: 'main.js',
-      file: 'main.js'
+      file: 'main.js',
+      name: 'main.js'
     }
   ]);
 });
@@ -113,8 +113,8 @@ test('should generate manifest with "entrypoints" key', async (t) => {
         seed
       );
       return {
-        files: manifestFiles,
-        entrypoints
+        entrypoints,
+        files: manifestFiles
       };
     }
   });

@@ -1,9 +1,7 @@
-[tests]: 	https://img.shields.io/circleci/project/github/shellscape/webpack-manifest-plugin.svg
+[tests]: https://img.shields.io/circleci/project/github/shellscape/webpack-manifest-plugin.svg
 [tests-url]: https://circleci.com/gh/shellscape/webpack-manifest-plugin
-
 [cover]: https://codecov.io/gh/shellscape/webpack-manifest-plugin/branch/master/graph/badge.svg
 [cover-url]: https://codecov.io/gh/shellscape/webpack-manifest-plugin
-
 [size]: https://packagephobia.now.sh/badge?p=webpack-manifest-plugin
 [size-url]: https://packagephobia.now.sh/result?p=webpack-manifest-plugin
 
@@ -16,7 +14,6 @@
 [![size][size]][size-url]
 [![libera manifesto](https://img.shields.io/badge/libera-manifesto-lightgrey.svg)](https://liberamanifesto.com)
 
-
 # webpack-manifest-plugin
 
 A Webpack plugin for generating an asset manifest.
@@ -28,6 +25,16 @@ A Webpack plugin for generating an asset manifest.
 `webpack-manifest-plugin` is an [evergreen 🌲](./.github/FAQ.md#what-does-evergreen-mean) module.
 
 This module requires an [Active LTS](https://github.com/nodejs/Release) Node version (v10.0.0+) and Webpack v4.44.0+.
+
+## Contributing
+
+This repository leverages [pnpm](https://pnpm.js.org/) for dependency management.
+
+To begin, please install `pnpm`:
+
+```console
+$ npm install pnpm -g
+```
 
 ## Install
 
@@ -181,7 +188,6 @@ Default: `false`
 
 If `true`, will emit the manifest to the build directory _and_ in memory for compatibility with `webpack-dev-server`.
 
-
 ## Manifest File Descriptor
 
 This plugin utilizes the following object structure to work with files. Many options for this plugin utilize the structure below.
@@ -235,10 +241,9 @@ class BatmanPlugin {
 
     beforeEmit.tap('BatmanPlugin', (manifest) => {
       return { ...manifest, name: 'hello' };
-    })
+    });
   }
 }
-
 ```
 
 ## Notes

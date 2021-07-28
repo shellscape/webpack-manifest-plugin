@@ -4,7 +4,7 @@ const test = require('ava');
 const del = require('del');
 const webpack = require('webpack');
 
-const { getCompilerHooks, WebpackManifestPlugin } = require('../../lib');
+const { getCompilerHooks, WebpackManifestPlugin } = require('../../');
 const { compile, hashLiteral } = require('../helpers/unit');
 
 const outputPath = join(__dirname, '../output/unit');
@@ -155,6 +155,7 @@ test('outputs a manifest of no-js file', async (t) => {
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
+    // eslint-disable-next-line sort-keys
     'file.txt': 'file.txt'
   };
 
@@ -189,10 +190,6 @@ if (!webpack.version.startsWith('4')) {
     const config = {
       context: __dirname,
       entry: '../fixtures/import_image.js',
-      output: {
-        path: join(outputPath, 'auxiliary-assets'),
-        assetModuleFilename: `images/[name].[hash:4][ext]`
-      },
       module: {
         rules: [
           {
@@ -200,12 +197,17 @@ if (!webpack.version.startsWith('4')) {
             type: 'asset/resource'
           }
         ]
+      },
+      output: {
+        assetModuleFilename: `images/[name].[hash:4][ext]`,
+        path: join(outputPath, 'auxiliary-assets')
       }
     };
 
     const { manifest } = await compile(config, t);
     const expected = {
       'main.js': 'main.js',
+      // eslint-disable-next-line sort-keys
       'images/manifest.svg': `images/manifest.14ca.svg`
     };
 
