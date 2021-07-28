@@ -7,7 +7,7 @@
  * reason why must, by hand, update the package.json file first and then
  * run a normal "npm install".
  */
-import { writeFileSync } from 'fs';
+import { unlinkSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 import pkg from '../package.json';
@@ -30,3 +30,4 @@ pkg.peerDependencies.webpack = versions.webpack;
 Object.keys(versions).forEach((key) => ((pkg.devDependencies as Deps)[key] = versions[key]));
 
 writeFileSync(join(__dirname, '../package.json'), JSON.stringify(pkg, null, 2));
+unlinkSync(join(__dirname, '../pnpm-lock.yaml'));

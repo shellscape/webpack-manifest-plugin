@@ -21,7 +21,7 @@
     "lint:docs": "prettier --write README.md",
     "lint:js": "eslint --cache --fix --cache scripts src test",
     "lint:json": "prettier --write codecov.yml package.json",
-    "posttest": "pnpm switch -- '4' && pnpm install",
+    "posttest": "pnpm switch -- '4'",
     "prepublishOnly": "pnpm lint && pnpm build",
     "pretest": "pnpm build",
     "security": "pnpm audit --audit-level=high --prod",
