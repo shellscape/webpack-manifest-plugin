@@ -2,7 +2,7 @@ import { dirname, join, basename } from 'path';
 
 import webpack, { AssetInfo, Chunk } from 'webpack';
 
-import { InternalOptions } from './';
+import { InternalOptions, Manifest } from './';
 
 export interface FileDescriptor {
   chunk?: ProperChunk;
@@ -34,7 +34,7 @@ const generateManifest = (
   files: FileDescriptor[],
   { generate, seed = {} }: InternalOptions
 ) => {
-  let result;
+  let result: Manifest;
   if (generate) {
     const entrypointsArray = Array.from(compilation.entrypoints.entries());
     const entrypoints = entrypointsArray.reduce(

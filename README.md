@@ -125,7 +125,7 @@ A path prefix that will be added to values of the manifest.
 
 ### `removeKeyHash`
 
-Type: `RegExp | Boolean`<br>
+Type: `RegExp | false`<br>
 Default: `/([a-f0-9]{32}\.?)/gi`
 
 If set to a valid `RegExp`, removes hashes from manifest keys. e.g.

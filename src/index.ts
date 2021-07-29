@@ -10,17 +10,23 @@ import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } fro
 
 const emitCountMap: EmitCountMap = new Map();
 
+export type Manifest = Record<string, string>;
+
 export interface InternalOptions {
   [key: string]: any;
   basePath: string;
   fileName: string;
   filter: (file: FileDescriptor) => Boolean;
-  generate: (seed: Record<any, any>, files: FileDescriptor[], entries: Record<string, any>) => any;
+  generate: (
+    seed: Record<any, any>,
+    files: FileDescriptor[],
+    entries: Record<string, string[]>
+  ) => Manifest;
   map: (file: FileDescriptor) => FileDescriptor;
   publicPath: string;
-  removeKeyHash: RegExp;
-  seed: Record<any, any> | any[];
-  serialize: (manifest: any) => string;
+  removeKeyHash: RegExp | false;
+  seed: Record<any, any>;
+  serialize: (manifest: Manifest) => string;
   sort: (fileA: FileDescriptor, fileB: FileDescriptor) => Number;
   transformExtensions: RegExp;
   useEntryKeys: Boolean;
@@ -103,4 +109,4 @@ class WebpackManifestPlugin implements WebpackPluginInstance {
   }
 }
 
-module.exports = { getCompilerHooks, WebpackManifestPlugin };
+export { getCompilerHooks, WebpackManifestPlugin };
