@@ -1,7 +1,7 @@
 import { relative, resolve } from 'path';
 
 import { SyncHook } from 'tapable';
-import webpack, { Compiler, WebpackPluginInstance } from 'webpack';
+import webpack, { Compiler, WebpackPluginInstance, Compilation } from 'webpack';
 // @ts-ignore
 import NormalModule from 'webpack/lib/NormalModule';
 
@@ -59,7 +59,7 @@ const defaults = {
 export type EmitCountMap = Map<any, any>;
 
 interface Webpack5Hooks {
-  processAssets: SyncHook<webpack.compilation.Compilation, any>;
+  processAssets: SyncHook<Compilation, any>;
 }
 
 class WebpackManifestPlugin implements WebpackPluginInstance {
@@ -104,8 +104,8 @@ class WebpackManifestPlugin implements WebpackPluginInstance {
       });
     }
 
-    compiler.hooks.run.tap(hookOptions, beforeRun);
-    compiler.hooks.watchRun.tap(hookOptions, beforeRun);
+    compiler.hooks.run.tapAsync(hookOptions, beforeRun);
+    compiler.hooks.watchRun.tapAsync(hookOptions, beforeRun);
   }
 }
 

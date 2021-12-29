@@ -1,6 +1,6 @@
 import { dirname, join, basename } from 'path';
 
-import webpack, { AssetInfo, Chunk } from 'webpack';
+import { AssetInfo, Chunk, Asset, Compilation } from 'webpack';
 
 import { InternalOptions, Manifest } from './';
 
@@ -18,7 +18,7 @@ export interface CompilationAssetInfo extends AssetInfo {
   sourceFilename: string;
 }
 
-export interface CompilationAsset extends webpack.compilation.Asset {
+export interface CompilationAsset extends Asset {
   chunks: any[];
   info: CompilationAssetInfo;
 }
@@ -26,11 +26,11 @@ export interface CompilationAsset extends webpack.compilation.Asset {
 // Note: webpack types are awful, fragmented, inconsistent, and incomplete. We have to construct our
 // own so we can access properties which are known to be available
 export interface ProperChunk extends Chunk {
-  auxiliaryFiles: any[];
+  // auxiliaryFiles: any[];
 }
 
 const generateManifest = (
-  compilation: webpack.compilation.Compilation,
+  compilation: Compilation,
   files: FileDescriptor[],
   { generate, seed = {} }: InternalOptions
 ) => {

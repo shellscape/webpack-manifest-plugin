@@ -1,6 +1,6 @@
 {
   "name": "webpack-manifest-plugin",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "A Webpack Plugin for generating Asset Manifests",
   "license": "MIT",
   "repository": "shellscape/webpack-manifest-plugin",
@@ -26,9 +26,7 @@
     "pretest": "pnpm build",
     "security": "pnpm audit --audit-level=high --prod",
     "switch": "cd scripts && ts-node --project ./tsconfig.json ./set-webpack-version.ts",
-    "test": "pnpm test:v4 && pnpm test:v5",
-    "test:v4": "ava",
-    "test:v5": "pnpm switch -- \"5\" && pnpm install && ava"
+    "test": "ava"
   },
   "files": [
     "dist",
@@ -36,11 +34,11 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "webpack": "^4.44.2 || ^5.47.0"
+    "webpack": "^5.47.0"
   },
   "dependencies": {
     "tapable": "^2.0.0",
-    "webpack-sources": "^2.2.0"
+    "webpack-sources": "^3.2.0"
   },
   "devDependencies": {
     "@ava/babel": "^1.0.1",
@@ -48,17 +46,16 @@
     "@commitlint/config-conventional": "^13.1.0",
     "@svgr/webpack": "^5.4.0",
     "@types/node": "^16.4.3",
-    "@types/webpack": "^4.41.26",
-    "@types/webpack-sources": "^2.1.1",
+    "@types/webpack": "latest",
+    "@types/webpack-sources": "^3.2.0",
     "@wordpress/dependency-extraction-webpack-plugin": "^3.1.0",
     "ava": "^3.13.0",
     "codecov": "^3.1.0",
     "copy-webpack-plugin": "^6.2.1",
-    "css-loader": "^1.0.0",
+    "css-loader": "^6.5.1",
     "del": "^6.0.0",
     "eslint-config-shellscape": "^4.2.0",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^2.0.0",
+    "file-loader": "^6.2.0",
     "husky": "4.3.8",
     "lint-staged": "11.1.1",
     "memory-fs": "^0.4.1",
@@ -71,7 +68,7 @@
     "ts-node": "^10.1.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5",
-    "webpack": "^4.44.2",
+    "webpack": "latest",
     "webpack-merge": "^5.2.0"
   },
   "ava": {
@@ -109,10 +106,6 @@
   },
   "pre-commit": "lint-staged",
   "webpack-versions": {
-    "4": {
-      "webpack": "^4.44.2",
-      "@types/webpack": "^4.41.26"
-    },
     "5": {
       "webpack": "latest",
       "@types/webpack": "latest"

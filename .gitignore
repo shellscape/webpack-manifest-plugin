@@ -6,3 +6,5 @@ coverage.lcov
 node_modules
 test/output/
 dist
+.idea/
+
