@@ -10,7 +10,7 @@ import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } fro
 
 const emitCountMap: EmitCountMap = new Map();
 
-export type Manifest = Record<string, string>;
+export type Manifest = Record<string, any>;
 
 export interface InternalOptions {
   [key: string]: any;
