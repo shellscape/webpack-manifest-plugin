@@ -1,6 +1,7 @@
 .DS_Store
 .eslintcache
 .nyc_output
+.pnpm-debug.log
 coverage
 coverage.lcov
 node_modules
