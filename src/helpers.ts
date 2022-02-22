@@ -1,11 +1,11 @@
 import { dirname, join, basename } from 'path';
 
-import webpack, { AssetInfo, Chunk } from 'webpack';
+import { AssetInfo, Chunk, Asset, Compilation } from 'webpack';
 
 import { InternalOptions, Manifest } from './';
 
 export interface FileDescriptor {
-  chunk?: ProperChunk;
+  chunk?: Chunk;
   isAsset: Boolean;
   isChunk: Boolean;
   isInitial: Boolean;
@@ -18,19 +18,13 @@ export interface CompilationAssetInfo extends AssetInfo {
   sourceFilename: string;
 }
 
-export interface CompilationAsset extends webpack.compilation.Asset {
+export interface CompilationAsset extends Asset {
   chunks: any[];
   info: CompilationAssetInfo;
 }
 
-// Note: webpack types are awful, fragmented, inconsistent, and incomplete. We have to construct our
-// own so we can access properties which are known to be available
-export interface ProperChunk extends Chunk {
-  auxiliaryFiles: any[];
-}
-
 const generateManifest = (
-  compilation: webpack.compilation.Compilation,
+  compilation: Compilation,
   files: FileDescriptor[],
   { generate, seed = {} }: InternalOptions
 ) => {
@@ -99,7 +93,7 @@ const reduceAssets = (
 
 const reduceChunk = (
   files: FileDescriptor[],
-  chunk: ProperChunk,
+  chunk: Chunk,
   options: InternalOptions,
   auxiliaryFiles: Record<any, any>
 ) => {

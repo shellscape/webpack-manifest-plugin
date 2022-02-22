@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from 'fs';
 import { basename, dirname, join } from 'path';
 
 import { SyncWaterfallHook } from 'tapable';
-import webpack, { Compiler, Module } from 'webpack';
+import { Compiler, Module, Compilation, LoaderContext } from 'webpack';
 // Note: This was the old delcaration. It appears to be Webpack v3 compat.
 // const { RawSource } = (webpack as any).sources || require('webpack-sources');
 import { RawSource } from 'webpack-sources';
@@ -21,10 +21,6 @@ import {
 interface BeforeRunHookArgs {
   emitCountMap: EmitCountMap;
   manifestFileName: string;
-}
-
-interface WebpackV5CompatJsonOptions extends webpack.Stats.ToJsonOptionsObject {
-  ids?: boolean;
 }
 
 interface EmitHookArgs {
@@ -77,7 +73,7 @@ const emitHook = function emit(
     moduleAssets,
     options
   }: EmitHookArgs,
-  compilation: webpack.compilation.Compilation
+  compilation: Compilation
 ) {
   const emitCount = emitCountMap.get(manifestFileName) - 1;
   // Disable everything we don't use, add asset info, show cached assets
@@ -88,7 +84,7 @@ const emitHook = function emit(
     // Note: Webpack v5 compat
     ids: true,
     publicPath: true
-  } as WebpackV5CompatJsonOptions);
+  });
 
   const publicPath = options.publicPath !== null ? options.publicPath : stats.publicPath;
   const { basePath, removeKeyHash } = options;
@@ -97,7 +93,7 @@ const emitHook = function emit(
 
   const auxiliaryFiles: Record<any, any> = {};
   let files = Array.from(compilation.chunks).reduce<FileDescriptor[]>(
-    (prev, chunk) => reduceChunk(prev, chunk, options, auxiliaryFiles),
+    (prev: FileDescriptor[], chunk: any) => reduceChunk(prev, chunk, options, auxiliaryFiles),
     [] as FileDescriptor[]
   );
 
@@ -176,7 +172,7 @@ interface LegacyModule extends Module {
 
 const normalModuleLoaderHook = (
   { moduleAssets }: { moduleAssets: Record<any, any> },
-  loaderContext: webpack.loader.LoaderContext,
+  loaderContext: LoaderContext<any>,
   module: LegacyModule
 ) => {
   const { emitFile } = loaderContext;

@@ -2,7 +2,6 @@ const { join } = require('path');
 
 const test = require('ava');
 const del = require('del');
-const webpack = require('webpack');
 
 const { getCompilerHooks, WebpackManifestPlugin } = require('../../');
 const { compile, hashLiteral } = require('../helpers/unit');
@@ -185,37 +184,33 @@ test('make manifest available to other webpack plugins', async (t) => {
   }
 });
 
-if (!webpack.version.startsWith('4')) {
-  test('works with asset modules', async (t) => {
-    const config = {
-      context: __dirname,
-      entry: '../fixtures/import_image.js',
-      module: {
-        rules: [
-          {
-            test: /\.(svg)/,
-            type: 'asset/resource'
-          }
-        ]
-      },
-      output: {
-        assetModuleFilename: `images/[name].[hash:4][ext]`,
-        path: join(outputPath, 'auxiliary-assets')
-      }
-    };
+test('works with asset modules', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/import_image.js',
+    module: {
+      rules: [
+        {
+          test: /\.(svg)/,
+          type: 'asset/resource'
+        }
+      ]
+    },
+    output: {
+      assetModuleFilename: `images/[name].[hash:4][ext]`,
+      path: join(outputPath, 'auxiliary-assets')
+    }
+  };
 
-    const { manifest } = await compile(config, t);
-    const expected = {
-      'main.js': 'main.js',
-      // eslint-disable-next-line sort-keys
-      'images/manifest.svg': `images/manifest.14ca.svg`
-    };
+  const { manifest } = await compile(config, t);
+  const expected = {
+    'main.js': 'main.js',
+    // eslint-disable-next-line sort-keys
+    'images/manifest.svg': `images/manifest.14ca.svg`
+  };
 
-    t.truthy(manifest);
-    t.deepEqual(Object.keys(expected), ['main.js', 'images/manifest.svg']);
-    t.deepEqual(manifest['main.js'], 'main.js');
-    t.regex(manifest['images/manifest.svg'], /images\/manifest\.[a-z|\d]{4}\.svg/);
-  });
-} else {
-  test.skip('works with asset modules', () => {});
-}
+  t.truthy(manifest);
+  t.deepEqual(Object.keys(expected), ['main.js', 'images/manifest.svg']);
+  t.deepEqual(manifest['main.js'], 'main.js');
+  t.regex(manifest['images/manifest.svg'], /images\/manifest\.[a-z|\d]{4}\.svg/);
+});
