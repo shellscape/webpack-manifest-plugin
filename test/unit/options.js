@@ -5,8 +5,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const del = require('del');
 
-const webpack = require('webpack');
-
 const { compile } = require('../helpers/unit');
 
 const outputPath = join(__dirname, '../output/options');
@@ -152,11 +150,9 @@ test('assetHookStage', async (t) => {
   class LastStagePlugin {
     /* eslint-disable class-methods-use-this */
     apply(compiler) {
-      const isWebpack4 = webpack.version.startsWith('4');
-
       const callback = (compilation) => {
         // We'll check for our manifest being included in the assets of this invocation
-        assets = Object.keys(isWebpack4 ? compilation.assets : compilation);
+        assets = Object.keys(compilation);
       };
 
       const hookOptions = {
@@ -165,13 +161,9 @@ test('assetHookStage', async (t) => {
         stage: SECOND_PROCESS_ASSETS_STAGE
       };
 
-      if (isWebpack4) {
-        compiler.hooks.emit.tap(hookOptions, callback);
-      } else {
-        compiler.hooks.thisCompilation.tap(hookOptions, (compilation) => {
-          compilation.hooks.processAssets.tap(hookOptions, callback);
-        });
-      }
+      compiler.hooks.thisCompilation.tap(hookOptions, (compilation) => {
+        compilation.hooks.processAssets.tap(hookOptions, callback);
+      });
     }
     /* eslint-enable class-methods-use-this */
   }

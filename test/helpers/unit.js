@@ -20,7 +20,7 @@ const applyDefaults = (webpackOpts, manifestOptions) => {
   return merge(defaults, webpackOpts);
 };
 
-const hashLiteral = webpack.version.startsWith('4') ? '[hash]' : '[fullhash]';
+const hashLiteral = '[fullhash]';
 
 const prepare = (webpackOpts, manifestOptions) => {
   if (Array.isArray(webpackOpts)) {

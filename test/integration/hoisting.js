@@ -1,7 +1,6 @@
 const { join } = require('path');
 
 const test = require('ava');
-const webpack = require('webpack');
 
 const { WebpackManifestPlugin } = require('../../');
 const { compile, hashLiteral, readJson, writeFile } = require('../helpers/integration');
@@ -15,10 +14,6 @@ test.before(() => {
 
 test('outputs a manifest', async (t) => {
   const plugins = [new WebpackManifestPlugin()];
-  // webpack v4
-  if (webpack.optimize.ModuleConcatenationPlugin) {
-    plugins.unshift(new webpack.optimize.ModuleConcatenationPlugin());
-  }
 
   const config = {
     context: __dirname,

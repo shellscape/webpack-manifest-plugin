@@ -45,11 +45,9 @@ test.cb('outputs a manifest of one file', (t) => {
       isFirstRun = false;
       writeFile(join(outputPath, 'index.js'), "import('./chunk1')");
     } else {
-      const expected = webpack.version.startsWith('4')
-        ? // eslint-disable-next-line sort-keys
-          { 'main.js': 'main.js', '1.js': '1.js' }
-        : // eslint-disable-next-line sort-keys
-          { 'main.js': 'main.js', '2.js': '2.js' };
+      const expected =
+        // eslint-disable-next-line sort-keys
+        { 'main.js': 'main.js', '2.js': '2.js' };
       t.deepEqual(manifest, expected);
       t.end();
     }
