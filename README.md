@@ -81,6 +81,15 @@ With the default options, the example above will create a `manifest.json` file i
 
 ### Options
 
+### `assetHookStage`
+
+Type: `Number`<br>
+Default: `Infinity`
+
+If you need to consume the output of this plugin in another plugin, it can be useful to adjust the stage at which the manifest is generated. Pass a new stage to `assetHookStage` to change when the manifest is generated. See the [docs on `processAssets`](https://webpack.js.org/api/compilation-hooks/#list-of-asset-processing-stages) for more detail.
+
+Note: any files added to the compilation after the stage specified will not be included in the manifest.
+
 ### `basePath`
 
 Type: `String`<br>
@@ -229,15 +238,6 @@ This plugin supports the following hooks via the `getCompilerHooks` export; `aft
 ### `getCompilerHooks`
 
 Returns: `{ afterEmit: SyncWaterfallHook, beforeEmit: SyncWaterfallHook }`
-
-### `assetHookStage`
-
-Type: `Number`
-Default: `Infinity`
-
-If you need to consume the output of this plugin in another plugin, it can be useful to adjust the stage at which the manifest is generated. Pass a new stage to `assetHookStage` to change when the manifest is generated. See the [docs on `processAssets`](https://webpack.js.org/api/compilation-hooks/#list-of-asset-processing-stages) for more detail.
-
-Note: any files added to the compilation after the stage specified will not be included in the manifest.
 
 #### Usage
 
