@@ -48,7 +48,7 @@ jobs:
         run: pnpm security
 
       - name: Build Packages
-        run: pnpm build --recursive
+        run: pnpm --recursive build
 
       - name: Lint Repo
         run: pnpm lint:js
