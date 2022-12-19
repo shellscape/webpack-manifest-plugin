@@ -16,35 +16,36 @@ test.before(() => {
   hashes = [];
 });
 
-test.after.cb((t) => {
+test.after((t) => {
   compiler.close(t.end);
 });
 
-test.cb('outputs a manifest of one file', (t) => {
-  const config = {
-    context: __dirname,
-    entry: '../output/watch-mode/index.js',
-    output: {
-      filename: `[name].${hashLiteral}.js`,
-      path: outputPath
-    },
-    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
-    watch: true
-  };
+test('outputs a manifest of one file', (t) =>
+  new Promise((p) => {
+    const config = {
+      context: __dirname,
+      entry: '../output/watch-mode/index.js',
+      output: {
+        filename: `[name].${hashLiteral}.js`,
+        path: outputPath
+      },
+      plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
+      watch: true
+    };
 
-  compiler = watch(config, t, (stats) => {
-    const manifest = readJson(join(outputPath, 'manifest.json'));
+    compiler = watch(config, t, (stats) => {
+      const manifest = readJson(join(outputPath, 'manifest.json'));
 
-    t.truthy(manifest);
-    t.deepEqual(manifest, { 'main.js': `main.${stats.hash}.js` });
+      t.truthy(manifest);
+      t.deepEqual(manifest, { 'main.js': `main.${stats.hash}.js` });
 
-    hashes.push(stats.hash);
+      hashes.push(stats.hash);
 
-    if (hashes.length === 2) {
-      t.notDeepEqual(hashes[0], hashes[1]);
-      t.end();
-    }
+      if (hashes.length === 2) {
+        t.notDeepEqual(hashes[0], hashes[1]);
+        p();
+      }
 
-    writeFile(join(outputPath, 'index.js'), "console.log('v2')");
-  });
-});
+      writeFile(join(outputPath, 'index.js'), "console.log('v2')");
+    });
+  }));

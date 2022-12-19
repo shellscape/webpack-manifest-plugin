@@ -18,38 +18,39 @@ test.before(() => {
   isFirstRun = true;
 });
 
-test.after.cb((t) => {
+test.after((t) => {
   compiler.close(t.end);
 });
 
-test.cb('outputs a manifest of one file', (t) => {
-  const config = {
-    context: __dirname,
-    entry: '../output/watch-import-chunk/index.js',
-    output: {
-      filename: '[name].js',
-      path: outputPath
-    },
-    plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
-    watch: true
-  };
+test('outputs a manifest of one file', (t) =>
+  new Promise((p) => {
+    const config = {
+      context: __dirname,
+      entry: '../output/watch-import-chunk/index.js',
+      output: {
+        filename: '[name].js',
+        path: outputPath
+      },
+      plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
+      watch: true
+    };
 
-  compiler = watch(config, t, () => {
-    const manifest = readJson(join(outputPath, 'manifest.json'));
+    compiler = watch(config, t, () => {
+      const manifest = readJson(join(outputPath, 'manifest.json'));
 
-    t.truthy(manifest);
+      t.truthy(manifest);
 
-    if (isFirstRun) {
-      // eslint-disable-next-line sort-keys
-      t.deepEqual(manifest, { 'main.js': 'main.js', '1.js': '1.js', '2.js': '2.js' });
-      isFirstRun = false;
-      writeFile(join(outputPath, 'index.js'), "import('./chunk1')");
-    } else {
-      const expected =
+      if (isFirstRun) {
         // eslint-disable-next-line sort-keys
-        { 'main.js': 'main.js', '2.js': '2.js' };
-      t.deepEqual(manifest, expected);
-      t.end();
-    }
-  });
-});
+        t.deepEqual(manifest, { 'main.js': 'main.js', '1.js': '1.js', '2.js': '2.js' });
+        isFirstRun = false;
+        writeFile(join(outputPath, 'index.js'), "import('./chunk1')");
+      } else {
+        const expected =
+          // eslint-disable-next-line sort-keys
+          { 'main.js': 'main.js', '2.js': '2.js' };
+        t.deepEqual(manifest, expected);
+        p();
+      }
+    });
+  }));
