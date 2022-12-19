@@ -170,11 +170,13 @@ interface LegacyModule extends Module {
   userRequest?: any;
 }
 
+
 const normalModuleLoaderHook = (
   { moduleAssets }: { moduleAssets: Record<any, any> },
-  loaderContext: LoaderContext<any>,
+  _loaderContext: object,
   module: LegacyModule
 ) => {
+  const loaderContext = _loaderContext as LoaderContext<any>;
   const { emitFile } = loaderContext;
 
   // eslint-disable-next-line no-param-reassign

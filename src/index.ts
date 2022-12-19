@@ -1,10 +1,7 @@
 import { relative, resolve } from 'path';
 
 import { SyncHook } from 'tapable';
-import { Compiler, WebpackPluginInstance, Compilation } from 'webpack';
-// @ts-ignore
-import NormalModule from 'webpack/lib/NormalModule';
-
+import type { Compiler, WebpackPluginInstance, Compilation } from 'webpack';
 import { FileDescriptor } from './helpers';
 import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks';
 
@@ -71,6 +68,7 @@ class WebpackManifestPlugin implements WebpackPluginInstance {
   }
 
   apply(compiler: Compiler) {
+    const { NormalModule } = compiler.webpack;
     const moduleAssets = {};
     const manifestFileName = resolve(compiler.options.output?.path || './', this.options.fileName);
     const manifestAssetId = relative(compiler.options.output?.path || './', manifestFileName);
