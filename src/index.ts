@@ -1,7 +1,7 @@
 import { relative, resolve } from 'path';
 
 import { SyncHook } from 'tapable';
-import { Compiler, WebpackPluginInstance, Compilation } from 'webpack';
+import { Compiler, WebpackPluginInstance, Compilation, ChunkGraph } from 'webpack';
 // @ts-ignore
 import NormalModule from 'webpack/lib/NormalModule';
 
@@ -21,7 +21,8 @@ export interface InternalOptions {
   generate: (
     seed: Record<any, any>,
     files: FileDescriptor[],
-    entries: Record<string, string[]>
+    entries: Record<string, string[]>,
+    chunkGraph: ChunkGraph
   ) => Manifest;
   map: (file: FileDescriptor) => FileDescriptor;
   publicPath: string;
