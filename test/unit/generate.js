@@ -130,3 +130,31 @@ test('should generate manifest with "entrypoints" key', async (t) => {
     }
   });
 });
+
+test('should generate manifest with chunk modules', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: '../fixtures/nameless.js',
+    output: { path: join(outputPath, 'entrypoints-key') }
+  };
+
+  const { manifest } = await compile(config, t, {
+    generate: (_seed, files, _entrypoints, chunkGraph) => {
+      const chunkToIsEntryChunk = Object.fromEntries(
+        files
+          .filter((file) => file.isChunk)
+          .map((file) => [file.name, chunkGraph.getNumberOfEntryModules(file.chunk) > 0])
+      );
+      return {
+        chunkToIsEntryChunk
+      };
+    }
+  });
+
+  t.deepEqual(manifest, {
+    chunkToIsEntryChunk: {
+      'fixtures_file_js.js': false,
+      'main.js': true
+    }
+  });
+});
