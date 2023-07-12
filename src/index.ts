@@ -1,7 +1,7 @@
 import { relative, resolve } from 'path';
 
 import { SyncHook } from 'tapable';
-import type { Compiler, WebpackPluginInstance, Compilation } from 'webpack';
+import type { Compiler, WebpackPluginInstance, Compilation, ChunkGraph } from 'webpack';
 import { FileDescriptor } from './helpers';
 import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks';
 
@@ -18,7 +18,8 @@ export interface InternalOptions {
   generate: (
     seed: Record<any, any>,
     files: FileDescriptor[],
-    entries: Record<string, string[]>
+    entries: Record<string, string[]>,
+    chunkGraph: ChunkGraph
   ) => Manifest;
   map: (file: FileDescriptor) => FileDescriptor;
   publicPath: string;
