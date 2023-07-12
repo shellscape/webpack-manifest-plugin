@@ -135,7 +135,7 @@ test('should generate manifest with chunk modules', async (t) => {
   const config = {
     context: __dirname,
     entry: '../fixtures/nameless.js',
-    output: { path: join(outputPath, 'entrypoints-key') }
+    output: { path: join(outputPath, 'chunk-to-is-entry-chunk') }
   };
 
   const { manifest } = await compile(config, t, {
