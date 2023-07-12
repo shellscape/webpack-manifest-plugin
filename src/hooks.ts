@@ -170,14 +170,15 @@ interface LegacyModule extends Module {
   userRequest?: any;
 }
 
+
 const normalModuleLoaderHook = (
   { moduleAssets }: { moduleAssets: Record<any, any> },
-  loaderContext: LoaderContext<any>,
+  context: unknown,
   module: LegacyModule
 ) => {
+  const loaderContext = context as LoaderContext<any>;
   const { emitFile } = loaderContext;
 
-  // eslint-disable-next-line no-param-reassign
   loaderContext.emitFile = (file: string, content: string, sourceMap: any) => {
     if (module.userRequest && !moduleAssets[file]) {
       Object.assign(moduleAssets, { [file]: join(dirname(file), basename(module.userRequest)) });
