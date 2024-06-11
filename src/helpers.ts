@@ -35,7 +35,7 @@ const generateManifest = (
       (e, [name, entrypoint]) => Object.assign(e, { [name]: entrypoint.getFiles() }),
       {} as Record<string, any>
     );
-    result = generate(seed, files, entrypoints);
+    result = generate(seed, files, entrypoints, compilation.chunkGraph);
   } else {
     result = files.reduce(
       (manifest, file) => Object.assign(manifest, { [file.name]: file.path }),
