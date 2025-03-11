@@ -170,7 +170,6 @@ interface LegacyModule extends Module {
   userRequest?: any;
 }
 
-
 const normalModuleLoaderHook = (
   { moduleAssets }: { moduleAssets: Record<any, any> },
   context: unknown,

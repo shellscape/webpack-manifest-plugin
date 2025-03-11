@@ -2,6 +2,7 @@ import { relative, resolve } from 'path';
 
 import { SyncHook } from 'tapable';
 import type { Compiler, WebpackPluginInstance, Compilation, ChunkGraph } from 'webpack';
+
 import { FileDescriptor } from './helpers';
 import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks';
 
