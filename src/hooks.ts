@@ -80,7 +80,12 @@ const emitHook = function emit(
     publicPath: true
   });
 
-  const publicPath = options.publicPath !== null ? options.publicPath : stats.publicPath;
+  const publicPath =
+    options.publicPath !== null
+      ? options.publicPath
+      : stats.publicPath !== 'auto'
+      ? stats.publicPath
+      : '';
   const { basePath, removeKeyHash } = options;
 
   emitCountMap.set(manifestFileName, emitCount);

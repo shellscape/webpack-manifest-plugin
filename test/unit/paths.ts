@@ -220,3 +220,69 @@ test('should output unix paths', async (t) => {
     'some/dir/main.js': 'some/dir/main.js'
   });
 });
+
+test('should handle publicPath set to auto', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js'
+    },
+    output: {
+      filename: `[name].${hashLiteral}.js`,
+      path: join(outputPath, 'public-auto'),
+      publicPath: 'auto'
+    }
+  };
+  const { manifest, stats } = await compile(config, t);
+  
+  // When publicPath is 'auto', it should not be added to the asset paths
+  // The manifest should contain relative paths without any publicPath prefix
+  t.deepEqual(manifest, {
+    'one.js': `one.${stats.hash}.js`
+  });
+});
+
+test('should handle publicPath set to auto with basePath', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js'
+    },
+    output: {
+      filename: `[name].${hashLiteral}.js`,
+      path: join(outputPath, 'public-auto-base'),
+      publicPath: 'auto'
+    }
+  };
+  const { manifest, stats } = await compile(config, t, {
+    basePath: '/app/'
+  });
+  
+  // When publicPath is 'auto' but basePath is set, basePath should still work
+  // but publicPath should not be added to the asset paths
+  t.deepEqual(manifest, {
+    '/app/one.js': `one.${stats.hash}.js`
+  });
+});
+
+test('should override auto publicPath when plugin publicPath is explicitly set', async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js'
+    },
+    output: {
+      filename: `[name].${hashLiteral}.js`,
+      path: join(outputPath, 'public-auto-override'),
+      publicPath: 'auto'
+    }
+  };
+  const { manifest, stats } = await compile(config, t, {
+    publicPath: '/custom/'
+  });
+  
+  // When plugin publicPath is explicitly set, it should override the webpack auto setting
+  t.deepEqual(manifest, {
+    'one.js': `/custom/one.${stats.hash}.js`
+  });
+});
