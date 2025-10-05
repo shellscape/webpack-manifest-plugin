@@ -16,7 +16,13 @@ jobs:
 
     strategy:
       matrix:
-        node: ['20', '18', '16']
+        include:
+          - node: '20'
+            pnpm: latest
+          - node: '18'
+            pnpm: latest
+          - node: '16'
+            pnpm: '8'
 
     name: Node v${{ matrix.node }}
 
@@ -24,16 +30,19 @@ jobs:
       - name: Checkout Commit
         uses: actions/checkout@v1
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: ${{ matrix.pnpm }}
+
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
+          cache: pnpm
 
       - name: Checkout Master
         run: git branch -f master origin/master
-
-      - name: Install pnpm
-        run: npm install pnpm -g
 
       - name: Sanity Check
         run: |
@@ -52,6 +61,7 @@ jobs:
 
       - name: Lint Repo
         run: pnpm lint:js
+        if: ${{ matrix.pnpm == 'latest' }}
 
       - name: Run Tests
         run: pnpm ci:coverage

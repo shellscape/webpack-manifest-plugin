@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     strategy:
       matrix:
@@ -29,13 +29,16 @@ jobs:
       - name: Checkout Master
         run: git branch -f master origin/master
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: latest
+
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
-
-      - name: install pnpm
-        run: npm install pnpm -g
+          cache: pnpm
 
       - name: pnpm install
         run: pnpm install --ignore-scripts
