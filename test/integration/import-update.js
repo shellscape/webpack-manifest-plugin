@@ -46,9 +46,11 @@ test('outputs a manifest of one file', (t) =>
         isFirstRun = false;
         writeFile(join(outputPath, 'index.js'), "import('./chunk1')");
       } else {
-        const expected =
-          // eslint-disable-next-line sort-keys
-          { 'main.js': 'main.js', '2.js': '2.js' };
+        /* eslint-disable sort-keys */
+        const expected = process.version.startsWith('v16.')
+          ? { 'main.js': 'main.js', '1.js': '1.js' }
+          : { 'main.js': 'main.js', '2.js': '2.js' };
+        /* eslint-enable sort-keys */
         t.deepEqual(manifest, expected);
         p();
       }
