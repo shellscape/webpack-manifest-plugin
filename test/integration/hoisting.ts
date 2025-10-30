@@ -1,8 +1,8 @@
 import { join } from 'node:path';
 
 import test from '../helpers/ava-compat';
-import { WebpackManifestPlugin } from '../../src/index.ts';
-import { compile, hashLiteral, readJson, writeFile } from '../helpers/integration.ts';
+import { WebpackManifestPlugin } from '../../src/index.js';
+import { compile, hashLiteral, readJson, writeFile } from '../helpers/integration.js';
 
 const outputPath = join(__dirname, '../output/scoped-hoisting');
 

@@ -3,9 +3,9 @@ import { join } from 'node:path';
 import del from 'del';
 
 import test from '../helpers/ava-compat';
-import { compile, readJson } from '../helpers/integration.ts';
-import { getAsset } from '../helpers/webpack-version-helpers.ts';
-import { getCompilerHooks, WebpackManifestPlugin } from '../../src/index.ts';
+import { compile, readJson } from '../helpers/integration.js';
+import { getAsset } from '../helpers/webpack-version-helpers.js';
+import { getCompilerHooks, WebpackManifestPlugin } from '../../src/index.js';
 
 const outputPath = join(__dirname, '../output/single-file');
 

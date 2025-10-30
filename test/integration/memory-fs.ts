@@ -4,8 +4,8 @@ import del from 'del';
 import MemoryFileSystem from 'memory-fs';
 
 import test from '../helpers/ava-compat';
-import { WebpackManifestPlugin } from '../../src/index.ts';
-import { compile, readJson } from '../helpers/integration.ts';
+import { WebpackManifestPlugin } from '../../src/index.js';
+import { compile, readJson } from '../helpers/integration.js';
 
 const outputPath = join(__dirname, '../output/emit');
 

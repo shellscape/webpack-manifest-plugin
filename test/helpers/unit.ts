@@ -4,7 +4,7 @@ import { join, isAbsolute } from 'node:path';
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
-import { WebpackManifestPlugin } from '../../src/index.ts';
+import { WebpackManifestPlugin } from '../../src/index.js';
 
 const { log } = console;
 

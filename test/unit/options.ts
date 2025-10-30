@@ -5,7 +5,7 @@ import DependencyExtractionWebpackPlugin from '@wordpress/dependency-extraction-
 import del from 'del';
 
 import test from '../helpers/ava-compat';
-import { compile } from '../helpers/unit.ts';
+import { compile } from '../helpers/unit.js';
 
 const outputPath = join(__dirname, '../output/options');
 

@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import del from 'del';
 
 import test from '../helpers/ava-compat';
-import { compile } from '../helpers/unit.ts';
-import { MockCopyPlugin } from '../helpers/MockCopyPlugin.ts';
+import { compile } from '../helpers/unit.js';
+import { MockCopyPlugin } from '../helpers/MockCopyPlugin.js';
 
 const outputPath = join(__dirname, '../output/copy-plugin');
 

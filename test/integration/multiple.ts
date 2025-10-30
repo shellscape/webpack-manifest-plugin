@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import del from 'del';
 
 import test from '../helpers/ava-compat';
-import { WebpackManifestPlugin } from '../../src/index.ts';
-import { compile, readJson } from '../helpers/integration.ts';
+import { WebpackManifestPlugin } from '../../src/index.js';
+import { compile, readJson } from '../helpers/integration.js';
 
 const outputPath = join(__dirname, '../output/multiple-compilation');
 const outputMultiPath = join(__dirname, '../output/multiple-manifest');

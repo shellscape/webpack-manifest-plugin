@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import webpack from 'webpack';
 
 import test from '../helpers/ava-compat';
-import { WebpackManifestPlugin } from '../../src/index.ts';
-import { readJson, watch, writeFile } from '../helpers/integration.ts';
+import { WebpackManifestPlugin } from '../../src/index.js';
+import { readJson, watch, writeFile } from '../helpers/integration.js';
 
 const outputPath = join(__dirname, '../output/watch-import-chunk');
 

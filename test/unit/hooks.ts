@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import del from 'del';
 
 import test from '../helpers/ava-compat';
-import { compile } from '../helpers/unit.ts';
-import { getCompilerHooks } from '../../src/index.ts';
+import { compile } from '../helpers/unit.js';
+import { getCompilerHooks } from '../../src/index.js';
 
 const outputPath = join(__dirname, '../output/hooks');
 

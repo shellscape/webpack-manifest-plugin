@@ -4954,7 +4954,7 @@ snapshots:
       '@typescript-eslint/scope-manager': 5.46.1
       '@typescript-eslint/type-utils': 5.46.1(eslint@8.27.0)(typescript@5.9.3)
       '@typescript-eslint/utils': 5.46.1(eslint@8.27.0)(typescript@5.9.3)
-      debug: 4.3.4
+      debug: 4.4.3
       eslint: 8.27.0
       ignore: 5.2.3
       natural-compare-lite: 1.4.0
@@ -4979,7 +4979,7 @@ snapshots:
       '@typescript-eslint/scope-manager': 5.46.1
       '@typescript-eslint/types': 5.46.1
       '@typescript-eslint/typescript-estree': 5.46.1(typescript@5.9.3)
-      debug: 4.3.4
+      debug: 4.4.3
       eslint: 8.27.0
     optionalDependencies:
       typescript: 5.9.3
@@ -5949,7 +5949,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.4
+      debug: 4.4.3
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.1.1
