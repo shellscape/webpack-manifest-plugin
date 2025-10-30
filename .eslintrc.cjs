@@ -20,7 +20,7 @@ module.exports = {
         project: ['./tsconfig.eslint.json']
       },
       node: {
-        extensions: ['.js', '.ts', '.d.ts']
+        extensions: ['.js', '.mjs', '.cjs', '.ts', '.mts', '.cts', '.d.ts']
       }
     }
   }
