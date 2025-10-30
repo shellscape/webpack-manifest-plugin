@@ -46,6 +46,7 @@
     "webpack-sources": "^2.2.0"
   },
   "devDependencies": {
+    "eslint": "8.57.0",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
     "@svgr/webpack": "^5.4.0",
