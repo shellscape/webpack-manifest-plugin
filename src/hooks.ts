@@ -80,7 +80,13 @@ const emitHook = function emit(
     publicPath: true
   });
 
-  const publicPath = options.publicPath !== null ? options.publicPath : stats.publicPath;
+  // Webpack v5 supports `output.publicPath: 'auto'`, which resolves the publicPath
+  // at runtime based on the current script/asset location. In that mode, the
+  // string value 'auto' should not be serialized into the manifest. Treat it as
+  // an "unset" publicPath so manifest values remain unprefixed and consumers can
+  // resolve at runtime. See https://webpack.js.org/guides/public-path/#automatic-publicpath
+  const resolvedPublicPath = options.publicPath !== null ? options.publicPath : stats.publicPath;
+  const publicPath = resolvedPublicPath === 'auto' ? '' : resolvedPublicPath;
   const { basePath, removeKeyHash } = options;
 
   emitCountMap.set(manifestFileName, emitCount);
