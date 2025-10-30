@@ -5,13 +5,14 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   settings: {
-    // Resolve ESM-style .js specifiers to TypeScript source under NodeNext
     'import/resolver': {
       typescript: {
-        project: './tsconfig.eslint.json'
+        // Use the ESLint tsconfig which includes tests
+        project: './tsconfig.eslint.json',
+        alwaysTryTypes: true
       },
       node: {
-        extensions: ['.js', '.ts', '.d.ts']
+        extensions: ['.js', '.mjs', '.cjs', '.ts', '.mts', '.cts', '.d.ts']
       }
     }
   }

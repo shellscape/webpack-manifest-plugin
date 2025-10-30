@@ -9,10 +9,18 @@ import { hashLiteral, readJson, watch, writeFile } from '../helpers/integration.
 const outputPath = join(__dirname, '../output/watch-mode');
 
 let hashes: string[];
+let compiler: ReturnType<typeof watch>;
 
 test.before(() => {
   writeFile(join(outputPath, 'index.js'), "console.log('v1')");
   hashes = [];
+});
+
+test.after(() => {
+  // Ensure any watch handle is closed if this test is ever un-skipped
+  // `close` signature is `(callback?: Function) => void` in webpack typings
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (compiler as any)?.close?.(() => {});
 });
 
 test.skip('outputs a manifest of one file (watch-mode)', (t) =>

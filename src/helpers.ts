@@ -1,4 +1,4 @@
-import { dirname, join, basename } from 'path';
+import { dirname, join, basename } from 'node:path';
 
 import type { AssetInfo, Chunk, Asset, Compilation } from 'webpack';
 

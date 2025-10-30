@@ -1,4 +1,8 @@
 {
   "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  },
   "include": ["scripts", "src", "test", "./*js"]
 }

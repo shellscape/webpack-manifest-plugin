@@ -1,4 +1,4 @@
-import { relative, resolve } from 'path';
+import { relative, resolve } from 'node:path';
 
 import { SyncHook } from 'tapable';
 import type { Compiler, WebpackPluginInstance, Compilation, ChunkGraph } from 'webpack';

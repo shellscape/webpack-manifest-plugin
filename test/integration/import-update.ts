@@ -9,12 +9,19 @@ import { readJson, watch, writeFile } from '../helpers/integration.ts';
 const outputPath = join(__dirname, '../output/watch-import-chunk');
 
 let isFirstRun: boolean;
+let compiler: ReturnType<typeof watch>;
 
 test.before(() => {
   writeFile(join(outputPath, 'chunk1.js'), "console.log('chunk 1')");
   writeFile(join(outputPath, 'chunk2.js'), "console.log('chunk 2')");
   writeFile(join(outputPath, 'index.js'), "import('./chunk1')\nimport('./chunk2')");
   isFirstRun = true;
+});
+
+test.after(() => {
+  // Ensure any watch handle is closed if this test is ever un-skipped
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (compiler as any)?.close?.(() => {});
 });
 
 test.skip('outputs a manifest of one file (watch-import)', (t) =>
