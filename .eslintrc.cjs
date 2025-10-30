@@ -13,6 +13,14 @@ module.exports = {
       },
       node: {
         extensions: ['.js', '.mjs', '.cjs', '.ts', '.mts', '.cts', '.d.ts']
+    // Ensure import/no-unresolved can resolve NodeNext + TS paths where source files
+    // use .js specifiers that map to .ts during authoring.
+    'import/resolver': {
+      typescript: {
+        project: ['./tsconfig.eslint.json']
+      },
+      node: {
+        extensions: ['.js', '.ts', '.d.ts']
       }
     }
   }
