@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import del from 'del';
+import { deleteSync as del } from 'del';
 
 import test from '../helpers/ava-compat';
 import { getCompilerHooks, WebpackManifestPlugin } from '../../src/index.js';
@@ -154,7 +154,7 @@ test('outputs a manifest of no-js file', async (t) => {
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
-    // eslint-disable-next-line sort-keys
+    // eslint-disable-next-line
     'file.txt': 'file.txt'
   } as const;
 
@@ -205,7 +205,7 @@ test('works with asset modules', async (t) => {
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
-    // eslint-disable-next-line sort-keys
+    // eslint-disable-next-line
     'images/manifest.svg': `images/manifest.14ca.svg`
   } as const;
 

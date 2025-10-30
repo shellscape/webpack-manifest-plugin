@@ -1,8 +1,9 @@
+/* eslint-disable class-methods-use-this */
 import { join } from 'node:path';
 
 import CopyPlugin from 'copy-webpack-plugin';
 import DependencyExtractionWebpackPlugin from '@wordpress/dependency-extraction-webpack-plugin';
-import del from 'del';
+import { deleteSync as del } from 'del';
 
 import test from '../helpers/ava-compat';
 import { compile } from '../helpers/unit.js';
@@ -24,8 +25,8 @@ test('removeKeyHash', async (t) => {
     plugins: [
       new (CopyPlugin as any)({
         patterns: [
-          { from: '../fixtures/*.css', to: '[name].[contenthash].[ext]' },
-          { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' }
+          { from: '../fixtures/*.css', to: '[name].[contenthash][ext]' },
+          { from: '../fixtures/*.txt', to: '[contenthash].[name][ext]' }
         ]
       })
     ]
@@ -62,8 +63,8 @@ test('removeKeyHash, custom hash length', async (t) => {
     plugins: [
       new (CopyPlugin as any)({
         patterns: [
-          { from: '../fixtures/*.css', to: '[name].[contenthash].[ext]' },
-          { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' }
+          { from: '../fixtures/*.css', to: '[name].[contenthash][ext]' },
+          { from: '../fixtures/*.txt', to: '[contenthash].[name][ext]' }
         ]
       })
     ]
@@ -148,7 +149,6 @@ test('assetHookStage', async (t) => {
   let assets: string[] = [];
 
   class LastStagePlugin {
-    /* eslint-disable class-methods-use-this */
     apply(compiler: any) {
       const callback = (compilation: any) => {
         // We'll check for our manifest being included in the assets of this invocation
@@ -165,7 +165,6 @@ test('assetHookStage', async (t) => {
         compilation.hooks.processAssets.tap(hookOptions, callback);
       });
     }
-    /* eslint-enable class-methods-use-this */
   }
 
   const config = {

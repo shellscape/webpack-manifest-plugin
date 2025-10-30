@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import del from 'del';
+import { deleteSync as del } from 'del';
 import MemoryFileSystem from 'memory-fs';
 
 import test from '../helpers/ava-compat';

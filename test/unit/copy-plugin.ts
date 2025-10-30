@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import del from 'del';
+import { deleteSync as del } from 'del';
 
 import test from '../helpers/ava-compat';
 import { compile } from '../helpers/unit.js';
@@ -21,7 +21,7 @@ test('includes assets from other plugins', async (t) => {
 
   t.deepEqual(manifest, {
     'main.js': 'main.js',
-    // eslint-disable-next-line sort-keys
+
     'third.party.js': 'third.party.js'
   });
 });

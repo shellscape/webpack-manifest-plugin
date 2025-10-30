@@ -22,25 +22,24 @@ jobs:
       group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.head_ref || github.ref_name }}
       cancel-in-progress: true
 
-    strategy:
-      matrix:
-        node: ['20.19.0']
-
-    name: Node v${{ matrix.node }}
+    name: Validate
 
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 20
+
+      - name: Checkout Master
+        if: ${{ github.ref_name != 'master' }}
+        run: |
+          git fetch origin
+          git branch -f master origin/master
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
-
-      - name: Checkout Master
-        run: git branch -f master origin/master
+          node-version: 20.19.0
 
       - name: Install pnpm
         run: npm install pnpm -g

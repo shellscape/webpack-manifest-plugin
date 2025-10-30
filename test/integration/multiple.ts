@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import del from 'del';
+import { deleteSync as del } from 'del';
 
 import test from '../helpers/ava-compat';
 import { WebpackManifestPlugin } from '../../src/index.js';
@@ -36,7 +36,6 @@ test('should not produce mangle output', async (t) => {
 
   const manifest = readJson(join(outputPath, 'manifest.json'));
   const expected = Array.from({ length: nbCompiler }).reduce((man: any, _x, i) => {
-    // eslint-disable-next-line no-param-reassign
     man[`main-${i}.js`] = `main-${i}.js`;
 
     return man;

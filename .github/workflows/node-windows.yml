@@ -15,18 +15,14 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     # Ensure only one run per PR/branch is active; cancel superseded runs on new pushes
     concurrency:
       group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.head_ref || github.ref_name }}
       cancel-in-progress: true
 
-    strategy:
-      matrix:
-        node: ['20.19.0']
-
-    name: Node v${{ matrix.node }}
+    name: Validate (Windows)
     steps:
       - name: Configure git line-breaks
         run: git config --global core.autocrlf false
@@ -37,12 +33,13 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout Master
+        if: ${{ github.ref_name != 'master' }}
         run: git branch -f master origin/master
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 20.19.0
 
       - name: install pnpm
         run: npm install pnpm -g
