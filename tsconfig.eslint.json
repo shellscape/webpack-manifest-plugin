@@ -4,5 +4,5 @@
     "noEmit": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["scripts", "src", "test", "./*js"]
+  "include": ["scripts", "src", "test", "./*.{js,cjs,mjs}"]
 }
