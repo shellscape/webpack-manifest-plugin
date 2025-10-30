@@ -19,7 +19,6 @@ A Webpack plugin for generating an asset manifest.
 `webpack-manifest-plugin` is an [evergreen 🌲](./.github/FAQ.md#what-does-evergreen-mean) module.
 
 This module now requires Node.js v20.19.0 or newer and Webpack v5.0.0.
-The package is ESM-only. If your project uses CommonJS, migrate to ESM or load this plugin from a dynamic `import()`.
 
 ## Contributing
 
