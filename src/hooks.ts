@@ -11,7 +11,6 @@ import type { EmitCountMap, InternalOptions } from './index.js';
 
 // eslint-disable-next-line import/no-unresolved
 import type { CompilationAsset, FileDescriptor } from './helpers.js';
-// eslint-disable-next-line import/no-unresolved
 import { generateManifest, reduceAssets, reduceChunk, transformFiles } from './helpers.js';
 
 interface BeforeRunHookArgs {

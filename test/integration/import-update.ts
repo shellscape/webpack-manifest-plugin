@@ -30,7 +30,7 @@ test.skip('outputs a manifest of one file (watch-import)', (t) =>
       watch: true
     } as any;
 
-    compiler = watch(config, t, () => {
+    watch(config, t, () => {
       const manifest = readJson(join(outputPath, 'manifest.json'));
 
       t.truthy(manifest);
