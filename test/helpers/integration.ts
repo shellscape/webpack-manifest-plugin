@@ -1,12 +1,12 @@
-const { mkdirSync, readFileSync, writeFileSync } = require('fs');
-const { dirname } = require('path');
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 
-const { merge } = require('webpack-merge');
-const webpack = require('webpack');
+import { merge } from 'webpack-merge';
+import webpack from 'webpack';
 
 const { log } = console;
 
-const applyDefaults = (webpackOpts) => {
+const applyDefaults = (webpackOpts: any) => {
   const defaults = {
     optimization: {
       chunkIds: 'natural'
@@ -18,39 +18,39 @@ const applyDefaults = (webpackOpts) => {
   return merge(defaults, webpackOpts);
 };
 
-const hashLiteral = '[fullhash]';
+export const hashLiteral = '[fullhash]';
 
-const prepare = (webpackOpts) => {
+const prepare = (webpackOpts: any) => {
   if (Array.isArray(webpackOpts)) {
     return webpackOpts.map((opts) => applyDefaults(opts));
   }
   return applyDefaults(webpackOpts);
 };
 
-const compile = (config, compilerOps, t) => {
+export const compile = (config: any, compilerOps: any, t: any) => {
   const compiler = webpack(prepare(config));
 
   Object.assign(compiler, compilerOps);
 
-  return new Promise((p) => {
+  return new Promise<webpack.Stats>((p) => {
     compiler.run((error, stats) => {
       t.falsy(error);
-      if (stats.hasErrors()) {
-        log(stats.toJson());
+      if (stats!.hasErrors()) {
+        log(stats!.toJson());
       }
-      t.is(stats.hasErrors(), false);
+      t.is(stats!.hasErrors(), false);
 
-      p(stats);
+      p(stats!);
     });
   });
 };
 
-const readJson = (path) => {
+export const readJson = (path: string) => {
   const content = readFileSync(path, 'utf-8');
   return JSON.parse(content);
 };
 
-const watch = (config, t, cb) => {
+export const watch = (config: any, t: any, cb: (stats: webpack.Stats) => void) => {
   const compiler = webpack(prepare(config));
 
   return compiler.watch(
@@ -60,16 +60,14 @@ const watch = (config, t, cb) => {
     },
     (err, stats) => {
       t.falsy(err);
-      t.is(stats.hasErrors(), false);
+      t.is(stats!.hasErrors(), false);
 
-      cb(stats);
+      cb(stats!);
     }
   );
 };
 
-const writeFile = (fileName, content) => {
+export const writeFile = (fileName: string, content: string) => {
   mkdirSync(dirname(fileName), { recursive: true });
   writeFileSync(fileName, content);
 };
-
-module.exports = { compile, hashLiteral, prepare, readJson, watch, writeFile };

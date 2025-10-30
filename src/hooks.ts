@@ -2,21 +2,17 @@ import { mkdirSync, writeFileSync } from 'fs';
 import { basename, dirname, join } from 'path';
 
 import { SyncWaterfallHook } from 'tapable';
-import { Compiler, Module, Compilation, LoaderContext } from 'webpack';
+import type { Compiler, Module, Compilation, LoaderContext } from 'webpack';
 // Note: This was the old delcaration. It appears to be Webpack v3 compat.
 // const { RawSource } = (webpack as any).sources || require('webpack-sources');
 import { RawSource } from 'webpack-sources';
 
-import { EmitCountMap, InternalOptions } from './';
+import type { EmitCountMap, InternalOptions } from './index.js';
 
-import {
-  CompilationAsset,
-  generateManifest,
-  reduceAssets,
-  reduceChunk,
-  transformFiles,
-  FileDescriptor
-} from './helpers';
+// eslint-disable-next-line import/no-unresolved
+import type { CompilationAsset, FileDescriptor } from './helpers.js';
+// eslint-disable-next-line import/no-unresolved
+import { generateManifest, reduceAssets, reduceChunk, transformFiles } from './helpers.js';
 
 interface BeforeRunHookArgs {
   emitCountMap: EmitCountMap;

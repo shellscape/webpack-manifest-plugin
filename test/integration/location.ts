@@ -1,10 +1,10 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const del = require('del');
+import del from 'del';
 
-const { WebpackManifestPlugin } = require('../../');
-const { compile, readJson } = require('../helpers/integration');
+import test from '../helpers/ava-compat';
+import { WebpackManifestPlugin } from '../../src/index.ts';
+import { compile, readJson } from '../helpers/integration.ts';
 
 const absOutputPath = join(__dirname, '../output/absolute-manifest');
 const outputPath = join(__dirname, '../output/relative-manifest');
@@ -23,7 +23,7 @@ test('output to the correct location', async (t) => {
       path: outputPath
     },
     plugins: [new WebpackManifestPlugin({ fileName: 'webpack.manifest.json' })]
-  };
+  } as any;
 
   await compile(config, {}, t);
 
@@ -42,7 +42,7 @@ test('output using absolute path', async (t) => {
       path: absOutputPath
     },
     plugins: [new WebpackManifestPlugin({ fileName: join(absOutputPath, 'webpack.manifest.json') })]
-  };
+  } as any;
   await compile(config, {}, t);
 
   const manifestPath = join(absOutputPath, 'webpack.manifest.json');

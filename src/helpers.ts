@@ -1,8 +1,8 @@
 import { dirname, join, basename } from 'path';
 
-import { AssetInfo, Chunk, Asset, Compilation } from 'webpack';
+import type { AssetInfo, Chunk, Asset, Compilation } from 'webpack';
 
-import { InternalOptions, Manifest } from './';
+import type { InternalOptions, Manifest } from './index.js';
 
 export interface FileDescriptor {
   chunk?: Chunk;

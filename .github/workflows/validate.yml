@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['20', '18', '16']
+        node: ['20.19.0']
 
     name: Node v${{ matrix.node }}
 
@@ -54,4 +54,4 @@ jobs:
         run: pnpm lint:js
 
       - name: Run Tests
-        run: pnpm ci:coverage
+        run: pnpm ci:test

@@ -4,6 +4,6 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-unresolved': 'off',
     'no-console': 'off',
-    'no-param-reassign': 'off'
+    'no-param-reassign': 'off',
   }
 };

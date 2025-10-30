@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`assetHookStage 1`] = `
+{
+  "main.js": "main.js",
+}
+`;
+
+exports[`removeKeyHash 1`] = `
+{
+  "file.txt": "[test-hash].file.txt",
+  "main.js": "[test-hash].removeKeyHash.js",
+  "style.css": "style.[test-hash].css",
+}
+`;
+
+exports[`removeKeyHash 2`] = `
+{
+  "file.txt": "[test-hash].file.txt",
+  "main.js": "[test-hash].removeKeyHash.js",
+  "style.css": "style.[test-hash].css",
+}
+`;
+
+exports[`removeKeyHash, custom hash length 1`] = `
+{
+  "file.txt": "[test-hash].file.txt",
+  "main.js": "[test-hash].removeKeyHash.js",
+  "style.css": "style.[test-hash].css",
+}
+`;
+
+exports[`removeKeyHash, custom hash length 2`] = `
+{
+  "file.txt": "[test-hash].file.txt",
+  "main.js": "[test-hash].removeKeyHash.js",
+  "style.css": "style.[test-hash].css",
+}
+`;
+
+exports[`useEntryKeys 1`] = `
+{
+  "main": "main.js",
+}
+`;
+
+exports[`useEntryKeys, exclude sourcemap 1`] = `
+{
+  "main": "main.js",
+  "main.js.map": "main.js.map",
+}
+`;
+
+exports[`useLegacyEmit 1`] = `
+{
+  "main.js": "main.js",
+  "main.json": "main.asset.json",
+}
+`;

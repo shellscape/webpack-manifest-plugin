@@ -3,8 +3,10 @@ import { relative, resolve } from 'path';
 import { SyncHook } from 'tapable';
 import type { Compiler, WebpackPluginInstance, Compilation, ChunkGraph } from 'webpack';
 
-import { FileDescriptor } from './helpers';
-import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks';
+// eslint-disable-next-line import/no-unresolved
+import type { FileDescriptor } from './helpers.js';
+// eslint-disable-next-line import/no-unresolved
+import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks.js';
 
 const emitCountMap: EmitCountMap = new Map();
 

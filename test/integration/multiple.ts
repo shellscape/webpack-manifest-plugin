@@ -1,10 +1,10 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const del = require('del');
+import del from 'del';
 
-const { WebpackManifestPlugin } = require('../../');
-const { compile, readJson } = require('../helpers/integration');
+import test from '../helpers/ava-compat';
+import { WebpackManifestPlugin } from '../../src/index.ts';
+import { compile, readJson } from '../helpers/integration.ts';
 
 const outputPath = join(__dirname, '../output/multiple-compilation');
 const outputMultiPath = join(__dirname, '../output/multiple-manifest');
@@ -16,30 +16,31 @@ test.beforeEach(async () => {
 });
 
 test('should not produce mangle output', async (t) => {
-  const seed = {};
-  const config = Array.from({ length: nbCompiler }).map((x, i) => {
-    return {
-      context: __dirname,
-      entry: {
-        [`main-${i}`]: '../fixtures/file.js'
-      },
-      output: {
-        filename: '[name].js',
-        path: outputPath
-      },
-      plugins: [new WebpackManifestPlugin({ seed })]
-    };
-  });
+  const seed: any = {};
+  const config = Array.from({ length: nbCompiler }).map(
+    (_, i) =>
+      ({
+        context: __dirname,
+        entry: {
+          [`main-${i}`]: '../fixtures/file.js'
+        },
+        output: {
+          filename: '[name].js',
+          path: outputPath
+        },
+        plugins: [new WebpackManifestPlugin({ seed })]
+      } as any)
+  );
 
   await compile(config, {}, t);
 
   const manifest = readJson(join(outputPath, 'manifest.json'));
-  const expected = Array.from({ length: nbCompiler }).reduce((man, x, i) => {
+  const expected = Array.from({ length: nbCompiler }).reduce((man: any, _x, i) => {
     // eslint-disable-next-line no-param-reassign
     man[`main-${i}.js`] = `main-${i}.js`;
 
-    return manifest;
-  }, {});
+    return man;
+  }, {} as any);
 
   t.truthy(manifest);
   t.deepEqual(manifest, expected);
@@ -69,7 +70,7 @@ test('should produce two seperate manifests', async (t) => {
       },
       plugins: [new WebpackManifestPlugin()]
     }
-  ];
+  ] as any;
   await compile(config, {}, t);
 
   const manifest1 = readJson(join(outputMultiPath, '1/manifest.json'));

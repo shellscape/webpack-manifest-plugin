@@ -1,11 +1,11 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const del = require('del');
+import del from 'del';
 
-const { compile, readJson } = require('../helpers/integration');
-const { getAsset } = require('../helpers/webpack-version-helpers');
-const { getCompilerHooks, WebpackManifestPlugin } = require('../../');
+import test from '../helpers/ava-compat';
+import { compile, readJson } from '../helpers/integration.ts';
+import { getAsset } from '../helpers/webpack-version-helpers.ts';
+import { getCompilerHooks, WebpackManifestPlugin } from '../../src/index.ts';
 
 const outputPath = join(__dirname, '../output/single-file');
 
@@ -20,7 +20,7 @@ test.serial('outputs a manifest of one file', async (t) => {
       path: outputPath
     },
     plugins: [new WebpackManifestPlugin()]
-  };
+  } as any;
 
   await compile(config, {}, t);
   const manifest = readJson(join(outputPath, 'manifest.json'));
@@ -41,9 +41,9 @@ test.serial('still works when there are multiple instances of the plugin', async
       new WebpackManifestPlugin({ fileName: 'manifest1.json' }),
       new WebpackManifestPlugin({ fileName: 'manifest2.json' })
     ]
-  };
+  } as any;
 
-  const stats = await compile(config, {}, t);
+  const stats: any = await compile(config, {}, t);
   t.is(getAsset(stats.compilation, 'main.js'), true);
   t.is(getAsset(stats.compilation, 'manifest1.json'), true);
   t.is(getAsset(stats.compilation, 'manifest2.json'), true);
@@ -59,24 +59,12 @@ test.serial('still works when there are multiple instances of the plugin', async
 
 test('exposes a plugin hook with the manifest content', async (t) => {
   class TestPlugin {
-    constructor() {
-      this.manifest = null;
-    }
-
-    apply(compiler) {
-      if (compiler.hooks) {
-        const hook = getCompilerHooks(compiler).afterEmit;
-        hook.tap('WebpackManifestPlugin', (manifest) => {
-          this.manifest = manifest;
-        });
-      } else {
-        compiler.plugin('compilation', (compilation) => {
-          compilation.plugin('webpack-manifest-plugin-after-emit', (manifest, callback) => {
-            this.manifest = manifest;
-            callback();
-          });
-        });
-      }
+    manifest: any = null;
+    apply(compiler: any) {
+      const hook = getCompilerHooks(compiler).afterEmit;
+      hook.tap('WebpackManifestPlugin', (manifest: any) => {
+        this.manifest = manifest;
+      });
     }
   }
 
@@ -89,7 +77,7 @@ test('exposes a plugin hook with the manifest content', async (t) => {
       path: outputPath
     },
     plugins: [new WebpackManifestPlugin(), testPlugin]
-  };
+  } as any;
 
   await compile(config, {}, t);
   t.truthy(testPlugin.manifest);

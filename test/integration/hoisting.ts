@@ -1,9 +1,8 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-
-const { WebpackManifestPlugin } = require('../../');
-const { compile, hashLiteral, readJson, writeFile } = require('../helpers/integration');
+import test from '../helpers/ava-compat';
+import { WebpackManifestPlugin } from '../../src/index.ts';
+import { compile, hashLiteral, readJson, writeFile } from '../helpers/integration.ts';
 
 const outputPath = join(__dirname, '../output/scoped-hoisting');
 
@@ -31,8 +30,8 @@ test('outputs a manifest', async (t) => {
       path: outputPath
     },
     plugins
-  };
-  const stats = await compile(config, {}, t);
+  } as any;
+  const stats: any = await compile(config, {}, t);
   const manifest = readJson(join(outputPath, 'manifest.json'));
 
   t.truthy(manifest);
