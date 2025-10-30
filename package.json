@@ -58,7 +58,6 @@
     "eslint": "8.57.0",
     "eslint-config-shellscape": "^6.0.0",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-import-resolver-typescript": "^3.10.1",
     "file-loader": "^6.2.0",
     "husky": "8.0.2",
     "lint-staged": "11.1.1",
