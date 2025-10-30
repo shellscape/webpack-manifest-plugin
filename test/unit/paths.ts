@@ -92,6 +92,50 @@ test("does not prefix paths when webpack's publicPath is 'auto'", async (t) => {
   });
 });
 
+test("prefixes definitions with a base path when webpack's publicPath is 'auto'", async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js'
+    },
+    output: {
+      filename: `[name].${hashLiteral}.js`,
+      path: join(outputPath, 'public-auto-with-basePath'),
+      publicPath: 'auto'
+    }
+  } as any;
+
+  const { manifest, stats } = await compile(config, t, {
+    basePath: '/app/'
+  });
+
+  t.deepEqual(manifest, {
+    '/app/one.js': `one.${(stats as any).hash}.js`
+  });
+});
+
+test("uses plugin 'publicPath' override when webpack's publicPath is 'auto'", async (t) => {
+  const config = {
+    context: __dirname,
+    entry: {
+      one: '../fixtures/file.js'
+    },
+    output: {
+      filename: `[name].${hashLiteral}.js`,
+      path: join(outputPath, 'public-auto-with-override'),
+      publicPath: 'auto'
+    }
+  } as any;
+
+  const { manifest, stats } = await compile(config, t, {
+    publicPath: '/cdn/'
+  });
+
+  t.deepEqual(manifest, {
+    'one.js': `/cdn/one.${(stats as any).hash}.js`
+  });
+});
+
 test(`prefixes paths with a public path and handle ${hashLiteral} from public path`, async (t) => {
   const config = {
     context: __dirname,
