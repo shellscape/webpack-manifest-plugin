@@ -1,12 +1,11 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const del = require('del');
+import del from 'del';
+import MemoryFileSystem from 'memory-fs';
 
-const MemoryFileSystem = require('memory-fs');
-
-const { WebpackManifestPlugin } = require('../../');
-const { compile, readJson } = require('../helpers/integration');
+import test from '../helpers/ava-compat';
+import { WebpackManifestPlugin } from '../../src/index.js';
+import { compile, readJson } from '../helpers/integration.js';
 
 const outputPath = join(__dirname, '../output/emit');
 
@@ -21,8 +20,8 @@ test('outputs a manifest when using memory fs', async (t) => {
       path: outputPath
     },
     plugins: [new WebpackManifestPlugin({ writeToFileEmit: true })]
-  };
-  await compile(config, { outputFileSystem: new MemoryFileSystem() }, t);
+  } as any;
+  await compile(config, { outputFileSystem: new (MemoryFileSystem as any)() }, t);
 
   const manifest = readJson(join(outputPath, 'manifest.json'));
 

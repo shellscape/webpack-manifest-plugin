@@ -1,22 +1,30 @@
 name: Windows
 
 on:
+  # Run on all PRs (regardless of base branch)
   pull_request:
     types:
-      - edited
       - opened
       - synchronize
+      - reopened
+      - ready_for_review
+  # Run on direct pushes to the default branch only (avoid duplicate runs for PR branches)
   push:
     branches:
-      - '*'
+      - master
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-2022
+
+    # Ensure only one run per PR/branch is active; cancel superseded runs on new pushes
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.head_ref || github.ref_name }}
+      cancel-in-progress: true
 
     strategy:
       matrix:
-        node: ['18']
+        node: ['20.19.0']
 
     name: Node v${{ matrix.node }}
     steps:
@@ -24,13 +32,15 @@ jobs:
         run: git config --global core.autocrlf false
 
       - name: Checkout Commit
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Checkout Master
         run: git branch -f master origin/master
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 

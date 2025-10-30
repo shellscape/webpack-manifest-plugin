@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`exports 1`] = `
+[
+  "afterEmit",
+  "beforeEmit",
+]
+`;

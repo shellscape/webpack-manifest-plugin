@@ -1,9 +1,9 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const del = require('del');
+import del from 'del';
 
-const { compile } = require('../helpers/unit');
+import test from '../helpers/ava-compat';
+import { compile } from '../helpers/unit.js';
 
 const outputPath = join(__dirname, '../output/manifest-location');
 

@@ -1,10 +1,10 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const del = require('del');
+import del from 'del';
 
-const { getCompilerHooks, WebpackManifestPlugin } = require('../../');
-const { compile, hashLiteral } = require('../helpers/unit');
+import test from '../helpers/ava-compat';
+import { getCompilerHooks, WebpackManifestPlugin } from '../../src/index.js';
+import { compile, hashLiteral } from '../helpers/unit.js';
 
 const outputPath = join(__dirname, '../output/unit');
 
@@ -14,7 +14,7 @@ test('exports', async (t) => {
   t.truthy(getCompilerHooks);
   t.truthy(WebpackManifestPlugin);
 
-  const compiler = {};
+  const compiler = {} as any;
   const hooks = getCompilerHooks(compiler);
   t.snapshot(Object.keys(hooks));
   t.is(hooks, getCompilerHooks(compiler));
@@ -63,7 +63,7 @@ test('works with hashes in the filename', async (t) => {
   };
   const { manifest, stats } = await compile(config, t);
 
-  t.deepEqual(manifest, { 'one.js': `one.${stats.hash}.js` });
+  t.deepEqual(manifest, { 'one.js': `one.${(stats as any).hash}.js` });
 });
 
 test('works with source maps', async (t) => {
@@ -137,7 +137,7 @@ test('outputs a manifest of no-js file', async (t) => {
     module: {
       rules: [
         {
-          test: /\.(txt)/,
+          test: /(\.(txt))/,
           use: [
             {
               loader: 'file-loader',
@@ -150,13 +150,13 @@ test('outputs a manifest of no-js file', async (t) => {
       ]
     },
     output: { path: join(outputPath, 'no-js') }
-  };
+  } as any;
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
     // eslint-disable-next-line sort-keys
     'file.txt': 'file.txt'
-  };
+  } as const;
 
   t.truthy(manifest);
   t.deepEqual(manifest, expected);
@@ -172,7 +172,7 @@ test('make manifest available to other webpack plugins', async (t) => {
 
   t.deepEqual(manifest, { 'main.js': 'main.js' });
 
-  const asset = stats.compilation.assets['manifest.json'];
+  const asset = (stats as any).compilation.assets['manifest.json'];
 
   try {
     t.deepEqual(JSON.parse(asset.source()), {
@@ -191,7 +191,7 @@ test('works with asset modules', async (t) => {
     module: {
       rules: [
         {
-          test: /\.(svg)/,
+          test: /(\.(svg))/,
           type: 'asset/resource'
         }
       ]
@@ -200,14 +200,14 @@ test('works with asset modules', async (t) => {
       assetModuleFilename: `images/[name].[hash:4][ext]`,
       path: join(outputPath, 'auxiliary-assets')
     }
-  };
+  } as any;
 
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
     // eslint-disable-next-line sort-keys
     'images/manifest.svg': `images/manifest.14ca.svg`
-  };
+  } as const;
 
   t.truthy(manifest);
   t.deepEqual(Object.keys(expected), ['main.js', 'images/manifest.svg']);

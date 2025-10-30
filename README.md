@@ -1,7 +1,3 @@
-[tests]: https://img.shields.io/circleci/project/github/shellscape/webpack-manifest-plugin.svg
-[tests-url]: https://circleci.com/gh/shellscape/webpack-manifest-plugin
-[cover]: https://codecov.io/gh/shellscape/webpack-manifest-plugin/branch/master/graph/badge.svg
-[cover-url]: https://codecov.io/gh/shellscape/webpack-manifest-plugin
 [size]: https://packagephobia.now.sh/badge?p=webpack-manifest-plugin
 [size-url]: https://packagephobia.now.sh/result?p=webpack-manifest-plugin
 
@@ -9,8 +5,6 @@
 	<img width="256" src="https://raw.githubusercontent.com/shellscape/webpack-manifest-plugin/master/assets/manifest.svg?sanitize=true" alt="webpack-manfiest-plugin"><br/><br/>
 </div>
 
-[![tests][tests]][tests-url]
-[![cover][cover]][cover-url]
 [![size][size]][size-url]
 [![libera manifesto](https://img.shields.io/badge/libera-manifesto-lightgrey.svg)](https://liberamanifesto.com)
 
@@ -24,7 +18,7 @@ A Webpack plugin for generating an asset manifest.
 
 `webpack-manifest-plugin` is an [evergreen 🌲](./.github/FAQ.md#what-does-evergreen-mean) module.
 
-This module requires an [Active LTS](https://github.com/nodejs/Release) Node version (v12.0.0+) and Webpack v5.0.0.
+This module now requires Node.js v20.19.0 or newer and Webpack v5.0.0.
 
 ## Contributing
 
@@ -48,19 +42,16 @@ _Note: We recommend using [webpack-nano](https://github.com/shellscape/webpack-n
 
 ## Usage
 
-Create a `webpack.config.js` file:
+Create a `webpack.config.js` or `webpack.config.mjs` file (ESM):
 
 ```js
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-const options = { ... };
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 
-module.exports = {
-	// an example entry definition
-	entry: [ 'app.js'	],
-  ...
-  plugins: [
-    new WebpackManifestPlugin(options)
-  ]
+export default {
+  // an example entry definition
+  entry: ['app.js'],
+  // ...
+  plugins: [new WebpackManifestPlugin(/* options */)]
 };
 ```
 

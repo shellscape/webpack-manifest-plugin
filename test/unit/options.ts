@@ -1,17 +1,17 @@
-const { join } = require('path');
+import { join } from 'node:path';
 
-const test = require('ava');
-const CopyPlugin = require('copy-webpack-plugin');
-const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
-const del = require('del');
+import CopyPlugin from 'copy-webpack-plugin';
+import DependencyExtractionWebpackPlugin from '@wordpress/dependency-extraction-webpack-plugin';
+import del from 'del';
 
-const { compile } = require('../helpers/unit');
+import test from '../helpers/ava-compat';
+import { compile } from '../helpers/unit.js';
 
 const outputPath = join(__dirname, '../output/options');
 
 test.after(() => del(outputPath));
 
-const clean = (what) => what.replace(/([a-f0-9]{16,32})/gi, '[test-hash]');
+const clean = (what: string) => what.replace(/([a-f0-9]{16,32})/gi, '[test-hash]');
 
 test('removeKeyHash', async (t) => {
   const config = {
@@ -22,30 +22,30 @@ test('removeKeyHash', async (t) => {
       path: join(outputPath, 'removeKeyHash')
     },
     plugins: [
-      new CopyPlugin({
+      new (CopyPlugin as any)({
         patterns: [
           { from: '../fixtures/*.css', to: '[name].[contenthash].[ext]' },
           { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' }
         ]
       })
     ]
-  };
+  } as any;
 
   let { manifest } = await compile(config, t);
 
-  manifest = Object.keys(manifest).reduce((prev, key) => {
+  manifest = Object.keys(manifest).reduce((prev: any, key: string) => {
     prev[clean(key)] = clean(manifest[key]);
     return prev;
-  }, {});
+  }, {} as any);
 
   t.snapshot(manifest);
 
   ({ manifest } = await compile(config, t, { removeKeyHash: false }));
 
-  manifest = Object.keys(manifest).reduce((prev, key) => {
+  manifest = Object.keys(manifest).reduce((prev: any, key: string) => {
     prev[clean(key)] = clean(manifest[key]);
     return prev;
-  }, {});
+  }, {} as any);
 
   t.snapshot(manifest);
 });
@@ -60,30 +60,30 @@ test('removeKeyHash, custom hash length', async (t) => {
       path: join(outputPath, 'removeKeyHashCustomLength')
     },
     plugins: [
-      new CopyPlugin({
+      new (CopyPlugin as any)({
         patterns: [
           { from: '../fixtures/*.css', to: '[name].[contenthash].[ext]' },
           { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' }
         ]
       })
     ]
-  };
+  } as any;
 
   let { manifest } = await compile(config, t);
 
-  manifest = Object.keys(manifest).reduce((prev, key) => {
+  manifest = Object.keys(manifest).reduce((prev: any, key: string) => {
     prev[clean(key)] = clean(manifest[key]);
     return prev;
-  }, {});
+  }, {} as any);
 
   t.snapshot(manifest);
 
   ({ manifest } = await compile(config, t, { removeKeyHash: false }));
 
-  manifest = Object.keys(manifest).reduce((prev, key) => {
+  manifest = Object.keys(manifest).reduce((prev: any, key: string) => {
     prev[clean(key)] = clean(manifest[key]);
     return prev;
-  }, {});
+  }, {} as any);
 
   t.snapshot(manifest);
 });
@@ -98,7 +98,7 @@ test('useEntryKeys', async (t) => {
       filename: '[name].js',
       path: join(outputPath, 'useEntryKeys')
     }
-  };
+  } as any;
   const { manifest } = await compile(config, t, { useEntryKeys: true });
 
   t.snapshot(manifest);
@@ -115,7 +115,7 @@ test('useEntryKeys, exclude sourcemap', async (t) => {
       filename: '[name].js',
       path: join(outputPath, 'useEntryKeys-exclude')
     }
-  };
+  } as any;
   const { manifest } = await compile(config, t, { useEntryKeys: true });
 
   t.snapshot(manifest);
@@ -132,11 +132,11 @@ test('useLegacyEmit', async (t) => {
       path: join(outputPath, 'useLegacyEmit')
     },
     plugins: [
-      new DependencyExtractionWebpackPlugin({
+      new (DependencyExtractionWebpackPlugin as any)({
         outputFormat: 'json'
       })
     ]
-  };
+  } as any;
   const { manifest } = await compile(config, t, { useLegacyEmit: true });
 
   t.snapshot(manifest);
@@ -145,12 +145,12 @@ test('useLegacyEmit', async (t) => {
 test('assetHookStage', async (t) => {
   const FIRST_PROCESS_ASSETS_STAGE = 0;
   const SECOND_PROCESS_ASSETS_STAGE = 1;
-  let assets;
+  let assets: string[] = [];
 
   class LastStagePlugin {
     /* eslint-disable class-methods-use-this */
-    apply(compiler) {
-      const callback = (compilation) => {
+    apply(compiler: any) {
+      const callback = (compilation: any) => {
         // We'll check for our manifest being included in the assets of this invocation
         assets = Object.keys(compilation);
       };
@@ -161,7 +161,7 @@ test('assetHookStage', async (t) => {
         stage: SECOND_PROCESS_ASSETS_STAGE
       };
 
-      compiler.hooks.thisCompilation.tap(hookOptions, (compilation) => {
+      compiler.hooks.thisCompilation.tap(hookOptions, (compilation: any) => {
         compilation.hooks.processAssets.tap(hookOptions, callback);
       });
     }
@@ -178,12 +178,12 @@ test('assetHookStage', async (t) => {
       path: join(outputPath, 'assetHookStage')
     },
     plugins: [new LastStagePlugin()]
-  };
+  } as any;
 
   // Ensure we register the manifest plugin to run first.
   const { manifest } = await compile(config, t, { assetHookStage: FIRST_PROCESS_ASSETS_STAGE });
 
   t.snapshot(manifest);
-  const laterPluginHasManifest = assets.includes('manifest.json');
+  const laterPluginHasManifest = (assets as any).includes('manifest.json');
   t.is(laterPluginHasManifest, true);
 });

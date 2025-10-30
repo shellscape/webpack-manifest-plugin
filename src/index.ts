@@ -1,10 +1,10 @@
-import { relative, resolve } from 'path';
+import { relative, resolve } from 'node:path';
 
 import { SyncHook } from 'tapable';
 import type { Compiler, WebpackPluginInstance, Compilation, ChunkGraph } from 'webpack';
 
-import { FileDescriptor } from './helpers';
-import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks';
+import type { FileDescriptor } from './helpers.js';
+import { beforeRunHook, emitHook, getCompilerHooks, normalModuleLoaderHook } from './hooks.js';
 
 const emitCountMap: EmitCountMap = new Map();
 
