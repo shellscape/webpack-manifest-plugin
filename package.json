@@ -26,7 +26,7 @@
     "lint": "pnpm lint:docs && pnpm lint:json && pnpm lint:js",
     "lint-staged": "lint-staged",
     "lint:docs": "prettier --write README.md",
-    "lint:js": "eslint --cache --fix --cache src test",
+    "lint:js": "eslint --cache --fix src test",
     "lint:json": "prettier --write package.json",
     "prepare": "husky install",
     "prepublishOnly": "pnpm lint && pnpm build",
@@ -79,7 +79,7 @@
     }
   },
   "lint-staged": {
-    "*.js": [
+    "*.{js,ts,tsx,cjs,mjs}": [
       "eslint --fix"
     ]
   },
