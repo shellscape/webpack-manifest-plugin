@@ -5,12 +5,14 @@ import { SyncWaterfallHook } from 'tapable';
 import type { Compiler, Module, Compilation, LoaderContext } from 'webpack';
 // Note: This was the old delcaration. It appears to be Webpack v3 compat.
 // const { RawSource } = (webpack as any).sources || require('webpack-sources');
-import { RawSource } from 'webpack-sources';
+import webpackSources from 'webpack-sources';
 
 import type { EmitCountMap, InternalOptions } from './index.js';
 
 import type { CompilationAsset, FileDescriptor } from './helpers.js';
 import { generateManifest, reduceAssets, reduceChunk, transformFiles } from './helpers.js';
+
+const { RawSource } = webpackSources;
 
 interface BeforeRunHookArgs {
   emitCountMap: EmitCountMap;
